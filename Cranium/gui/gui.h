@@ -153,6 +153,7 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 				{
 					if (BeginTabItem("World"))
 					{
+						static char Travel[1024];
 						static int timeOfDay = 1;
 						static int currentTimeOfDay = 1;
 
@@ -176,10 +177,26 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 							UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
 						}
 
+						//Puts you back to the lobby, get destroyed kid
+						if (Button(XOR("Lobby")))
+						{
+							UFunctions::Travel(FRONTEND);
+							bIsStarted = false;
+							bIsInit = false;
+							NeoPlayer.Controller = nullptr;
+							NeoPlayer.Pawn = nullptr;
+							NeoPlayer.Mesh = nullptr;
+							NeoPlayer.AnimInstance = nullptr;
+							Bots.clear();
+							gPlaylist = nullptr;
+							gNeoniteLogoTexture = nullptr;
+						}
+
 						static float X = 1.0f;
 						static float Y = 1.0f;
 						static float Z = 1.0f;
 
+						NewLine();
 
 						BeginChild(XOR("BugItGo"));
 						PushItemWidth(60);
@@ -201,6 +218,24 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						{
 							NeoPlayer.TeleportTo(FVector(X, Y, Z));
 						}
+
+						/*
+						NewLine();
+
+						InputText(XOR("Map"), Travel, sizeof Travel);
+
+						SameLine();
+
+						if (Button("Travel"))
+						{
+							std::string TravelS(Travel);
+							std::wstring TravelW(TravelS.begin(), TravelS.end());
+							//Console::ExecuteConsoleCommand(coammndW.c_str());
+							Start(TravelW.c_str());
+						}
+						*/
+
+
 
 						/*NewLine();
 
