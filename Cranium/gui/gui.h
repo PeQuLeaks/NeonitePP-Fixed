@@ -166,17 +166,45 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 
 						NewLine();
 
-						if (Button(XOR("Teleport to Spawn Island")))
-						{
-							NeoPlayer.TeleportToSpawn();
-						}
-
 						SameLine(0.0f, 20.0f);
 						if (Button(XOR("Start Rift Tour Event")))
 						{
 							UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
 						}
 
+						SameLine(0.0f, 19.0f);
+						if (Button(XOR("Start Rift Tour Cuddle")))
+						{
+							UFunctions::Play(RIFT_TOUR_CUDDLE_PLAYER);
+						}
+
+						SameLine(0.0f, 18.0f);
+						if (Button(XOR("Start Rift Tour Storm King")))
+						{
+							UFunctions::Play(RIFT_TOUR_STORMKING_PLAYER);
+						}
+
+						SameLine(0.0f, 17.0f);
+						if (Button(XOR("Start Rift Tour Clouds")))
+						{
+							UFunctions::Play(RIFT_TOUR_CLOUDS_PLAYER);
+						}
+
+						NewLine();
+
+						if (Button(XOR("Start Rift Tour Stairs")))
+						{
+							UFunctions::Play(RIFT_TOUR_STAIRS_PLAYER);
+						}
+
+						SameLine(0.0f, 16.0f);
+						if (Button(XOR("Start Rift Tour Positions")))
+						{
+							UFunctions::Play(RIFT_TOUR_POSITIONS_PLAYER);
+						}
+
+						NewLine();
+						
 						//Puts you back to the lobby, get destroyed kid
 						if (Button(XOR("Lobby")))
 						{
@@ -192,11 +220,28 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 							gNeoniteLogoTexture = nullptr;
 						}
 
+						/*
+						NewLine();
+
+						InputText(XOR("Map"), Travel, sizeof Travel);
+
+						SameLine();
+
+						if (Button("Travel"))
+						{
+							std::string TravelS(Travel);
+							std::wstring TravelW(TravelS.begin(), TravelS.end());
+							//Console::ExecuteConsoleCommand(coammndW.c_str());
+							Start(TravelW.c_str());
+						}
+						*/
+
+
+
 						static float X = 1.0f;
 						static float Y = 1.0f;
 						static float Z = 1.0f;
 
-						NewLine();
 
 						BeginChild(XOR("BugItGo"));
 						PushItemWidth(60);
@@ -218,24 +263,6 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						{
 							NeoPlayer.TeleportTo(FVector(X, Y, Z));
 						}
-
-						/*
-						NewLine();
-
-						InputText(XOR("Map"), Travel, sizeof Travel);
-
-						SameLine();
-
-						if (Button("Travel"))
-						{
-							std::string TravelS(Travel);
-							std::wstring TravelW(TravelS.begin(), TravelS.end());
-							//Console::ExecuteConsoleCommand(coammndW.c_str());
-							Start(TravelW.c_str());
-						}
-						*/
-
-
 
 						/*NewLine();
 
@@ -492,9 +519,29 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						
 						
 						*/
-						if (Button("demospeed 1"))
+						if (Button("Cuddle Map"))
 						{
-							strcpy(command, "demospeed 1");
+							strcpy(command, "open Buffet_Part5?game=/Script/FortniteGame.FortGameModeBase");
+						}
+
+						if (Button("Storm King Map"))
+						{
+							strcpy(command, "open Buffet_Part_6?game=/Script/FortniteGame.FortGameModeBase");
+						}
+
+						if (Button("Stairs Map"))
+						{
+							strcpy(command, "open Buffet_Escher?game=/Script/FortniteGame.FortGameModeBase");
+						}
+
+						if (Button("Positions Map"))
+						{
+							strcpy(command, "open Buffet_Shard?game=/Script/FortniteGame.FortGameModeBase");
+						}
+
+						if (Button("Clouds Map"))
+						{
+							strcpy(command, "open Buffet_Cloud?game=/Script/FortniteGame.FortGameModeBase");
 						}
 						
 						if (Button("TestPawn"))
