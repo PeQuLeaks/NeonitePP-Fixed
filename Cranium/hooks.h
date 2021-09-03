@@ -135,19 +135,14 @@ namespace Hooks
 		std::wstring map;
 		printf("\n\n\n\nPlease enter the map name you want to open: \n\n\n\n");
 		getline(std::wcin, map);
-		//std::string map = "apollo_terrain?game=/script/engine.gamemodebase";
+
+		//Start(map.c_str());
+		auto Map = APOLLO_TERRAIN_BASE;
+
 		Start(map.c_str());
-		//printf(XOR("\n[NeoRoyale] Init!\n"));
-		//Sleep(3000);
-		//printf(XOR("\n[NeoRoyale] Init!\n"));
-		//Init();
-		//Sleep(4000);
-		//UFunctions::StartMatch;
-		//Sleep(3000);
+		//gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab"));
+		
 
-
-		//NeoPlayer.Respawn();
-		//UFunctions::Travel(map.c_str());
 
 		return true;
 	}

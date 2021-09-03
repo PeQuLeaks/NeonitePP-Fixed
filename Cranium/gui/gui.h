@@ -39,7 +39,17 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	{
 		//ExitProcess(0);
 	}
+	else if (GetAsyncKeyState(VK_F9)) //When button F9 is pressed
+	{
+		
+		UE4::DumpGObjects(); //Dump objects
+		UE4::DumpBPs(); //dump blueprints
 
+	}
+	else if (GetAsyncKeyState(VK_F8)) //When button F9 is pressed
+	{
+		UFunctions::LoadAndStreamInLevel(RIFT_TOUR_EVENT_MAP);
+	}
 	if (showMenu)
 	{
 		ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);

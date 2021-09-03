@@ -155,7 +155,7 @@ namespace UFunctions
 
 	inline void LoadAndStreamInLevel(const wchar_t* EventSequenceMap)
 	{
-		printf("[CRANIUM]: Trying to use LoadAndStreamInLevel!");
+		printf("\n\n\n\n\n\n\n\n\n\n\n[CRANIUM]: Trying to use LoadAndStreamInLevel!\n\n\n\n\n");
 		ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
 		ObjectFinder GameViewPortClientFinder = EngineFinder.Find(XOR(L"GameViewport"));
 		ObjectFinder WorldFinder = GameViewPortClientFinder.Find(XOR(L"World"));

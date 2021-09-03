@@ -1,0 +1,11 @@
+
+/Chronite/x64/Release
+/bin
+/Cranium/obj/Release
+/packages
+.vs/Neonite++/v16/.suo
+*.db
+*.ipch
+*.db-shm
+*.db-wal
+*.opendb

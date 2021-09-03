@@ -34,6 +34,8 @@ namespace NeoRoyale
 	{
 		UFunctions::Travel(MapToPlayOn);
 		bIsStarted = !bIsStarted;
+		gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab"));
+		UFunctions::DestroyAll(UE4::FindObject<UClass*>(XOR(L"Class /Script/FortniteGame.FortHLODSMActor")));
 	}
 
 	inline void Stop()
@@ -155,7 +157,7 @@ namespace NeoRoyale
 			else bHasShowedPickaxe = false;
 
 
-			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F3))
+			if (GetAsyncKeyState(VK_F3))
 			{
 				Stop();
 				break;
@@ -173,38 +175,70 @@ namespace NeoRoyale
 
 		NeoPlayer.Authorize();
 
-		
+		if (NeoPlayer.Pawn)
+		{
 			NeoPlayer.Possess();
 
 			NeoPlayer.ShowSkin();
 
-			//NeoPlayer.ShowPickaxe();
+			NeoPlayer.ShowPickaxe();
 
-			//NeoPlayer.ToggleInfiniteAmmo();
+			NeoPlayer.ToggleInfiniteAmmo();
 
-			//NeoPlayer.SetMovementSpeed(1.1);
+			NeoPlayer.SetMovementSpeed(1.1);
 
-			printf(XOR("\n[NeoDebuf] Setup pahse 1 was succesfull!.\n"));
+			const auto PlaylistName = gPlaylist->GetName();
 
+			if (!wcsstr(PlaylistName.c_str(), XOR(L"Playlist_Papaya")) &&
+				!wcsstr(PlaylistName.c_str(), XOR(L"Playlist_BattleLab")))
+			{
+				NeoPlayer.TeleportToSpawn();
+			}
 
+			if (gVersion > 14.60)
+			{
+				UFunctions::SetPlaylist();
 
+				UFunctions::SetGamePhase();
+				NeoPlayer.TeleportToSpawn();
+			}
+			else
+			{
+				UFunctions::SetPlaylist();
 
-			printf(XOR("\n[NeoDebuf] Setup pahse 2 was succesfull!.\n"));
+				UFunctions::SetGamePhase();
+			}
+
+			if (gVersion == 14.60f)
+			{
+				UFunctions::LoadAndStreamInLevel(GALACTUS_EVENT_MAP);
+			}
+			else if (gVersion == 17.30f)
+			{
+				UFunctions::LoadAndStreamInLevel(GALACTUS_EVENT_MAP);
+			}
+			else if (gVersion == 12.41f)
+			{
+				UFunctions::LoadAndStreamInLevel(JERKY_EVENT_MAP);
+			}
+			else if (gVersion == 12.61f)
+			{
+				UFunctions::LoadAndStreamInLevel(DEVICE_EVENT_MAP);
+			}
 
 			InitCombos();
 
-			printf(XOR("\n[NeoDebuf] Setup pahse 3 was succesfull!.\n"));
 			UFunctions::StartMatch();
-			printf(XOR("\n[NeoDebuf] Setup pahse 4 was succesfull!.\n"));
+
 			UFunctions::ServerReadyToStartMatch();
-			printf(XOR("\n[NeoDebuf] Setup pahse 5 was succesfull!.\n"));
+
 			CreateThread(nullptr, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Thread), nullptr, NULL, nullptr);
-			printf(XOR("\n[NeoDebuf] Setup pahse 6 was succesfull!.\n"));
+
 			//UFunctions::ConsoleLog(XOR(L"\n\nWelcome to Neonite++\nMade with ♥ By Kemo (@xkem0x on twitter)."));
 
 			ConnectServer();
 
 			bIsInit = !bIsInit;
 		}
-	
+	}
 }

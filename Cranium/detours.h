@@ -25,7 +25,7 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 	auto nFunc = pFunc->GetName();
 
 
-	/*
+	
 		if (gUrl.find(XOR("matchmakingservice")) != std::string::npos)
 		{
 			printf(XOR("\n\n[NeoRoyale] Start!"));
@@ -45,7 +45,14 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		if (wcsstr(nFunc.c_str(), XOR(L"ReadyToStartMatch")) && bIsStarted && !bIsInit)
 		{
 			printf(XOR("\n[NeoRoyale] Init!\n"));
-			Init();
+			//Init();
+			UFunctions::DestroyAll(UE4::FindObject<UClass*>(XOR(L"Class /Script/FortniteGame.FortHLODSMActor")));
+			//UFunctions::LoadAndStreamInLevel(RIFT_TOUR_EVENT_MAP);
+			//UFunctions::LoadAndStreamInLevel(RIFT_TOUR_CUDDLE_MAP);
+			//UFunctions::LoadAndStreamInLevel(RIFT_TOUR_STORMKING_MAP);
+			//UFunctions::LoadAndStreamInLevel(RIFT_TOUR_STAIRS_MAP);
+			//UFunctions::LoadAndStreamInLevel(RIFT_TOUR_POSITIONS_MAP);
+			//UFunctions::LoadAndStreamInLevel(RIFT_TOUR_CLOUDS_MAP);
 		}
 
 		if (wcsstr(nFunc.c_str(), XOR(L"DynamicHandleLoadingScreenVisibilityChanged")))
@@ -62,9 +69,9 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 			}
 
 			//UFunctions::PlayCustomPlayPhaseAlert();
-			//LoadMoreClasses();
+			LoadMoreClasses();
 		}
-		*/
+		
 
 
 		// NOTE: (irma) This is better.
