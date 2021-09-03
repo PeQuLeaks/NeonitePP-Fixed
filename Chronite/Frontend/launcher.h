@@ -3,7 +3,6 @@
 #include "util.h"
 #include "GUI/gui.h"
 
-
 inline HANDLE hLauncher = INVALID_HANDLE_VALUE;
 inline HANDLE hFortniteLauncher = INVALID_HANDLE_VALUE;
 inline HANDLE hEAC = INVALID_HANDLE_VALUE;
@@ -85,64 +84,73 @@ namespace launcher
 				" -AUTH_LOGIN=unused AUTH_TYPE=exchangecode -epicapp=Fortnite -epicenv=Prod-nobe -fromfl=eac -fltoken=3db3ba5dcbd2e16703f3978d -epicportal -epiclocale=en-us -AUTH_PASSWORD="
 				<< exchange;
 		}
-		std::string s = oss.str();
-		char* args = new char[s.length() + 1];
-		std::copy(s.c_str(), s.c_str() + s.length() + 1, args);
+		std::string dllSslPath = util::GetEXEPath() + "\\PlataniumV2.dll";
+		std::ifstream file(dllSslPath);
 
-		hEAC = util::startup(szEACFile.c_str(), args);
-		util::suspend(hEAC);
-
-		hFortniteLauncher = util::startup(szLauncherFile.c_str(), args);
-		util::suspend(hFortniteLauncher);
-
-		hClient = util::startup(szClientFile.c_str(), args);
-
-		if (hClient && hClient != INVALID_HANDLE_VALUE)
-		{
-			console.AddLog("[+] Fortnite was launched.");
-
-			//prevent mapping the dll too fast
-			while (pid == 0)
-			{
-				pid = util::GetProcId("FortniteClient-Win64-Shipping.exe");
-			}
-
-			std::string dllPath = util::GetEXEPath() + "\\Cranium.dll";
-			std::string dllSslPath = util::GetEXEPath() + "\\PlataniumV2.dll";
-
-			console.AddLog("[+] Trying to inject PlataniumV2.");
-			if (ManualMap(hClient, dllSslPath.c_str()))
-			{
-				//CloseHandle(hClient);
-				console.AddLog("[+] Injected PlataniumV2.");
-				console.AddLog("[+] Injecting Cranium.");
-				console.AddLog("[=] Ultimate FLEX.");
-
-				if (!ManualMap(hClient, dllPath.c_str())) {
-					console.AddLog("[x] Something went wrong when trying to inject Cranium!");
-					console.AddLog("[x] Trying to continue anyways.");
-
-				}
-			}
-			else {
-				console.AddLog("[x] Something went wrong while injecting PlataniumV2.");
-				console.AddLog("[x] Trying to close the game.");
-				CloseHandle(hClient);
-			}
-
-			while (true)
-			{
-				if (WaitForSingleObject(hClient, 10) != WAIT_TIMEOUT) break;
-			}
-			util::resume(hEAC);
-			util::resume(hFortniteLauncher);
-			TerminateProcess(hEAC, 1);
-			TerminateProcess(hFortniteLauncher, 1);
-			TerminateProcess(hLauncher, 1);
-			hEAC = INVALID_HANDLE_VALUE;
+		if (!file) {
+			console.AddLog("[x] Unable to find PlataniumV2.");
 			hLauncher = INVALID_HANDLE_VALUE;
-			hFortniteLauncher = INVALID_HANDLE_VALUE;
-			hClient = INVALID_HANDLE_VALUE;
+		}
+		else
+		{
+			std::string s = oss.str();
+			char* args = new char[s.length() + 1];
+			std::copy(s.c_str(), s.c_str() + s.length() + 1, args);
+
+			hEAC = util::startup(szEACFile.c_str(), args);
+			util::suspend(hEAC);
+
+			hFortniteLauncher = util::startup(szLauncherFile.c_str(), args);
+			util::suspend(hFortniteLauncher);
+
+			hClient = util::startup(szClientFile.c_str(), args);
+
+			if (hClient && hClient != INVALID_HANDLE_VALUE)
+			{
+				console.AddLog("[+] Fortnite was launched.");
+
+				//prevent mapping the dll too fast
+				while (pid == 0)
+				{
+					pid = util::GetProcId("FortniteClient-Win64-Shipping.exe");
+				}
+
+				std::string dllPath = util::GetEXEPath() + "\\Cranium.dll";
+
+				console.AddLog("[+] Trying to inject PlataniumV2.");
+				if (ManualMap(hClient, dllSslPath.c_str()))
+				{
+
+					console.AddLog("[+] Injected PlataniumV2.");
+					console.AddLog("[+] Injecting Cranium.");
+					console.AddLog("[=] Ultimate FLEX.");
+
+					if (!ManualMap(hClient, dllPath.c_str())) {
+						console.AddLog("[x] Something went wrong when trying to inject Cranium!");
+						console.AddLog("[x] Trying to continue anyways.");
+					}
+				}
+				else {
+					console.AddLog("[x] Something went wrong while injecting PlataniumV2.");
+					console.AddLog("[x] Trying to close the game.");
+					TerminateProcess(hEAC, 1);
+					TerminateProcess(hFortniteLauncher, 1);
+					TerminateProcess(hClient, 1);
+				}
+				while (true)
+				{
+					if (WaitForSingleObject(hClient, 10) != WAIT_TIMEOUT) break;
+				}
+				util::resume(hEAC);
+				util::resume(hFortniteLauncher);
+				TerminateProcess(hEAC, 1);
+				TerminateProcess(hFortniteLauncher, 1);
+				TerminateProcess(hLauncher, 1);
+				hEAC = INVALID_HANDLE_VALUE;
+				hLauncher = INVALID_HANDLE_VALUE;
+				hFortniteLauncher = INVALID_HANDLE_VALUE;
+				hClient = INVALID_HANDLE_VALUE;
+			}
 		}
 	}
 	inline void AuroraRuntime()
@@ -219,64 +227,75 @@ namespace launcher
 				" -AUTH_LOGIN=unused AUTH_TYPE=exchangecode -epicapp=Fortnite -epicenv=Prod-nobe -fromfl=eac -fltoken=3db3ba5dcbd2e16703f3978d -epicportal -epiclocale=en-us -AUTH_PASSWORD="
 				<< exchange;
 		}
-		std::string s = oss.str();
-		char* args = new char[s.length() + 1];
-		std::copy(s.c_str(), s.c_str() + s.length() + 1, args);
+		std::string dllSslPath = util::GetEXEPath() + "\\Aurora.Runtime.dll";
+		std::ifstream file(dllSslPath);
 
-		hEAC = util::startup(szEACFile.c_str(), args);
-		util::suspend(hEAC);
-
-		hFortniteLauncher = util::startup(szLauncherFile.c_str(), args);
-		util::suspend(hFortniteLauncher);
-
-		hClient = util::startup(szClientFile.c_str(), args);
-
-		if (hClient && hClient != INVALID_HANDLE_VALUE)
-		{
-			console.AddLog("[+] Fortnite was launched.");
-
-			//prevent mapping the dll too fast
-			while (pid == 0)
-			{
-				pid = util::GetProcId("FortniteClient-Win64-Shipping.exe");
-			}
-
-			std::string dllPath = util::GetEXEPath() + "\\Cranium.dll";
-			std::string dllSslPath = util::GetEXEPath() + "\\Aurora.Runtime.dll";
-
-			console.AddLog("[+] Trying to inject Aurora.Runtime.");
-			if (ManualMap(hClient, dllSslPath.c_str()))
-			{
-				//CloseHandle(hClient);
-				console.AddLog("[+] Injected Aurora.Runtime.");
-				console.AddLog("[+] Injecting Cranium.");
-				console.AddLog("[=] Ultimate FLEX.");
-
-				if (!ManualMap(hClient, dllPath.c_str())) {
-					console.AddLog("[x] Something went wrong when trying to inject Cranium!");
-					console.AddLog("[x] Trying to continue anyways.");
-					//console.AddLog("[x] Ultimate FLEX.");
-				}
-			}
-			else {
-				console.AddLog("[x] Something went wrong while injecting Aurora.Runtime.");
-				console.AddLog("[x] Trying to close the game.");
-				CloseHandle(hClient);
-			}
-
-			while (true)
-			{
-				if (WaitForSingleObject(hClient, 10) != WAIT_TIMEOUT) break;
-			}
-			util::resume(hEAC);
-			util::resume(hFortniteLauncher);
-			TerminateProcess(hEAC, 1);
-			TerminateProcess(hFortniteLauncher, 1);
-			TerminateProcess(hLauncher, 1);
-			hEAC = INVALID_HANDLE_VALUE;
+		if (!file) {
+			console.AddLog("[x] Unable to find Aurora.Runtime.");
 			hLauncher = INVALID_HANDLE_VALUE;
-			hFortniteLauncher = INVALID_HANDLE_VALUE;
-			hClient = INVALID_HANDLE_VALUE;
+		}
+		else
+		{
+			std::string s = oss.str();
+			char* args = new char[s.length() + 1];
+			std::copy(s.c_str(), s.c_str() + s.length() + 1, args);
+
+			hEAC = util::startup(szEACFile.c_str(), args);
+			util::suspend(hEAC);
+
+			hFortniteLauncher = util::startup(szLauncherFile.c_str(), args);
+			util::suspend(hFortniteLauncher);
+
+			hClient = util::startup(szClientFile.c_str(), args);
+
+			if (hClient && hClient != INVALID_HANDLE_VALUE)
+			{
+				console.AddLog("[+] Fortnite was launched.");
+
+				//prevent mapping the dll too fast
+				while (pid == 0)
+				{
+					pid = util::GetProcId("FortniteClient-Win64-Shipping.exe");
+				}
+
+				std::string dllPath = util::GetEXEPath() + "\\Cranium.dll";
+
+				console.AddLog("[+] Trying to inject Aurora.Runtime.");
+				if (ManualMap(hClient, dllSslPath.c_str()))
+				{
+					//CloseHandle(hClient);
+					console.AddLog("[+] Injected Aurora.Runtime.");
+					console.AddLog("[+] Injecting Cranium.");
+					console.AddLog("[=] Ultimate FLEX.");
+
+					if (!ManualMap(hClient, dllPath.c_str())) {
+						console.AddLog("[x] Something went wrong when trying to inject Cranium!");
+						console.AddLog("[x] Trying to continue anyways.");
+						
+					}
+				}
+				else {
+					console.AddLog("[x] Something went wrong while injecting Aurora.Runtime.");
+					console.AddLog("[x] Trying to close the game.");
+					TerminateProcess(hEAC, 1);
+					TerminateProcess(hFortniteLauncher, 1);
+					TerminateProcess(hClient, 1);
+				}
+
+				while (true)
+				{
+					if (WaitForSingleObject(hClient, 10) != WAIT_TIMEOUT) break;
+				}
+				util::resume(hEAC);
+				util::resume(hFortniteLauncher);
+				TerminateProcess(hEAC, 1);
+				TerminateProcess(hFortniteLauncher, 1);
+				TerminateProcess(hLauncher, 1);
+				hEAC = INVALID_HANDLE_VALUE;
+				hLauncher = INVALID_HANDLE_VALUE;
+				hFortniteLauncher = INVALID_HANDLE_VALUE;
+				hClient = INVALID_HANDLE_VALUE;
+			}
 		}
 	}
 	inline void CraniumOnly()
@@ -353,54 +372,62 @@ namespace launcher
 				" -AUTH_LOGIN=unused AUTH_TYPE=exchangecode -epicapp=Fortnite -epicenv=Prod-nobe -fromfl=eac -fltoken=3db3ba5dcbd2e16703f3978d -epicportal -epiclocale=en-us -AUTH_PASSWORD="
 				<< exchange;
 		}
-		std::string s = oss.str();
-		char* args = new char[s.length() + 1];
-		std::copy(s.c_str(), s.c_str() + s.length() + 1, args);
+		std::string dllPath = util::GetEXEPath() + "\\Cranium.dll";
+		std::ifstream file(dllPath);
 
-		hEAC = util::startup(szEACFile.c_str(), args);
-		util::suspend(hEAC);
-
-		hFortniteLauncher = util::startup(szLauncherFile.c_str(), args);
-		util::suspend(hFortniteLauncher);
-
-		hClient = util::startup(szClientFile.c_str(), args);
-
-		if (hClient && hClient != INVALID_HANDLE_VALUE)
-		{
-			console.AddLog("[+] Fortnite was launched.");
-
-			//prevent mapping the dll too fast
-			while (pid == 0)
-			{
-				pid = util::GetProcId("FortniteClient-Win64-Shipping.exe");
-			}
-
-			std::string dllPath = util::GetEXEPath() + "\\Cranium.dll";
-			//std::string dllSslPath = util::GetEXEPath() + "\\SSLLocal.dll";
-
-			console.AddLog("[+] Trying to inject Cranium.");
-
-			if (!ManualMap(hClient, dllPath.c_str())) {
-				console.AddLog("[x] Something went wrong when trying to inject Cranium!");
-				//console.AddLog("[+] Something went wrong while injecting PlataniumV2.");
-				console.AddLog("[x] Trying to close the game.");
-				CloseHandle(hClient);
-			}
-
-
-			while (true)
-			{
-				if (WaitForSingleObject(hClient, 10) != WAIT_TIMEOUT) break;
-			}
-			util::resume(hEAC);
-			util::resume(hFortniteLauncher);
-			TerminateProcess(hEAC, 1);
-			TerminateProcess(hFortniteLauncher, 1);
-			TerminateProcess(hLauncher, 1);
-			hEAC = INVALID_HANDLE_VALUE;
+		if (!file) {
+			console.AddLog("[x] Unable to find Cranium.");
 			hLauncher = INVALID_HANDLE_VALUE;
-			hFortniteLauncher = INVALID_HANDLE_VALUE;
-			hClient = INVALID_HANDLE_VALUE;
+		}
+		else
+		{
+			std::string s = oss.str();
+			char* args = new char[s.length() + 1];
+			std::copy(s.c_str(), s.c_str() + s.length() + 1, args);
+
+			hEAC = util::startup(szEACFile.c_str(), args);
+			util::suspend(hEAC);
+
+			hFortniteLauncher = util::startup(szLauncherFile.c_str(), args);
+			util::suspend(hFortniteLauncher);
+
+			hClient = util::startup(szClientFile.c_str(), args);
+
+			if (hClient && hClient != INVALID_HANDLE_VALUE)
+			{
+				console.AddLog("[+] Fortnite was launched.");
+
+				//prevent mapping the dll too fast
+				while (pid == 0)
+				{
+					pid = util::GetProcId("FortniteClient-Win64-Shipping.exe");
+				}
+
+				console.AddLog("[+] Trying to inject Cranium.");
+
+				if (!ManualMap(hClient, dllPath.c_str())) {
+					console.AddLog("[x] Something went wrong when trying to inject Cranium!");
+					console.AddLog("[x] Trying to close the game.");
+					TerminateProcess(hEAC, 1);
+					TerminateProcess(hFortniteLauncher, 1);
+					TerminateProcess(hClient, 1);
+				}
+
+
+				while (true)
+				{
+					if (WaitForSingleObject(hClient, 10) != WAIT_TIMEOUT) break;
+				}
+				util::resume(hEAC);
+				util::resume(hFortniteLauncher);
+				TerminateProcess(hEAC, 1);
+				TerminateProcess(hFortniteLauncher, 1);
+				TerminateProcess(hLauncher, 1);
+				hEAC = INVALID_HANDLE_VALUE;
+				hLauncher = INVALID_HANDLE_VALUE;
+				hFortniteLauncher = INVALID_HANDLE_VALUE;
+				hClient = INVALID_HANDLE_VALUE;
+			}
 		}
 	}
 }
