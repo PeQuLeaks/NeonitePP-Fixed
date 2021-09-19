@@ -9,6 +9,7 @@
 #include "mods.h"
 #include "server.h"
 
+
 inline std::vector<std::wstring> gWeapons;
 inline std::vector<std::wstring> gBlueprints;
 inline std::vector<std::wstring> gMeshes;
@@ -34,8 +35,6 @@ namespace NeoRoyale
 	{
 		UFunctions::Travel(MapToPlayOn);
 		bIsStarted = !bIsStarted;
-		gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab"));
-		UFunctions::DestroyAll(UE4::FindObject<UClass*>(XOR(L"Class /Script/FortniteGame.FortHLODSMActor")));
 	}
 
 	inline void Stop()
@@ -77,87 +76,11 @@ namespace NeoRoyale
 		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Spooky.PP_Spooky_C"));
 	}
 
-	inline void InitCombos()
-	{
-		for (auto i = 0x0; i < GObjs->NumElements; ++i)
-		{
-			auto object = GObjs->GetByIndex(i);
-			if (object == nullptr)
-			{
-				continue;
-			}
-
-			if (!Util::IsBadReadPtr(object))
-			{
-				auto objectFullName = object->GetFullName();
-				auto objectFirstName = object->GetName();
-
-				if ((objectFullName.starts_with(L"AthenaGadget") || objectFirstName.starts_with(L"WID_")) && !objectFirstName.starts_with(L"Default__"))
-				{
-					gWeapons.push_back(objectFirstName);
-				}
-				else if (objectFirstName.ends_with(L"_C") && !objectFirstName.starts_with(L"Default__"))
-				{
-					gBlueprints.push_back(objectFirstName);
-				}
-				else if (objectFullName.starts_with(L"SkeletalMesh ") && !objectFirstName.starts_with(L"Default__"))
-				{
-					gMeshes.push_back(objectFirstName);
-				}
-			}
-		}
-	}
-
 	inline void Thread()
 	{
-		//NOTE (kemo): i know this isn't the best practice but it does the job on another thread so it's not a frezzing call
 		while (true)
 		{
-			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_SPACE))
-			{
-				if (!bHasJumped)
-				{
-					bHasJumped = !bHasJumped;
-					if (!NeoPlayer.IsInAircraft())
-					{
-						if (NeoPlayer.IsSkydiving() && !NeoPlayer.IsParachuteOpen() && !NeoPlayer.IsParachuteForcedOpen())
-						{
-							bWantsToOpenGlider = true;
-						}
-
-
-						else if (NeoPlayer.IsSkydiving() && NeoPlayer.IsParachuteOpen() && !NeoPlayer.IsParachuteForcedOpen())
-						{
-							bWantsToSkydive = true;
-						}
-
-
-						else if (!NeoPlayer.IsJumpProvidingForce())
-						{
-							bWantsToJump = true;
-						}
-					}
-				}
-			}
-			else bHasJumped = false;
-
-
-			if (NeoPlayer.Pawn && GetAsyncKeyState(0x31) /* 1 key */)
-			{
-				if (!NeoPlayer.IsInAircraft())
-				{
-					if (!bHasShowedPickaxe)
-					{
-						bHasShowedPickaxe = !bHasShowedPickaxe;
-						NeoPlayer.StopMontageIfEmote();
-						bWantsToShowPickaxe = true;
-					}
-				}
-			}
-			else bHasShowedPickaxe = false;
-
-
-			if (GetAsyncKeyState(VK_F3))
+			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F3))
 			{
 				Stop();
 				break;
@@ -172,8 +95,9 @@ namespace NeoRoyale
 		UFunctions::DestroyAll(UE4::FindObject<UClass*>(XOR(L"Class /Script/FortniteGame.FortHLODSMActor")));
 
 		NeoPlayer.Pawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
-
+		printf("hello\n\n\n\n");
 		NeoPlayer.Authorize();
+		printf("hi\n\n\n\n");
 
 		if (NeoPlayer.Pawn)
 		{
@@ -181,52 +105,19 @@ namespace NeoRoyale
 
 			NeoPlayer.ShowSkin();
 
-			NeoPlayer.ShowPickaxe();
+			//NeoPlayer.ShowPickaxe();
 
-			NeoPlayer.ToggleInfiniteAmmo();
+			//NeoPlayer.ToggleInfiniteAmmo();
+
+			//NeoPlayer.SkinOverride = L"Test";
+
+			//NeoPlayer.ApplyOverride();
 
 			NeoPlayer.SetMovementSpeed(1.1);
 
-			const auto PlaylistName = gPlaylist->GetName();
+			UFunctions::SetPlaylist();
 
-			if (!wcsstr(PlaylistName.c_str(), XOR(L"Playlist_Papaya")) &&
-				!wcsstr(PlaylistName.c_str(), XOR(L"Playlist_BattleLab")))
-			{
-				NeoPlayer.TeleportToSpawn();
-			}
-
-			if (gVersion > 14.60)
-			{
-				UFunctions::SetPlaylist();
-
-				UFunctions::SetGamePhase();
-				NeoPlayer.TeleportToSpawn();
-			}
-			else
-			{
-				UFunctions::SetPlaylist();
-
-				UFunctions::SetGamePhase();
-			}
-
-			if (gVersion == 14.60f)
-			{
-				UFunctions::LoadAndStreamInLevel(GALACTUS_EVENT_MAP);
-			}
-			else if (gVersion == 17.30f)
-			{
-				UFunctions::LoadAndStreamInLevel(GALACTUS_EVENT_MAP);
-			}
-			else if (gVersion == 12.41f)
-			{
-				UFunctions::LoadAndStreamInLevel(JERKY_EVENT_MAP);
-			}
-			else if (gVersion == 12.61f)
-			{
-				UFunctions::LoadAndStreamInLevel(DEVICE_EVENT_MAP);
-			}
-
-			InitCombos();
+			UFunctions::SetGamePhase();
 
 			UFunctions::StartMatch();
 
@@ -235,6 +126,11 @@ namespace NeoRoyale
 			CreateThread(nullptr, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Thread), nullptr, NULL, nullptr);
 
 			//UFunctions::ConsoleLog(XOR(L"\n\nWelcome to Neonite++\nMade with ♥ By Kemo (@xkem0x on twitter)."));
+
+			//NeoPlayer.EquipWeapon(L"WID_Pistol_SixShooter_Athena_R_Ore_T03");
+
+
+			//UE4::DumpGObjects();
 
 			ConnectServer();
 

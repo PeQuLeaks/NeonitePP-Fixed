@@ -8,7 +8,7 @@
 
 inline void* (*ProcessEvent)(void*, void*, void*);
 inline UObject* (*SpawnActor)(UObject* UWorld, UClass* Class, FTransform const* UserTransformPtr,
-                              const FActorSpawnParameters& SpawnParameters);
+	const FActorSpawnParameters& SpawnParameters);
 inline void (*GetFullName)(FField* Obj, FString& ResultString, const UObject* StopOuter, EObjectFullNameFlags Flags);
 inline GObjects* GObjs;
 inline UEngine* GEngine;
@@ -23,7 +23,7 @@ inline UObject* (*StaticConstructObject)(
 	bool bCopyTransientsFromClassDefaults,
 	void* InstanceGraph,
 	bool bAssumeTemplateIsArchetype
-);
+	);
 
 inline UObject* (*StaticLoadObject)(
 	UClass* ObjectClass,
@@ -34,7 +34,7 @@ inline UObject* (*StaticLoadObject)(
 	void* Sandbox,
 	bool bAllowObjectReconciliation,
 	void* InstancingContext
-);
+	);
 
 inline UObject* KismetRenderingLibrary;
 inline UObject* KismetStringLibrary;
@@ -51,41 +51,7 @@ namespace UE4
 	inline void Free(void* buffer)
 	{
 		//FreeInternal(buffer);
-		//https://en.cppreference.com/w/cpp/memory/c/free
-		std::free(buffer); //assuming cstdlib is included 
-	}
-
-	//The same as above but for FFields.
-	inline std::wstring GetFirstName(FField* object)
-	{
-		FString s;
-		GetFullName(object, s, nullptr, EObjectFullNameFlags::None);
-		std::wstring objectNameW = s.ToWString();
-
-		std::wstring token;
-		while (token != objectNameW)
-		{
-			token = objectNameW.substr(0, objectNameW.find_first_of(L":"));
-			objectNameW = objectNameW.substr(objectNameW.find_first_of(L":") + 1);
-		}
-
-		Free((void*)s.ToWString());
-
-		return objectNameW;
-	}
-
-
-	//Returns FField's type.
-	inline std::wstring GetFieldClassName(FField* obj)
-	{
-		FString s;
-		GetFullName(obj, s, nullptr, EObjectFullNameFlags::None);
-		const std::wstring objectName = s.ToWString();
-		auto className = Util::sSplit(objectName, L" ");
-
-		Free((void*)s.ToWString());
-
-		return className;
+		std::free(buffer);
 	}
 
 	//Find any entity inside the UGlobalObjects array aka. GObjects.
@@ -105,7 +71,7 @@ namespace UE4
 			if (to_lower)
 			{
 				std::transform(objectFullName.begin(), objectFullName.end(), objectFullName.begin(),
-				               [](const unsigned char c) { return std::tolower(c); });
+					[](const unsigned char c) { return std::tolower(c); });
 			}
 
 			if (!ends_with)

@@ -55,7 +55,7 @@ void WINAPI dllMain()
 		//}
 		 if (GetAsyncKeyState(VK_F3))
 		{
-			if (Hooks::Misc(17.50f))
+			if (Hooks::Misc(99.99f))
 			{
 				ImguiThread();
 				break;
