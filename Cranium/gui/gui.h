@@ -41,9 +41,12 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	}
 	else if (GetAsyncKeyState(VK_F9)) //When button F9 is pressed
 	{
-		
-		UE4::DumpGObjects(); //Dump objects
-		UE4::DumpBPs(); //dump blueprints
+
+		auto Map = APOLLO_TERRAIN;
+
+		gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab"));
+		Start(Map);
+
 
 	}
 	else if (GetAsyncKeyState(VK_F8)) //When button F9 is pressed
@@ -214,7 +217,7 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						}
 
 						NewLine();
-						
+
 						//Puts you back to the lobby, get destroyed kid
 						if (Button(XOR("Lobby")))
 						{
@@ -336,7 +339,7 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 							NeoPlayer.SetCameraMode(L"FirstPerson");
 							NeoPlayer.HideHead(true);
 						}
-						
+
 						SameLine();
 
 						if (Button(XOR("Third Person Camera")))
@@ -524,10 +527,10 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						/* test
 						* 		NeoPlayer.Pawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
 								NeoPlayer.Possess();
-						
-						
-						
-						
+
+
+
+
 						*/
 						if (Button("Cuddle Map"))
 						{
@@ -553,7 +556,7 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						{
 							strcpy(command, "open Buffet_Cloud?game=/Script/FortniteGame.FortGameModeBase");
 						}
-						
+
 						if (Button("TestPawn"))
 						{
 							NeoPlayer.Pawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
@@ -591,17 +594,14 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 
 						EndTabItem();
 					}
-				}
 
-				if (!NeoPlayer.Pawn)
-				{
 					if (BeginTabItem(XOR("Override Skin")))
 					{
 						SetCursorPosY(GetCursorPosY() + 5);
 
 						Text(XOR("NOTE: Doesn't work after jumping from bus\n(Recommendation: use battlelab)"));
 
-						const char* overrides[] = {"None", "Thanos", "Chituari"};
+						const char* overrides[] = { "None", "Thanos", "Chituari" };
 						static int Item = 0;
 						static int currentItem = 0;
 						Combo("Skin", &Item, overrides, IM_ARRAYSIZE(overrides));

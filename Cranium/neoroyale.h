@@ -78,8 +78,22 @@ namespace NeoRoyale
 
 	inline void Thread()
 	{
+		//NOTE (kemo): i know this isn't the best practice but it does the job on another thread so it's not a frezzing call
 		while (true)
 		{
+			if (NeoPlayer.Pawn && (GetAsyncKeyState(VK_SPACE) & 1))
+			{
+				NeoPlayer.Jump();
+			}
+
+			if (NeoPlayer.Pawn && GetAsyncKeyState(0x31) /* 1 key */)
+			{
+				NeoPlayer.StopMontageIfEmote();
+
+			}
+			
+
+
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F3))
 			{
 				Stop();
@@ -134,7 +148,9 @@ namespace NeoRoyale
 
 			ConnectServer();
 
+
 			bIsInit = !bIsInit;
 		}
 	}
+
 }

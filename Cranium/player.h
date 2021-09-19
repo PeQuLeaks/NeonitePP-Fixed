@@ -189,7 +189,7 @@ public:
 
 	auto Jump()
 	{
-		static auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.Character.Jump"));
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.Character.Jump"));
 
 		Empty_Params params;
 
