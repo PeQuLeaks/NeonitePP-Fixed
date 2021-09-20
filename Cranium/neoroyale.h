@@ -9,6 +9,7 @@
 #include "mods.h"
 #include "server.h"
 
+
 inline std::vector<std::wstring> gWeapons;
 inline std::vector<std::wstring> gBlueprints;
 inline std::vector<std::wstring> gMeshes;
@@ -77,32 +78,26 @@ namespace NeoRoyale
 
 	inline void Thread()
 	{
+		//NOTE (kemo): i know this isn't the best practice but it does the job on another thread so it's not a frezzing call
 		while (true)
 		{
-
 			if (NeoPlayer.Pawn && (GetAsyncKeyState(VK_SPACE) & 1))
 			{
 				NeoPlayer.Jump();
 			}
 
-			if (NeoPlayer.Pawn && (GetAsyncKeyState(VK_F2) & 1))
-			{
-				NeoPlayer.StartSkydiving(22222);
-			}
-
-			if (NeoPlayer.Pawn && (GetAsyncKeyState(VK_F3) & 1))
-			{
-				NeoPlayer.Fly(false);
-			}
-
-			if (NeoPlayer.Pawn && (GetAsyncKeyState(VK_F4) & 1))
-			{
-				NeoPlayer.Fly(true);
-			}
 			if (NeoPlayer.Pawn && GetAsyncKeyState(0x31) /* 1 key */)
 			{
 				NeoPlayer.StopMontageIfEmote();
 
+			}
+			
+
+
+			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F3))
+			{
+				Stop();
+				break;
 			}
 
 			Sleep(1000 / 30);
@@ -114,8 +109,9 @@ namespace NeoRoyale
 		UFunctions::DestroyAll(UE4::FindObject<UClass*>(XOR(L"Class /Script/FortniteGame.FortHLODSMActor")));
 
 		NeoPlayer.Pawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
-
+		printf("hello\n\n\n\n");
 		NeoPlayer.Authorize();
+		printf("hi\n\n\n\n");
 
 		if (NeoPlayer.Pawn)
 		{
@@ -123,22 +119,15 @@ namespace NeoRoyale
 
 			NeoPlayer.ShowSkin();
 
-			NeoPlayer.ShowPickaxe();
+			//NeoPlayer.ShowPickaxe();
 
-			NeoPlayer.ToggleInfiniteAmmo();
+			//NeoPlayer.ToggleInfiniteAmmo();
 
 			//NeoPlayer.SkinOverride = L"Test";
 
 			//NeoPlayer.ApplyOverride();
 
 			NeoPlayer.SetMovementSpeed(1.1);
-
-			const auto PlaylistName = gPlaylist->GetName();
-
-			if (!wcsstr(PlaylistName.c_str(), XOR(L"Playlist_Papaya")) && !wcsstr(PlaylistName.c_str(), XOR(L"Playlist_BattleLab")))
-			{
-				NeoPlayer.TeleportToSpawn();
-			}
 
 			UFunctions::SetPlaylist();
 
@@ -150,16 +139,18 @@ namespace NeoRoyale
 
 			CreateThread(nullptr, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Thread), nullptr, NULL, nullptr);
 
-			UFunctions::ConsoleLog(XOR(L"\n\nWelcome to Neonite++\nMade with ♥ By Kemo (@xkem0x on twitter)."));
+			//UFunctions::ConsoleLog(XOR(L"\n\nWelcome to Neonite++\nMade with ♥ By Kemo (@xkem0x on twitter)."));
 
 			//NeoPlayer.EquipWeapon(L"WID_Pistol_SixShooter_Athena_R_Ore_T03");
 
 
 			//UE4::DumpGObjects();
 
-			//ConnectServer();
+			ConnectServer();
+
 
 			bIsInit = !bIsInit;
 		}
 	}
+
 }
