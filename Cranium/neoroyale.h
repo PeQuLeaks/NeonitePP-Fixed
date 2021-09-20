@@ -99,6 +99,11 @@ namespace NeoRoyale
 			{
 				NeoPlayer.Fly(true);
 			}
+			if (NeoPlayer.Pawn && GetAsyncKeyState(0x31) /* 1 key */)
+			{
+				NeoPlayer.StopMontageIfEmote();
+
+			}
 
 			Sleep(1000 / 30);
 		}
@@ -124,7 +129,7 @@ namespace NeoRoyale
 
 			//NeoPlayer.SkinOverride = L"Test";
 
-			NeoPlayer.ApplyOverride();
+			//NeoPlayer.ApplyOverride();
 
 			NeoPlayer.SetMovementSpeed(1.1);
 
