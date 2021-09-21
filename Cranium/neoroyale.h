@@ -132,11 +132,6 @@ namespace NeoRoyale
 					bisFlying = true;
 				}
 			}
-			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F7))
-			{
-				NeoPlayer.Fly(true);
-				Sleep(100);
-			}
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F3))
 			{
 				Stop();
