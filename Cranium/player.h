@@ -70,7 +70,6 @@ public:
 				this->Possess();
 				this->ShowSkin();
 				this->ShowPickaxe();
-				this->UpdateAnimInstance();
 			}
 		}
 	}
@@ -109,15 +108,18 @@ public:
 
 	auto StartSkydiving(float height)
 	{
-		static auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawnAthena.TeleportToSkyDive"));
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawnAthena.TeleportToSkyDive"));
 
-		
+		AFortPlayerPawnAthena_TeleportToSkyDive_Params params;
+		params.HeightAboveGround = height;
+
+		ProcessEvent(this->Pawn, fn, &params);
 		printf("\nSkydiving!, Redeploying at %fm.\n", height);
 	}
 
 	auto IsJumpProvidingForce()
 	{
-		static auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.Character.IsJumpProvidingForce"));
+		 auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.Character.IsJumpProvidingForce"));
 
 		ACharacter_IsJumpProvidingForce_Params params;
 
@@ -156,7 +158,7 @@ public:
 
 	auto IsSkydiving()
 	{
-		static auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.IsSkydiving"));
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.IsSkydiving"));
 
 		ACharacter_IsSkydiving_Params params;
 
@@ -167,7 +169,7 @@ public:
 
 	auto IsParachuteOpen()
 	{
-		static auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.IsParachuteOpen"));
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.IsParachuteOpen"));
 
 		ACharacter_IsParachuteOpen_Params params;
 
@@ -178,7 +180,7 @@ public:
 
 	auto IsParachuteForcedOpen()
 	{
-		static auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.IsParachuteForcedOpen"));
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.IsParachuteForcedOpen"));
 
 		ACharacter_IsParachuteForcedOpen_Params params;
 
@@ -282,7 +284,7 @@ public:
 #endif
 
 		auto KismetLib = UE4::FindObject<UObject*>(XOR(L"FortKismetLibrary /Script/FortniteGame.Default__FortKismetLibrary"));
-		static auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortKismetLibrary.ApplyCharacterCosmetics"));
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortKismetLibrary.ApplyCharacterCosmetics"));
 
 		UFortKismetLibrary_ApplyCharacterCosmetics_Params params;
 		params.WorldContextObject = WorldFinder.GetObj();
@@ -328,7 +330,7 @@ public:
 		GUID.C = guid;
 		GUID.D = guid;
 
-		static auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn.EquipWeaponDefinition"));
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn.EquipWeaponDefinition"));
 
 		std::wstring WeaponName = weaponname;
 
@@ -432,7 +434,7 @@ public:
 
 		ObjectFinder CharMovementFinder = PawnFinder.Find(XOR(L"CharacterMovement"));
 
-		static auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.CharacterMovementComponent.SetMovementMode"));
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.CharacterMovementComponent.SetMovementMode"));
 
 		UCharacterMovementComponent_SetMovementMode_Params params;
 
@@ -467,7 +469,7 @@ public:
 
 	auto SetHealth(float SetHealthInput)
 	{
-		static auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn.SetHealth"));
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn.SetHealth"));
 
 		AFortPawn_SetHealth_Params params;
 
@@ -478,7 +480,7 @@ public:
 
 	auto SetShield(float SetShieldInput)
 	{
-		static auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn.SetShield"));
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn.SetShield"));
 
 		AFortPawn_SetShield_Params params;
 
@@ -489,7 +491,7 @@ public:
 
 	auto SetMaxHealth(float SetMaxHealthInput)
 	{
-		static auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn.SetMaxHealth"));
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn.SetMaxHealth"));
 
 		AFortPawn_SetMaxHealth_Params params;
 
@@ -500,7 +502,7 @@ public:
 
 	auto SetMaxShield(float SetMaxShieldInput)
 	{
-		static auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn.SetMaxShield"));
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn.SetMaxShield"));
 
 		AFortPawn_SetMaxShield_Params params;
 
@@ -541,34 +543,34 @@ public:
 
 	auto Skydive()
 	{
-		/*
+
 		if (this->IsSkydiving())
 		{
 			auto fn =UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.EndSkydiving"));
 
 			ProcessEvent(this->Pawn, fn, nullptr);
-		}*/
+		}
 
-		/*auto fn =UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.BeginSkydiving"));
+		auto fn =UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.BeginSkydiving"));
 
 		AFortPlayerPawn_BeginSkydiving_Params params;
 		params.bFromBus = true;
 
-		ProcessEvent(this->Pawn, fn, &params);*/
+		ProcessEvent(this->Pawn, fn, &params);
 
-		this->SetMovementMode(EMovementMode::MOVE_Custom, 4);
+		//this->SetMovementMode(EMovementMode::MOVE_Custom, 4);
 	}
 
 	auto ForceOpenParachute()
 	{
-		/*
+
 		auto fn =UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.BP_ForceOpenParachute"));
 
 		Empty_Params params;
 
 		ProcessEvent(this->Pawn, fn, &params);
-		*/
-		this->SetMovementMode(EMovementMode::MOVE_Custom, 3);
+		
+		
 	}
 
 	auto IsInAircraft()
@@ -578,7 +580,7 @@ public:
 			UpdatePlayerController();
 		}
 
-		static auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController.IsInAircraft"));
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController.IsInAircraft"));
 		ACharacter_IsInAircraft_Params params;
 
 		ProcessEvent(this->Controller, fn, &params);
@@ -609,27 +611,20 @@ public:
 
 	void ShowPickaxe()
 	{
-		if (!this->Controller || Util::IsBadReadPtr(this->Controller))
-		{
-			UpdatePlayerController();
-		}
 
 		auto CosmeticLoadoutPCOffset = ObjectFinder::FindOffset(XOR(L"Class /Script/FortniteGame.FortPlayerController"), XOR(L"CosmeticLoadoutPC"));
 
 		auto CosmeticLoadoutPC = reinterpret_cast<FFortAthenaLoadout*>(reinterpret_cast<uintptr_t>(this->Controller) + CosmeticLoadoutPCOffset);
 
-		if (!Util::IsBadReadPtr(CosmeticLoadoutPC))
-		{
 			auto PickaxeFinder = ObjectFinder::EntryPoint(uintptr_t(CosmeticLoadoutPC->Pickaxe));
 
 			auto WeaponDefFinder = PickaxeFinder.Find(XOR(L"WeaponDefinition"));
 
 			auto Weapon = WeaponDefFinder.GetObj()->GetName();
 
-			this->EquipWeapon(Weapon.c_str());
-
 			printf(XOR("\n[NeoRoyale] Equipped the pickaxe!\n"));
-		}
+			
+			EquipWeapon(Weapon.c_str());
 	}
 
 	enum class EGameplayEffectGrantedAbilityRemovePolicy : uint8_t
@@ -723,13 +718,13 @@ public:
 		//ObjectFinder AbilitySystemComponentFinder = PawnFinder.Find(XOR(L"AbilitySystemComponent"));
 		auto AbilitySystemComponent = *(UObject**)(__int64(this->Pawn) + 0x0CC8);
 
-		static auto GrantedAbilitiesOffset = ObjectFinder::FindOffset(XOR(L"Class /Script/GameplayAbilities.GameplayEffect"), XOR(L"GrantedAbilities"));
-		static auto DurationPolicyOffset = ObjectFinder::FindOffset(XOR(L"Class /Script/GameplayAbilities.GameplayEffect"), XOR(L"DurationPolicy"));
+		auto GrantedAbilitiesOffset = ObjectFinder::FindOffset(XOR(L"Class /Script/GameplayAbilities.GameplayEffect"), XOR(L"GrantedAbilities"));
+		auto DurationPolicyOffset = ObjectFinder::FindOffset(XOR(L"Class /Script/GameplayAbilities.GameplayEffect"), XOR(L"DurationPolicy"));
 
 		//printf("GrantedAbilities: %x\n DurationPolicy: %x\n", GrantedAbilitiesOffset, DurationPolicyOffset);
 		//printf("AbilitySystemComponent: %ls\n", AbilitySystemComponent->GetFullName().c_str());
 
-		static auto DefaultGameplayEffect = UE4::FindObject<UObject*>(L"GE_Athena_PurpleStuff_Health_C /Game/Athena/Items/Consumables/PurpleStuff/GE_Athena_PurpleStuff_Health.Default__GE_Athena_PurpleStuff_Health_C");
+		auto DefaultGameplayEffect = UE4::FindObject<UObject*>(L"GE_Athena_PurpleStuff_Health_C /Game/Athena/Items/Consumables/PurpleStuff/GE_Athena_PurpleStuff_Health.Default__GE_Athena_PurpleStuff_Health_C");
 
 		TArray<struct FGameplayAbilitySpecDef>* GrantedAbilities = reinterpret_cast<TArray<struct FGameplayAbilitySpecDef>*>(__int64(DefaultGameplayEffect) + static_cast<__int64>(GrantedAbilitiesOffset));
 

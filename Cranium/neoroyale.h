@@ -20,6 +20,7 @@ namespace NeoRoyale
 	inline bool bIsInit;
 	inline bool bIsStarted;
 	inline bool bIsPlayerInit;
+	inline bool bisFlying;
 
 	inline bool bHasJumped;
 	inline bool bHasShowedPickaxe;
@@ -53,7 +54,7 @@ namespace NeoRoyale
 
 	inline void LoadMoreClasses()
 	{
-		const auto BPGClass = UE4::FindObject<UClass*>(XOR(L"Class /Script/Engine.BlueprintGeneratedClass"));
+		 auto BPGClass = UE4::FindObject<UClass*>(XOR(L"Class /Script/Engine.BlueprintGeneratedClass"));
 
 		//Mech
 		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Athena/DrivableVehicles/Mech/TestMechVehicle.TestMechVehicle_C"));
@@ -83,17 +84,59 @@ namespace NeoRoyale
 		{
 			if (NeoPlayer.Pawn && (GetAsyncKeyState(VK_SPACE) & 1))
 			{
-				NeoPlayer.Jump();
+				if (NeoPlayer.IsSkydiving() && !NeoPlayer.IsParachuteOpen() && !NeoPlayer.IsParachuteForcedOpen())
+				{
+					NeoPlayer.ForceOpenParachute();
+				}
+
+				else if (NeoPlayer.IsSkydiving() && NeoPlayer.IsParachuteOpen() && !NeoPlayer.IsParachuteForcedOpen())
+				{
+					NeoPlayer.Skydive();
+				}
+
+				else 
+				{
+					NeoPlayer.Jump();
+				}
+				
 			}
 
 			if (NeoPlayer.Pawn && GetAsyncKeyState(0x31) /* 1 key */)
 			{
+				bHasShowedPickaxe = !bHasShowedPickaxe;
 				NeoPlayer.StopMontageIfEmote();
+				bWantsToShowPickaxe = true;
 
 			}
-			
+			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F2))
+			{
+				NeoPlayer.StartSkydiving(22222);
+				Sleep(100);
+			}
 
-
+			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F6))
+			{
+				if (bisFlying == true)
+				{
+					NeoPlayer.Fly(true);// False = fly, True = walk
+					printf("stopped flying");
+					Sleep(1000); //prevent against it spamming and causing the game to crash/lag
+					bisFlying = false;
+					
+				} 
+				else if (bisFlying == false)
+				{
+					NeoPlayer.Fly(false);
+					printf("started flying");
+					Sleep(1000);
+					bisFlying = true;
+				}
+			}
+			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F7))
+			{
+				NeoPlayer.Fly(true);
+				Sleep(100);
+			}
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F3))
 			{
 				Stop();
@@ -107,11 +150,14 @@ namespace NeoRoyale
 	inline void Init()
 	{
 		UFunctions::DestroyAll(UE4::FindObject<UClass*>(XOR(L"Class /Script/FortniteGame.FortHLODSMActor")));
-
 		NeoPlayer.Pawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
-		printf("hello\n\n\n\n");
 		NeoPlayer.Authorize();
-		printf("hi\n\n\n\n");
+
+		const auto PlaylistName = gPlaylist->GetName();
+		if (!wcsstr(PlaylistName.c_str(), XOR(L"Playlist_Papaya")) && !wcsstr(PlaylistName.c_str(), XOR(L"Playlist_BattleLab")))
+		{
+			NeoPlayer.TeleportToSpawn();
+		}
 
 		if (NeoPlayer.Pawn)
 		{
@@ -119,9 +165,9 @@ namespace NeoRoyale
 
 			NeoPlayer.ShowSkin();
 
-			//NeoPlayer.ShowPickaxe();
+			NeoPlayer.ShowPickaxe();
 
-			//NeoPlayer.ToggleInfiniteAmmo();
+			NeoPlayer.ToggleInfiniteAmmo();
 
 			//NeoPlayer.SkinOverride = L"Test";
 
@@ -141,12 +187,8 @@ namespace NeoRoyale
 
 			//UFunctions::ConsoleLog(XOR(L"\n\nWelcome to Neonite++\nMade with ♥ By Kemo (@xkem0x on twitter)."));
 
-			//NeoPlayer.EquipWeapon(L"WID_Pistol_SixShooter_Athena_R_Ore_T03");
-
-
-			//UE4::DumpGObjects();
-
-			ConnectServer();
+			//NeoPlayer.EquipWeapon(L"WID_Athena_FrenchYedoc_JWFriendly");
+			//ConnectServer();
 
 
 			bIsInit = !bIsInit;

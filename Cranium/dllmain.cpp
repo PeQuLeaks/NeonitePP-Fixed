@@ -33,7 +33,7 @@ void WINAPI dllMain()
 	freopen_s(&fDummy, "CONOUT$", "w", stdout);
 	//freopen_s(&fDummy, "ProcessEvent.log", "w", stdout);
 //#endif
-	printf(XOR("[=] Scuffed build for latest, Made by kemo (@xkem0x on twitter) \n"));
+	printf(XOR("[=] Cranium made by Kemo, Sizzy, PeQu and Timmy \n"));
 #endif
 
 #ifdef SSL_BYPASS

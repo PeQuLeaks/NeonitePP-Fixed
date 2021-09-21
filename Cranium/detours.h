@@ -38,6 +38,9 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerLoadingScreenDropped")) && bIsInit && bIsStarted)
 	{
+
+		//NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Sprint"));
+		//NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Jump"));
 		/*auto buffetPawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"Class /Script/BuffetRuntime.BuffetFlyingPawn")));
 
 		MessageBoxW(nullptr, buffetPawn->GetFullName().c_str(), L"Test", MB_OK);
@@ -55,15 +58,43 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 
 		//UFunctions::PlayCustomPlayPhaseAlert();
 		//LoadMoreClasses();
+		//LoadMoreClasses();
+		
 	}
 
+	if (bIsInit)
+	{
+		if (bWantsToJump)
+		{
+			NeoPlayer.Jump();
+			bWantsToJump = false;
+		}
 
+		else if (bWantsToOpenGlider)
+		{
+			NeoPlayer.ForceOpenParachute();
+			bWantsToOpenGlider = false;
+		}
+
+		else if (bWantsToSkydive)
+		{
+			NeoPlayer.Skydive();
+			bWantsToSkydive = false;
+		}
+
+		else if (bWantsToShowPickaxe)
+		{
+			NeoPlayer.ShowPickaxe();
+			bWantsToShowPickaxe = false;
+		}
+	}
 	// NOTE: (irma) This is better.
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerAttemptAircraftJump")))
 	{
 		//Console::ExecuteConsoleCommand(XOR(L"PAUSESAFEZONE"));
-		NeoPlayer.Respawn();
-		NeoPlayer.TeleportTo(NeoPlayer.GetLocation());
+		//NeoPlayer.Respawn();
+		NeoPlayer.StartSkydiving(22222);
+		//NeoPlayer.TeleportTo(NeoPlayer.GetLocation());
 	}
 
 	if (wcsstr(nFunc.c_str(), XOR(L"OnWeaponEquipped")))

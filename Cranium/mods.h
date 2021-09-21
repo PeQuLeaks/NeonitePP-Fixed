@@ -311,9 +311,8 @@ namespace UFunctions
 		ProcessEvent(AGPCW, PlayIntroAnim, &PlayIntroAnimParams);
 	}
 
-	inline void SetupCustomInventory()
+	static void SetupCustomInventory()
 	{
-		printf("CraniumDebug: SetupCustomInventory should not be enabled!!!");
 		if (!gNeoniteLogoTexture || Util::IsBadReadPtr(gNeoniteLogoTexture))
 		{
 			LoadLogoAsTexture();
@@ -335,6 +334,20 @@ namespace UFunctions
 		SetInventoryPanelOverrideParams.InInventoryPanelOverride = Widget;
 
 		ProcessEvent(Hud, fn, &SetInventoryPanelOverrideParams);
+	}
+
+	static void RegionCheck()
+	{
+		auto Qos = UE4::FindObject<UObject*>(XOR(L"QosRegionManager /Engine/Transient.QosRegionManager_"));
+
+		auto RegionDefinitions = *reinterpret_cast<TArray<FQosRegionInfo>*>(reinterpret_cast<uintptr_t>(Qos) + ObjectFinder::FindOffset(XOR(L"Class /Script/Qos.QosRegionManager"), XOR(L"RegionDefinitions")));
+
+		auto RegionId = RegionDefinitions.operator[](0).RegionId.ToString();
+
+		if (!RegionId.starts_with(XOR("NPP")))
+		{
+			//exit(0);
+		}
 	}
 
 }

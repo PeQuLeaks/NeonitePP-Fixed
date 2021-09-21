@@ -155,12 +155,12 @@ struct FName
 		FNameToString(this, temp);
 
 		std::wstring ret(temp.ToWString());
-		
+
 		return ret;
 	}
 };
 
-struct FText	
+struct FText
 {
 	char UnknownData[0x18];
 };
@@ -419,10 +419,10 @@ struct AFortGameModeAthena_SetTimeOfDayManagerGameplayOverride_Params
 	UClass* TimeOfDayManagerClass;
 };
 
-//struct AFortPlayerPawnAthena_TeleportToSkyDive_Params
-//{
-//	float HeightAboveGround;
-//};
+struct AFortPlayerPawnAthena_TeleportToSkyDive_Params
+{
+	float HeightAboveGround;
+};
 
 struct UCheatManager_BugItGo_Params
 {
@@ -646,8 +646,8 @@ struct FVector
 
 	FVector(float x, float y, float z)
 		: X(x),
-		  Y(y),
-		  Z(z)
+		Y(y),
+		Z(z)
 	{
 	}
 
@@ -677,15 +677,15 @@ struct FRotator
 
 	FRotator()
 		: Pitch(0),
-		  Yaw(0),
-		  Roll(0)
+		Yaw(0),
+		Roll(0)
 	{
 	}
 
 	FRotator(float pitch, float yaw, float roll)
 		: Pitch(pitch),
-		  Yaw(yaw),
-		  Roll(roll)
+		Yaw(yaw),
+		Roll(roll)
 	{
 	}
 };
@@ -696,17 +696,17 @@ struct FQuat
 
 	FQuat()
 		: W(0),
-		  X(0),
-		  Y(0),
-		  Z(0)
+		X(0),
+		Y(0),
+		Z(0)
 	{
 	}
 
 	FQuat(float w, float x, float y, float z)
 		: W(w),
-		  X(x),
-		  Y(y),
-		  Z(z)
+		X(x),
+		Y(y),
+		Z(z)
 	{
 	}
 };
@@ -738,11 +738,11 @@ struct FMinimalViewInfo
 
 struct FActorSpawnParameters
 {
-	FActorSpawnParameters(): Name(), Template(nullptr), Owner(nullptr), Instigator(nullptr), OverrideLevel(nullptr), SpawnCollisionHandlingOverride(), bRemoteOwned(0), bNoFail(0),
-	                         bDeferConstruction(0),
-	                         bAllowDuringConstructionScript(0),
-	                         NameMode(),
-	                         ObjectFlags()
+	FActorSpawnParameters() : Name(), Template(nullptr), Owner(nullptr), Instigator(nullptr), OverrideLevel(nullptr), SpawnCollisionHandlingOverride(), bRemoteOwned(0), bNoFail(0),
+		bDeferConstruction(0),
+		bAllowDuringConstructionScript(0),
+		NameMode(),
+		ObjectFlags()
 	{
 	}
 	;
@@ -807,9 +807,9 @@ struct FLinearColor
 
 	FLinearColor(float r, float g, float b, float a)
 		: R(r),
-		  G(g),
-		  B(b),
-		  A(a)
+		G(g),
+		B(b),
+		A(a)
 	{
 	}
 };
