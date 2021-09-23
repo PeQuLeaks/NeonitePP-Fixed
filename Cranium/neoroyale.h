@@ -30,6 +30,8 @@ namespace NeoRoyale
 	inline bool bWantsToOpenGlider;
 	inline bool bWantsToShowPickaxe;
 
+	inline float bPlayerMovementSpeed = 1.1;
+
 	inline Player NeoPlayer;
 
 	inline void Start(const wchar_t* MapToPlayOn)
@@ -106,21 +108,35 @@ namespace NeoRoyale
 				bHasShowedPickaxe = !bHasShowedPickaxe;
 				NeoPlayer.StopMontageIfEmote();
 				bWantsToShowPickaxe = true;
-
 			}
+
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F2))
 			{
 				NeoPlayer.StartSkydiving(22222);
 				Sleep(100);
 			}
 
-			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F6))
+			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F6)) // Cleaned up fly toggling - Max 23/09/2021
 			{
-				    bisFlying = !bisFlying;
-					NeoPlayer.Fly(bisFlying);
-					printf(bisFlying ? "stopped flying" : "started flying");
-					Sleep(1000);
+				bisFlying = !bisFlying;
+				NeoPlayer.Fly(bisFlying);
+				printf(bisFlying ? "stopped flying" : "started flying");
+				Sleep(1000);
 			}
+
+			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_OEM_PLUS)) // Speed modifications (Increase) - Max 23/09/2021
+			{
+				bPlayerMovementSpeed += 0.1;
+				NeoPlayer.SetMovementSpeed(bPlayerMovementSpeed);
+				printf("player increased movement speed");
+			}
+			else if (NeoPlayer.Pawn && GetAsyncKeyState(VK_OEM_MINUS)) // Speed modifications (Decrease) - Max 23/09/2021
+			{
+				bPlayerMovementSpeed -= 0.1;
+				NeoPlayer.SetMovementSpeed(bPlayerMovementSpeed);
+				printf("player decreased movement speed");
+			}
+
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F3))
 			{
 				Stop();
@@ -157,7 +173,7 @@ namespace NeoRoyale
 
 			//NeoPlayer.ApplyOverride();
 
-			NeoPlayer.SetMovementSpeed(1.1);
+			NeoPlayer.SetMovementSpeed(bPlayerMovementSpeed);
 
 			UFunctions::SetPlaylist();
 
