@@ -20,7 +20,7 @@ namespace NeoRoyale
 	inline bool bIsInit;
 	inline bool bIsStarted;
 	inline bool bIsPlayerInit;
-	inline bool bisFlying;
+	inline bool bisFlying = true;
 
 	inline bool bHasJumped;
 	inline bool bHasShowedPickaxe;
@@ -116,21 +116,10 @@ namespace NeoRoyale
 
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F6))
 			{
-				if (bisFlying == true)
-				{
-					NeoPlayer.Fly(true);// False = fly, True = walk
-					printf("stopped flying");
-					Sleep(1000); //prevent against it spamming and causing the game to crash/lag
-					bisFlying = false;
-					
-				} 
-				else if (bisFlying == false)
-				{
-					NeoPlayer.Fly(false);
-					printf("started flying");
+				    bisFlying = !bisFlying;
+					NeoPlayer.Fly(bisFlying);
+					printf(bisFlying ? "stopped flying" : "started flying");
 					Sleep(1000);
-					bisFlying = true;
-				}
 			}
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F3))
 			{
