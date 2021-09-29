@@ -372,7 +372,7 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 			}
 		}
 	}
-
+#ifdef FUNCLOGGING
 	//Logging
 	if (!wcsstr(nFunc.c_str(), L"EvaluateGraphExposedInputs") &&
 		!wcsstr(nFunc.c_str(), L"Tick") &&
@@ -413,6 +413,7 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 	{
 		printf(XOR("[Object]: %ws [Function]: %ws\n"), nObj.c_str(), nFunc.c_str());
 	}
+#endif
 
 
 out: return ProcessEvent(pObj, pFunc, pParams);
