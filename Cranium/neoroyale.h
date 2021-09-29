@@ -78,6 +78,36 @@ namespace NeoRoyale
 		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Sepia.PP_Sepia_C"));
 		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Spooky.PP_Spooky_C"));
 	}
+	inline void InitCombos()
+	{
+		for (auto i = 0x0; i < GObjs->NumElements; ++i)
+		{
+			auto object = GObjs->GetByIndex(i);
+			if (object == nullptr)
+			{
+				continue;
+			}
+
+			if (!Util::IsBadReadPtr(object))
+			{
+				auto objectFullName = object->GetFullName();
+				auto objectFirstName = object->GetName();
+
+				if ((objectFullName.starts_with(L"AthenaGadget") || objectFirstName.starts_with(L"WID_")) && !objectFirstName.starts_with(L"Default__"))
+				{
+					gWeapons.push_back(objectFirstName);
+				}
+				else if (objectFirstName.ends_with(L"_C") && !objectFirstName.starts_with(L"Default__"))
+				{
+					gBlueprints.push_back(objectFirstName);
+				}
+				else if (objectFullName.starts_with(L"SkeletalMesh ") && !objectFirstName.starts_with(L"Default__"))
+				{
+					gMeshes.push_back(objectFirstName);
+				}
+			}
+		}
+	}
 
 	inline void Thread()
 	{
@@ -86,20 +116,22 @@ namespace NeoRoyale
 		{
 			if (NeoPlayer.Pawn && (GetAsyncKeyState(VK_SPACE) & 1))
 			{
-				if (NeoPlayer.IsSkydiving() && !NeoPlayer.IsParachuteOpen() && !NeoPlayer.IsParachuteForcedOpen())
+				if (!NeoPlayer.IsInAircraft())
 				{
-					NeoPlayer.ForceOpenParachute();
-				}
+					if (NeoPlayer.IsSkydiving() && !NeoPlayer.IsParachuteOpen() && !NeoPlayer.IsParachuteForcedOpen())
+					{
+						NeoPlayer.ForceOpenParachute();
+					}
 
-				else if (NeoPlayer.IsSkydiving() && NeoPlayer.IsParachuteOpen() && !NeoPlayer.IsParachuteForcedOpen())
-				{
-					NeoPlayer.Skydive();
-				}
-
-				else 
-				{
-					NeoPlayer.Jump();
-				}
+					else if (NeoPlayer.IsSkydiving() && NeoPlayer.IsParachuteOpen() && !NeoPlayer.IsParachuteForcedOpen())
+					{
+						NeoPlayer.Skydive(); //NOTE TIMMY: Still need to fix some of this shit, still crashes after at second redeplo
+					}
+					else
+					{
+						NeoPlayer.Jump();
+					};
+				}	
 				
 			}
 
@@ -183,7 +215,13 @@ namespace NeoRoyale
 
 			UFunctions::ServerReadyToStartMatch();
 
+			InitCombos();
+
 			CreateThread(nullptr, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Thread), nullptr, NULL, nullptr);
+
+			NeoPlayer.EnableConsole();
+
+			NeoPlayer.EnableCheatManager();
 
 			//UFunctions::ConsoleLog(XOR(L"\n\nWelcome to Neonite++\nMade with ♥ By Kemo (@xkem0x on twitter)."));
 

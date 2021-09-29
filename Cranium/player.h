@@ -47,7 +47,45 @@ public:
 
 		this->AnimInstance = GetAnimInstance_Params.ReturnValue;
 	}
+	void EnableConsole()
+	{
+		ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
+		auto GameplayStatics = UE4::FindObject<UObject*>(L"GameplayStatics /Script/Engine.Default__GameplayStatics");
+		auto SpawnObject = UE4::FindObject<UFunction*>(L"Function /Script/Engine.GameplayStatics.SpawnObject");
+		auto ConsoleClass = UE4::FindObject<UClass*>(L"Class /Script/Engine.Console");
+		ObjectFinder GameViewPortClientFinder = EngineFinder.Find(L"GameViewport");
+		struct {
+			UClass* ConsoleClass;
+			UObject* GameViewPortClient;
+			UObject* ReturnValue;
+		} params;
+		params.ConsoleClass = ConsoleClass;
+		params.GameViewPortClient = GameViewPortClientFinder.GetObj();
+		int ViewportConsoleOff = ObjectFinder::FindOffset(L"Class /Script/Engine.GameViewportClient", L"ViewportConsole");
+		UObject** ViewportConsole = reinterpret_cast<UObject**>(__int64(GameViewPortClientFinder.GetObj()) + __int64(ViewportConsoleOff));
+		ProcessEvent(GameplayStatics, SpawnObject, &params);
 
+		*ViewportConsole = params.ReturnValue;
+	}
+
+	void EnableCheatManager()
+	{
+		ObjectFinder ControllerFinder = ObjectFinder::EntryPoint(uintptr_t(this->Controller));
+		auto GameplayStatics = UE4::FindObject<UObject*>(L"GameplayStatics /Script/Engine.Default__GameplayStatics");
+		auto SpawnObject = UE4::FindObject<UFunction*>(L"Function /Script/Engine.GameplayStatics.SpawnObject");
+		auto CheatClass = UE4::FindObject<UClass*>(L"Class /Script/Engine.CheatManager");
+		ObjectFinder CheatManagerFinder = ControllerFinder.Find(L"CheatManager");
+		struct {
+			UClass* CheatClass;
+			UObject* Outer;
+			UObject* ReturnValue;
+		} params;
+		params.CheatClass = CheatClass;
+		params.Outer = this->Controller;
+		ProcessEvent(GameplayStatics, SpawnObject, &params);
+
+		CheatManagerFinder.GetObj() = params.ReturnValue;
+	}
 	void Authorize()
 	{
 		const auto LocalRole = reinterpret_cast<TEnumAsByte<ENetRole>*>(reinterpret_cast<uintptr_t>(this->Pawn) + ObjectFinder::FindOffset(XOR(L"Class /Script/Engine.Actor"), XOR(L"Role")));
@@ -67,16 +105,17 @@ public:
 
 			if (this->Pawn)
 			{
+				this->Authorize();
 				this->Possess();
 				this->ShowSkin();
-				this->ShowPickaxe();
+				//this->ShowPickaxe();
 			}
 		}
 	}
 
 	void TeleportTo(FVector Location, FRotator Rotation = FRotator())
 	{
-		const auto FUNC_K2_TeleportTo = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.Actor.K2_TeleportTo"));
+		auto FUNC_K2_TeleportTo = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.Actor.K2_TeleportTo"));
 
 		AActor_K2_TeleportTo_Params K2_TeleportTo_Params;
 		K2_TeleportTo_Params.DestLocation = Location;
@@ -419,7 +458,7 @@ public:
 
 	auto GetLocation() -> FVector
 	{
-		static auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.Actor.K2_GetActorLocation"));
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.Actor.K2_GetActorLocation"));
 
 		AActor_K2_GetActorLocation_Params params;
 
@@ -616,15 +655,15 @@ public:
 
 		auto CosmeticLoadoutPC = reinterpret_cast<FFortAthenaLoadout*>(reinterpret_cast<uintptr_t>(this->Controller) + CosmeticLoadoutPCOffset);
 
-			auto PickaxeFinder = ObjectFinder::EntryPoint(uintptr_t(CosmeticLoadoutPC->Pickaxe));
+		auto PickaxeFinder = ObjectFinder::EntryPoint(uintptr_t(CosmeticLoadoutPC->Pickaxe));
 
-			auto WeaponDefFinder = PickaxeFinder.Find(XOR(L"WeaponDefinition"));
+		auto WeaponDefFinder = PickaxeFinder.Find(XOR(L"WeaponDefinition"));
 
-			auto Weapon = WeaponDefFinder.GetObj()->GetName();
+		auto Weapon = WeaponDefFinder.GetObj()->GetName();
 
-			printf(XOR("\n[NeoRoyale] Equipped the pickaxe!\n"));
+		printf(XOR("\n[NeoRoyale] Equipped the pickaxe!\n"));
 			
-			EquipWeapon(Weapon.c_str());
+		EquipWeapon(Weapon.c_str());
 	}
 
 	enum class EGameplayEffectGrantedAbilityRemovePolicy : uint8_t
@@ -734,7 +773,7 @@ public:
 		*reinterpret_cast<EGameplayEffectDurationType*>(__int64(DefaultGameplayEffect) + __int64(DurationPolicyOffset)) = EGameplayEffectDurationType::Infinite;
 
 		// apply modified gameplay effect to ability system component
-		auto GameplayEffectClass = UE4::FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Athena/Items/Consumables/PurpleStuff/GE_Athena_PurpleStuff_Health.GE_Athena_PurpleStuff_Health_C");
+		auto GameplayEffectClass = UE4::FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Sprint");
 
 		BP_ApplyGameplayEffectToSelf(AbilitySystemComponent, GameplayEffectClass);
 	}

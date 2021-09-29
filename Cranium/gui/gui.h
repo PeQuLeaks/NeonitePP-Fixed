@@ -41,17 +41,27 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	}
 	else if (GetAsyncKeyState(VK_F9)) //When button F9 is pressed
 	{
-
 		auto Map = APOLLO_TERRAIN;
 
-		gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab"));
+		gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/Playlist_DefaultSolo.Playlist_DefaultSolo"));
 		Start(Map);
-
-
 	}
-	else if (GetAsyncKeyState(VK_F8)) //When button F9 is pressed
+	else if (GetAsyncKeyState(VK_F8)) //When button F8 is pressed
 	{
-		UFunctions::LoadAndStreamInLevel(RIFT_TOUR_EVENT_MAP);
+		enum class EAthenaCustomizationCategory : uint8_t
+		{
+			None = 0, Glider = 1, Pickaxe = 2, Hat = 3, Backpack = 4, Character = 5, LoadingScreen = 6, BattleBus = 7, VehicleDecoration = 8, CallingCard = 9, MapMarker = 10, Dance = 11, ConsumableEmote = 12, VictoryPose = 13, SkyDiveContrail = 14, MusicPack = 15, ItemWrap = 16, PetSkin = 17, Charm = 18, RegCosmeticDef = 19, Loadout = 20, SaveLoadout = 21, MAX = 22
+		};
+
+		auto button = UE4::FindObject<UObject*>(L"AthenaCustomizationSlotButton_C /Engine/Transient.FortEngine_", false, false, 18);
+		auto button1 = UE4::FindObject<UObject*>(L"AthenaCustomizationSlotButton_C /Engine/Transient.FortEngine_", false, false, 19);
+
+		auto CustomizationType = (EAthenaCustomizationCategory*)(__int64(button) + 0xc50);
+		auto CustomizationType1 = (EAthenaCustomizationCategory*)(__int64(button1) + 0xc50);
+
+
+		*CustomizationType = EAthenaCustomizationCategory::VictoryPose;
+		*CustomizationType1 = EAthenaCustomizationCategory::BattleBus;
 	}
 	if (showMenu)
 	{

@@ -38,9 +38,6 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerLoadingScreenDropped")) && bIsInit && bIsStarted)
 	{
-
-		//NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Sprint"));
-		//NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Jump"));
 		/*auto buffetPawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"Class /Script/BuffetRuntime.BuffetFlyingPawn")));
 
 		MessageBoxW(nullptr, buffetPawn->GetFullName().c_str(), L"Test", MB_OK);
@@ -57,7 +54,6 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		//UFunctions::SetupCustomInventory();
 
 		//UFunctions::PlayCustomPlayPhaseAlert();
-		//LoadMoreClasses();
 		//LoadMoreClasses();
 		
 	}
@@ -91,10 +87,7 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 	// NOTE: (irma) This is better.
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerAttemptAircraftJump")))
 	{
-		//Console::ExecuteConsoleCommand(XOR(L"PAUSESAFEZONE"));
-		//NeoPlayer.Respawn();
-		NeoPlayer.StartSkydiving(22222);
-		//NeoPlayer.TeleportTo(NeoPlayer.GetLocation());
+		NeoPlayer.Respawn(); //NOTE TIMMY: Still isn't working properly, seems like function ServerAttemptAircraftJump isn't getting called properly and this causes a crash when trying to teleport
 	}
 
 	if (wcsstr(nFunc.c_str(), XOR(L"OnWeaponEquipped")))
@@ -380,7 +373,6 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		}
 	}
 
-#ifdef LOGGING
 	//Logging
 	if (!wcsstr(nFunc.c_str(), L"EvaluateGraphExposedInputs") &&
 		!wcsstr(nFunc.c_str(), L"Tick") &&
@@ -391,6 +383,8 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		!wcsstr(nFunc.c_str(), L"IsAcceptablePositionForPlacement") &&
 		!wcsstr(nFunc.c_str(), L"OnContextualReticleChanged") &&
 		!wcsstr(nFunc.c_str(), L"OnUpdateVisuals") &&
+		!wcsstr(nFunc.c_str(), L"Light Flash Timeline__Loop__EventFunc") &&
+		!wcsstr(nFunc.c_str(), L"Play Ambient Audio") &&
 		!wcsstr(nFunc.c_str(), L"OnUpdateScale") &&
 		!wcsstr(nFunc.c_str(), L"SetScalarParameterValueOnAllPreviewMIDs") &&
 		!wcsstr(nFunc.c_str(), L"BlueprintUpdateAnimation") &&
@@ -399,16 +393,27 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		!wcsstr(nFunc.c_str(), L"BlueprintModifyPostProcess") &&
 		!wcsstr(nFunc.c_str(), L"Loop Animation Curve") &&
 		!wcsstr(nFunc.c_str(), L"UpdateTime") &&
+		!wcsstr(nFunc.c_str(), L"Timeline_UpdateFunc") &&
 		!wcsstr(nFunc.c_str(), L"GetMutatorByClass") &&
 		!wcsstr(nFunc.c_str(), L"UpdatePreviousPositionAndVelocity") &&
 		!wcsstr(nFunc.c_str(), L"IsCachedIsProjectileWeapon") &&
 		!wcsstr(nFunc.c_str(), L"LockOn") &&
+		!wcsstr(nFunc.c_str(), L"HandleSimulatingComponentHit") &&
+		!wcsstr(nFunc.c_str(), L"RecieveHit") &&
+		!wcsstr(nFunc.c_str(), L"Light Flash Timeline__UpdateFunc") &&
+		!wcsstr(nFunc.c_str(), L"ExecuteUbergraph_B_Athena_FlopperSpawnWorld_Placement") &&
 		!wcsstr(nFunc.c_str(), L"GetAbilityTargetingLevel") &&
+		!wcsstr(nFunc.c_str(), L"HandleSimulatingComponentHit") &&
+		!wcsstr(nFunc.c_str(), L"BindVolumeEvents") &&
+		//!wcsstr(nFunc.c_str(), L"BindVolumeEvents") &&
+		!wcsstr(nFunc.c_str(), L"Update") &&
+		!wcsstr(nFunc.c_str(), L"UpdateStateEvent") &&
+		!wcsstr(nObj.c_str(), L"BGA_HeldObject_Physics_Explosive_PropaneTank_C_2147448779") &&
 		!wcsstr(nFunc.c_str(), L"ReadyToEndMatch"))
 	{
 		printf(XOR("[Object]: %ws [Function]: %ws\n"), nObj.c_str(), nFunc.c_str());
 	}
-#endif
+
 
 out: return ProcessEvent(pObj, pFunc, pParams);
 }
