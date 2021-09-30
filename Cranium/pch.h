@@ -4,6 +4,7 @@
 #define CONSOLE
 //#define SSL_BYPASS
 #define HOOKS
+#define RiftTourGUI
 //#define INJECT_ASAP
 
 

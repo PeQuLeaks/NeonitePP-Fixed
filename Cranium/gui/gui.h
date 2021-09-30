@@ -190,41 +190,7 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						NewLine();
 
 						SameLine(0.0f, 20.0f);
-						if (Button(XOR("Start Rift Tour Event")))
-						{
-							UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
-						}
 
-						SameLine(0.0f, 19.0f);
-						if (Button(XOR("Start Rift Tour Cuddle")))
-						{
-							UFunctions::Play(RIFT_TOUR_CUDDLE_PLAYER);
-						}
-
-						SameLine(0.0f, 18.0f);
-						if (Button(XOR("Start Rift Tour Storm King")))
-						{
-							UFunctions::Play(RIFT_TOUR_STORMKING_PLAYER);
-						}
-
-						SameLine(0.0f, 17.0f);
-						if (Button(XOR("Start Rift Tour Clouds")))
-						{
-							UFunctions::Play(RIFT_TOUR_CLOUDS_PLAYER);
-						}
-
-						NewLine();
-
-						if (Button(XOR("Start Rift Tour Stairs")))
-						{
-							UFunctions::Play(RIFT_TOUR_STAIRS_PLAYER);
-						}
-
-						SameLine(0.0f, 16.0f);
-						if (Button(XOR("Start Rift Tour Positions")))
-						{
-							UFunctions::Play(RIFT_TOUR_POSITIONS_PLAYER);
-						}
 
 						NewLine();
 
@@ -319,11 +285,11 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						if (Button("Skydive"))
 						{
 							//??
-							//NeoPlayer.StartSkydiving(0);
-							//NeoPlayer.StartSkydiving(0);
-							////NeoPlayer.StartSkydiving(0);
-							//NeoPlayer.StartSkydiving(0);
-							//NeoPlayer.StartSkydiving(2000.0f);
+							NeoPlayer.StartSkydiving(0);
+							NeoPlayer.StartSkydiving(0);
+							NeoPlayer.StartSkydiving(0);
+							NeoPlayer.StartSkydiving(0);
+							NeoPlayer.StartSkydiving(2000.0f);
 						}
 
 						SameLine(0.0f, 20.0f);
@@ -518,7 +484,7 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 
 						NewLine();
 
-						InputText(XOR("Command"), command, sizeof command);
+						InputText(XOR("NeoCommand"), command, sizeof command);
 
 						SameLine();
 
@@ -542,65 +508,6 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 
 
 						*/
-						if (Button("Cuddle Map"))
-						{
-							strcpy(command, "open Buffet_Part5?game=/Script/FortniteGame.FortGameModeBase");
-						}
-
-						if (Button("Storm King Map"))
-						{
-							strcpy(command, "open Buffet_Part_6?game=/Script/FortniteGame.FortGameModeBase");
-						}
-
-						if (Button("Stairs Map"))
-						{
-							strcpy(command, "open Buffet_Escher?game=/Script/FortniteGame.FortGameModeBase");
-						}
-
-						if (Button("Positions Map"))
-						{
-							strcpy(command, "open Buffet_Shard?game=/Script/FortniteGame.FortGameModeBase");
-						}
-
-						if (Button("Clouds Map"))
-						{
-							strcpy(command, "open Buffet_Cloud?game=/Script/FortniteGame.FortGameModeBase");
-						}
-
-						if (Button("TestPawn"))
-						{
-							NeoPlayer.Pawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
-							NeoPlayer.Possess();
-						}
-
-						NewLine();
-
-						if (Button("TestPawn 2"))
-						{
-							NeoPlayer.Pawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
-							NeoPlayer.ShowSkin();
-						}
-						if (Button("Pog pawn"))
-						{
-							NeoPlayer.Pawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
-
-
-
-							NeoPlayer.Authorize();
-
-							NeoPlayer.UpdatePlayerController();
-
-
-							NeoPlayer.Possess();
-
-							NeoPlayer.ShowSkin();
-
-							//NeoPlayer.ShowPickaxe();
-
-							//NeoPlayer.ToggleInfiniteAmmo();
-
-							NeoPlayer.SetMovementSpeed(1.1);
-						}
 
 						EndTabItem();
 					}
@@ -637,6 +544,67 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						EndTabItem();
 					}
 				}
+#ifdef RiftTourGUI
+			if (BeginTabItem("Rift Tour"))
+			{
+				Text("Teleport to maps");
+
+				if (Button(XOR("Teleport to main map")))
+				{
+					UFunctions::Travel(RIFT_TOUR_EVENT_MAP);
+				}
+				if (Button(XOR("Teleport to cuddle map")))
+				{
+					UFunctions::Travel(RIFT_TOUR_CUDDLE_MAP);
+				}
+				if (Button(XOR("Teleport to storm king map")))
+				{
+					UFunctions::Travel(RIFT_TOUR_STORMKING_MAP);
+				}
+				if (Button(XOR("Teleport to stairs map")))
+				{
+					UFunctions::Travel(RIFT_TOUR_STAIRS_MAP);
+				}
+				if (Button(XOR("Teleport to positions map")))
+				{
+					UFunctions::Travel(RIFT_TOUR_POSITIONS_MAP);
+				}
+				if (Button(XOR("Teleport to clouds map")))
+				{
+					UFunctions::Travel(RIFT_TOUR_CLOUDS_MAP);
+				}
+
+				NewLine();
+				Text("Start event sequences");
+				if (Button(XOR("Start Rift Tour Event")))
+				{
+					UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
+				}
+				if (Button(XOR("Start Rift Tour Cuddle")))
+				{
+					UFunctions::Play(RIFT_TOUR_CUDDLE_PLAYER);
+				}		
+				if (Button(XOR("Start Rift Tour Storm King")))
+				{
+					UFunctions::Play(RIFT_TOUR_STORMKING_PLAYER);
+				}
+				if (Button(XOR("Start Rift Tour Clouds")))
+				{
+					UFunctions::Play(RIFT_TOUR_CLOUDS_PLAYER);
+				}
+				if (Button(XOR("Start Rift Tour Stairs")))
+				{
+					UFunctions::Play(RIFT_TOUR_STAIRS_PLAYER);
+				}
+				if (Button(XOR("Start Rift Tour Positions")))
+				{
+					UFunctions::Play(RIFT_TOUR_POSITIONS_PLAYER);
+				}
+				EndTabItem();
+
+			}
+
+#endif
 
 				if (BeginTabItem("Help"))
 				{
