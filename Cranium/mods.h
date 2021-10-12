@@ -41,9 +41,29 @@ inline bool ForceSettings()
 //TODO: add safety checks in UFuncs.
 namespace UFunctions
 {
+	inline void Summon(const wchar_t* ClassToSummon)
+	{
+		ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
+		ObjectFinder LocalPlayer = EngineFinder.Find(XOR(L"GameInstance")).Find(XOR(L"LocalPlayers"));
+
+		ObjectFinder PlayerControllerFinder = LocalPlayer.Find(XOR(L"PlayerController"));
+
+		ObjectFinder CheatManagerFinder = PlayerControllerFinder.Find(XOR(L"CheatManager"));
+
+		const auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.CheatManager:Summon"));
+
+		const FString ClassName = ClassToSummon;
+
+		UCheatManager_Summon_Params params;
+		params.ClassName = ClassName;
+
+		ProcessEvent(CheatManagerFinder.GetObj(), fn, &params);
+		printf("\n[Neoroyale] %ls was summoned!.\n", ClassToSummon);
+	}
+
 	auto SetTimeOfDay(float Time)
 	{
-		printf("[CRANIUM]: Trying to use SetTimeOfDay!");
+		
 		ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
 		ObjectFinder GameViewPortClientFinder = EngineFinder.Find(XOR(L"GameViewport"));
 		ObjectFinder WorldFinder = GameViewPortClientFinder.Find(XOR(L"World"));
@@ -61,7 +81,7 @@ namespace UFunctions
 	//travel to a url
 	inline void Travel(const wchar_t* url)
 	{
-		printf("[CRANIUM]: Trying to use Travel!");
+		printf("[CRANIUM]: Trying to use Travel!\n");
 		ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
 		ObjectFinder LocalPlayer = EngineFinder.Find(XOR(L"GameInstance")).Find(XOR(L"LocalPlayers"));
 
@@ -155,7 +175,7 @@ namespace UFunctions
 
 	inline void LoadAndStreamInLevel(const wchar_t* EventSequenceMap)
 	{
-		printf("\n\n\n\n\n\n\n\n\n\n\n[CRANIUM]: Trying to use LoadAndStreamInLevel!\n\n\n\n\n");
+		
 		ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
 		ObjectFinder GameViewPortClientFinder = EngineFinder.Find(XOR(L"GameViewport"));
 		ObjectFinder WorldFinder = GameViewPortClientFinder.Find(XOR(L"World"));
@@ -204,9 +224,29 @@ namespace UFunctions
 		ProcessEvent(Sequence, Play, nullptr);
 	}
 
+	inline void StartBuffet()
+	{
+		auto BuffetScripting = UE4::FindObject<UObject*>(XOR(L"BP_Buffet_Master_Scripting_C /Buffet/Levels/Buffet_P.Buffet_P.PersistentLevel.BP_Event_Master_Scripting_2"));
+		auto StartEvent = UE4::FindObject<UFunction*>(XOR(L"Function /Buffet/Gameplay/Blueprints/BP_Buffet_Master_Scripting.BP_Buffet_Master_Scripting_C.startevent"));
+		auto InitializeLevelLoader = UE4::FindObject<UFunction*>(XOR(L"Function /Buffet/Gameplay/Blueprints/BP_Buffet_Master_Scripting.BP_Buffet_Master_Scripting_C.InitializeLevelLoader"));
+		auto LoadNextBuffetLevel = UE4::FindObject<UFunction*>(XOR(L"Function /Buffet/Gameplay/Blueprints/BP_Buffet_Master_Scripting.BP_Buffet_Master_Scripting_C.LoadNextBuffetLevel"));
+		auto StartEventAtPhase = UE4::FindObject<UFunction*>(XOR(L"Function /Buffet/Gameplay/Blueprints/BP_Buffet_Master_Scripting.BP_Buffet_Master_Scripting_C.StartEventAtPhase"));
+		auto EventLeadUp = UE4::FindObject<UFunction*>(XOR(L"Function /Buffet/Gameplay/Blueprints/BP_Buffet_Master_Scripting.BP_Buffet_Master_Scripting_C.EventLeadUp"));
+		auto GetSequenceAndPlay = UE4::FindObject<UFunction*>(XOR(L"Function /Buffet/Gameplay/Blueprints/BP_Buffet_Master_Scripting.BP_Buffet_Master_Scripting_C.GetSequenceAndPlay"));
+		auto Update_Apollo_Terrain_Visibility = UE4::FindObject<UFunction*>(XOR(L"Function /Buffet/Gameplay/Blueprints/BP_Buffet_Master_Scripting.BP_Buffet_Master_Scripting_C.Update_Apollo_Terrain_Visibility"));
+
+		ProcessEvent(BuffetScripting, InitializeLevelLoader, nullptr);;
+		//ProcessEvent(BuffetScripting, LoadNextBuffetLevel, nullptr);
+		//ProcessEvent(BuffetScripting, StartEventAtPhase, nullptr);
+		//ProcessEvent(BuffetScripting, EventLeadUp, nullptr);
+		//ProcessEvent(BuffetScripting, GetSequenceAndPlay, nullptr);
+		//ProcessEvent(BuffetScripting, Update_Apollo_Terrain_Visibility, nullptr);
+		ProcessEvent(BuffetScripting, StartEvent, nullptr);
+	}
+
 	inline void ConsoleLog(std::wstring message)
 	{
-		printf("[CRANIUM]: Trying to use ConsoleLog!");
+		
 		ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
 		ObjectFinder GameViewPortClientFinder = EngineFinder.Find(XOR(L"GameViewport"));
 		ObjectFinder WorldFinder = GameViewPortClientFinder.Find(XOR(L"World"));
@@ -223,7 +263,6 @@ namespace UFunctions
 
 	inline void DestroyActor(UObject* actor)
 	{
-		printf("[CRANIUM]: Trying to use DestroyActor!");
 		const auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.Actor.K2_DestroyActor"));
 
 		ProcessEvent(actor, fn, nullptr);
@@ -231,7 +270,7 @@ namespace UFunctions
 
 	inline void DestroyAll(UClass* Class)
 	{
-		printf("[CRANIUM]: Trying to use DestroyAll!");
+		
 		ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
 		ObjectFinder GameViewPortClientFinder = EngineFinder.Find(XOR(L"GameViewport"));
 		ObjectFinder WorldFinder = GameViewPortClientFinder.Find(XOR(L"World"));

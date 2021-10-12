@@ -39,13 +39,19 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	{
 		//ExitProcess(0);
 	}
+	
 	else if (GetAsyncKeyState(VK_F9)) //When button F9 is pressed
 	{
-		auto Map = APOLLO_TERRAIN;
+		NeoPlayer.UpdatePlayerController();
 
-		gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/Playlist_DefaultSolo.Playlist_DefaultSolo"));
-		Start(Map);
 	}
+	else if (GetAsyncKeyState(VK_F10)) //When button F9 is pressed
+	{
+		NeoPlayer.Possess();
+		NeoPlayer.UpdatePlayerController();
+
+	}
+	
 	else if (GetAsyncKeyState(VK_F8)) //When button F8 is pressed
 	{
 		enum class EAthenaCustomizationCategory : uint8_t
@@ -63,6 +69,7 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		*CustomizationType = EAthenaCustomizationCategory::VictoryPose;
 		*CustomizationType1 = EAthenaCustomizationCategory::BattleBus;
 	}
+	
 	if (showMenu)
 	{
 		ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
@@ -95,6 +102,7 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 			fileDialog.SetTypeFilters({".png"});
 			InitImGui();
 			initgui = true;
+			Console::ExecuteConsoleCommand(XOR(L"god"));
 		}
 
 		else return oPresent(pSwapChain, SyncInterval, Flags);
@@ -495,20 +503,6 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 							Console::ExecuteConsoleCommand(coammndW.c_str());
 						}
 
-						NewLine();
-
-
-
-
-						/* test
-						* 		NeoPlayer.Pawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
-								NeoPlayer.Possess();
-
-
-
-
-						*/
-
 						EndTabItem();
 					}
 
@@ -580,6 +574,11 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 				{
 					UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
 				}
+				if (Button(XOR("Start Rift Tour Event 2")))
+				{
+					UFunctions::StartBuffet();
+					//UFunctions::StartBuffetLevel();
+				}
 				if (Button(XOR("Start Rift Tour Cuddle")))
 				{
 					UFunctions::Play(RIFT_TOUR_CUDDLE_PLAYER);
@@ -648,32 +647,36 @@ F3 - Back to lobby.
 					SetCursorPosX(GetCursorPosX() + 50);
 					SetCursorPosY(GetCursorPosY() + 5);
 
-					Text(XOR("Kemo (@xkem0x): Developer and mantainer of Neonite++"));
+					Text(XOR("Kemo (@xkem0x): Creator of Neonite++."));
 
 					SetCursorPosX(GetCursorPosX() + 50);
 					SetCursorPosY(GetCursorPosY() + 5);
 
-					Text(XOR("Sammy (@madSammy): Frontend, Internal, General."));
+					Text(XOR("Sizzy (@sizzyxx): Reviving NPP."));
 
 					SetCursorPosX(GetCursorPosX() + 50);
 					SetCursorPosY(GetCursorPosY() + 5);
 
-					Text(XOR("Taj (@AthenaBigBoi): Internal, General."));
+					Text(XOR("PeQU (@RatioFN): General, Event related stuff, bug fixes"));
 
 					SetCursorPosX(GetCursorPosX() + 50);
 					SetCursorPosY(GetCursorPosY() + 5);
 
-					Text(XOR("Nyamimi (@nyameows): Internal, General."));
+					Text(XOR("Timmy (@mawmet): General, Creator of Carbon, bug fixes"));
 
 					SetCursorPosX(GetCursorPosX() + 50);
 					SetCursorPosY(GetCursorPosY() + 5);
 
-					Text(XOR("Irma (@omairma): Frontend, Internal."));
+					Text(XOR("Max (@FNLeaksAndInfo): General, Cleaning up code."));
 
 					SetCursorPosX(GetCursorPosX() + 50);
 					SetCursorPosY(GetCursorPosY() + 5);
 
-					Text(XOR("Irma (@omairma): Frontend, Internal."));
+					Text(XOR("Zatheo (@zatheo_): Bug fixing."));
+					SetCursorPosX(GetCursorPosX() + 50);
+					SetCursorPosY(GetCursorPosY() + 5);
+
+					Text(XOR("Beat (@TheBeatYT_evil): NeoniteV2 Maintainer."));
 
 					EndTabItem();
 				}

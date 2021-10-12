@@ -84,13 +84,17 @@ namespace Hooks
 
 		//reinterpret_cast<uint8_t*>(WeaponCheckAdd)[1] = 0x85 /* JNE */;
 
-
-
 		auto Map = APOLLO_TERRAIN;
+#ifdef RiftTourGUI
+		//gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /BuffetPlaylist/Playlist/Playlist_Buffet.Playlist_Buffet")); //Buffet Event
+		//gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/ItemTest/Playlist_ItemTest.Playlist_ItemTest")); //Epic Test Gamemode
 		gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab")); //Battlelab
-		//gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/Playlist_DefaultSolo.Playlist_DefaultSolo")); //Solos
 		Start(Map);
-
+#else
+		gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /BuffetPlaylist/Playlist/Playlist_Buffet.Playlist_Buffet"));
+#endif
+		//gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/Playlist_DefaultSolo.Playlist_DefaultSolo")); //Solos
+		//Start(Map);
 
 		return true;
 	}

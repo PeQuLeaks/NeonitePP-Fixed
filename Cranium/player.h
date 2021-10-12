@@ -66,6 +66,7 @@ public:
 		ProcessEvent(GameplayStatics, SpawnObject, &params);
 
 		*ViewportConsole = params.ReturnValue;
+		printf("Console has been enabled\n");
 	}
 
 	void EnableCheatManager()
@@ -85,6 +86,7 @@ public:
 		ProcessEvent(GameplayStatics, SpawnObject, &params);
 
 		CheatManagerFinder.GetObj() = params.ReturnValue;
+		printf("Cheatmanager has been enabled\n");
 	}
 	void Authorize()
 	{
@@ -109,6 +111,7 @@ public:
 				this->Possess();
 				this->ShowSkin();
 				//this->ShowPickaxe();
+
 			}
 		}
 	}
@@ -128,7 +131,13 @@ public:
 	{
 		TeleportTo(FVector(-156128.36, -159492.78, -2996.30));
 	}
-
+	void Nop(void* Dst, size_t size)
+	{
+		DWORD dwOld;
+		VirtualProtect(Dst, size, PAGE_EXECUTE_READWRITE, &dwOld);
+		memset(Dst, 0x90, size);
+		VirtualProtect(Dst, size, dwOld, &dwOld);
+	}
 	void Possess()
 	{
 		if (!this->Controller || Util::IsBadReadPtr(this->Controller))
@@ -142,7 +151,7 @@ public:
 		params.InPawn = this->Pawn;
 
 		ProcessEvent(this->Controller, fn, &params);
-		printf(XOR("\n\n\n\n\n\[NeoRoyale] PlayerPawn was possessed!\n\n\n\n"));
+		printf(XOR("\n\n\n\n\n[NeoRoyale] PlayerPawn was possessed!\n\n\n\n"));
 	}
 
 	auto StartSkydiving(float height)
@@ -158,7 +167,7 @@ public:
 
 	auto IsJumpProvidingForce()
 	{
-		 auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.Character.IsJumpProvidingForce"));
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.Character.IsJumpProvidingForce"));
 
 		ACharacter_IsJumpProvidingForce_Params params;
 
@@ -582,14 +591,14 @@ public:
 
 	auto Skydive()
 	{
-
 		if (this->IsSkydiving())
 		{
-			auto fn =UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.EndSkydiving"));
+			auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.EndSkydiving"));
 
 			ProcessEvent(this->Pawn, fn, nullptr);
-		}
 
+			
+		}
 		auto fn =UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.BeginSkydiving"));
 
 		AFortPlayerPawn_BeginSkydiving_Params params;
@@ -597,18 +606,17 @@ public:
 
 		ProcessEvent(this->Pawn, fn, &params);
 
-		//this->SetMovementMode(EMovementMode::MOVE_Custom, 4);
+		this->SetMovementMode(EMovementMode::MOVE_Custom, 4);
 	}
 
 	auto ForceOpenParachute()
 	{
 
-		auto fn =UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.BP_ForceOpenParachute"));
+		auto fn =UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.ForceOpenParachuteAndOverrideGlider"));
 
 		Empty_Params params;
 
 		ProcessEvent(this->Pawn, fn, &params);
-		
 		
 	}
 

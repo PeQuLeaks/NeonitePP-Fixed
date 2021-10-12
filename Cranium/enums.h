@@ -47,6 +47,7 @@ enum ECommands
 	SET_MAX_HEALTH,
 	SET_MAX_SHIELD,
 	DUMP,
+	HELP,
 	DUMPBPS,
 	TEST,
 	LOADBPC,
@@ -109,6 +110,8 @@ namespace Patterns
 	{
 		//Dead
 		constexpr const char* GEngine = "\x48\x8B\x0D\x00\x00\x00\x00\x48\x8B\xD3\xE8\x00\x00\x00\x00\x84\xC0";
+
+		constexpr const char* CurrentMovementStyleCheckAddress = "\x88\x00\x7F\x05\x00\x00\x48\x00\x00";
 
 		constexpr const char* GObjects = "\x48\x8B\x05\x00\x00\x00\x00\x48\x8B\x0C\xC8\x48\x8D\x04\xD1\xEB\x06";
 
@@ -195,6 +198,7 @@ namespace Masks
 	{
 		constexpr const char* GEngine = "xxx????xxxx????xx";
 		constexpr const char* GObjects = "xxx????xxxx";
+		constexpr const char* CurrentMovementStyleCheckAddress = "88 ? 7F 05 ? ? 48 ? ?";
 		constexpr const char* SCOI = "xxxxxxxxxxxxxxxxxxxxx????xxx????xxx????xxx";
 		constexpr const char* SLOI = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx????";
 		constexpr const char* SpawnActorInternal =

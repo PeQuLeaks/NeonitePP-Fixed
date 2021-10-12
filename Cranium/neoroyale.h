@@ -8,6 +8,7 @@
 
 #include "mods.h"
 #include "server.h"
+#include "enums.h"
 
 
 inline std::vector<std::wstring> gWeapons;
@@ -49,34 +50,16 @@ namespace NeoRoyale
 		NeoPlayer.Pawn = nullptr;
 		NeoPlayer.Mesh = nullptr;
 		NeoPlayer.AnimInstance = nullptr;
-		Bots.clear();
-		gPlaylist = nullptr;
-		gNeoniteLogoTexture = nullptr;
 	}
 
 	inline void LoadMoreClasses()
 	{
-		 auto BPGClass = UE4::FindObject<UClass*>(XOR(L"Class /Script/Engine.BlueprintGeneratedClass"));
+		static auto BPGClass = UE4::FindObject<UClass*>(XOR(L"Class /Script/Engine.BlueprintGeneratedClass"));
 
 		//Mech
 		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Athena/DrivableVehicles/Mech/TestMechVehicle.TestMechVehicle_C"));
 
-		//Husks
-		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Characters/Enemies/Husk/Blueprints/HuskPawn.HuskPawn_C"));
-		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Characters/Enemies/DudeBro/Blueprints/DUDEBRO_Pawn.DUDEBRO_Pawn_C"));
 
-
-		//CameraFilters
-		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_FilmNoir.PP_FilmNoir_C"));
-		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Crazy.PP_Crazy_C"));
-		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Dark.PP_Dark_C"));
-		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_HappyPlace.PP_HappyPlace_C"));
-		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Oak.PP_Oak_C"));
-		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Pixelizer.PP_Pixelizer_C"));
-		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Red.PP_Red_C"));
-		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Retro.PP_Retro_C"));
-		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Sepia.PP_Sepia_C"));
-		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Spooky.PP_Spooky_C"));
 	}
 	inline void InitCombos()
 	{
@@ -112,72 +95,99 @@ namespace NeoRoyale
 	inline void Thread()
 	{
 		//NOTE (kemo): i know this isn't the best practice but it does the job on another thread so it's not a frezzing call
-		while (true)
+		while (true) 
 		{
 			if (NeoPlayer.Pawn && (GetAsyncKeyState(VK_SPACE) & 1))
 			{
-				if (!NeoPlayer.IsInAircraft())
+
+				if (NeoPlayer.IsInAircraft())
 				{
-					if (NeoPlayer.IsSkydiving() && !NeoPlayer.IsParachuteOpen() && !NeoPlayer.IsParachuteForcedOpen())
-					{
-						NeoPlayer.ForceOpenParachute();
-					}
 
-					else if (NeoPlayer.IsSkydiving() && NeoPlayer.IsParachuteOpen() && !NeoPlayer.IsParachuteForcedOpen())
-					{
-						NeoPlayer.Skydive(); //NOTE TIMMY: Still need to fix some of this shit, still crashes after at second redeplo
-					}
-					else
-					{
-						NeoPlayer.Jump();
-					};
-				}	
-				
+				}
+				else if (NeoPlayer.IsSkydiving() && !NeoPlayer.IsInAircraft() && !NeoPlayer.IsParachuteOpen())
+				{
+					NeoPlayer.ForceOpenParachute();
+					//NeoPlayer.SetMovementMode(EMovementMode::MOVE_Custom, 2L);
+				}
+				else if (!NeoPlayer.IsJumpProvidingForce())
+				{
+					NeoPlayer.Jump();
+				}
+				/*
+				else if (PlayerPawn->IsSkydiving() && !PlayerPawn->IsParachuteOpen() && !PlayerPawn->IsParachuteForcedOpen()) {
+						PlayerPawn->SetMovementMode(EMovementMode::MOVE_Custom, 2L);
+				}
+				else if (PlayerPawn->IsParachuteOpen() && !PlayerPawn->IsParachuteForcedOpen()) {
+					PlayerPawn->SetMovementMode(EMovementMode::MOVE_Custom, 3L);
+				}
+				*/
 			}
-
 			if (NeoPlayer.Pawn && GetAsyncKeyState(0x31) /* 1 key */)
 			{
 				bHasShowedPickaxe = !bHasShowedPickaxe;
 				NeoPlayer.StopMontageIfEmote();
 				bWantsToShowPickaxe = true;
 			}
-
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F2))
 			{
 				NeoPlayer.StartSkydiving(22222);
 				Sleep(100);
 			}
-
+			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F12))
+			{
+				NeoPlayer.SetMovementMode(EMovementMode::MOVE_Custom, 7);
+				//NeoPlayer.Nop((void*)Masks::bGlobal::CurrentMovementStyleCheckAddress, 6);
+				Sleep(100);
+			}
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F6)) // Cleaned up fly toggling - Max 23/09/2021
 			{
 				bisFlying = !bisFlying;
 				NeoPlayer.Fly(bisFlying);
-				printf(bisFlying ? "stopped flying" : "started flying");
 				Sleep(1000);
 			}
-
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_OEM_PLUS)) // Speed modifications (Increase) - Max 23/09/2021
 			{
 				bPlayerMovementSpeed += 0.1;
 				NeoPlayer.SetMovementSpeed(bPlayerMovementSpeed);
-				printf("player increased movement speed");
 			}
 			else if (NeoPlayer.Pawn && GetAsyncKeyState(VK_OEM_MINUS)) // Speed modifications (Decrease) - Max 23/09/2021
 			{
 				bPlayerMovementSpeed -= 0.1;
 				NeoPlayer.SetMovementSpeed(bPlayerMovementSpeed);
-				printf("player decreased movement speed");
 			}
-
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F3))
 			{
 				Stop();
 				break;
 			}
 
-			Sleep(1000 / 30);
+			if (bWantsToJump)
+			{
+				NeoPlayer.Jump();
+				bWantsToJump = false;
+			}
+
+			else if (bWantsToOpenGlider)
+			{
+				NeoPlayer.ForceOpenParachute();
+				bWantsToOpenGlider = false;
+			}
+
+			else if (bWantsToSkydive)
+			{
+				NeoPlayer.Skydive();
+				bWantsToSkydive = false;
+			}
+
+			else if (bWantsToShowPickaxe)
+			{
+				NeoPlayer.ShowPickaxe();
+				bWantsToShowPickaxe = false;
+			}
+			Sleep(1000 / 60);
 		}
 	}
+
 
 	inline void Init()
 	{
@@ -185,11 +195,7 @@ namespace NeoRoyale
 		NeoPlayer.Pawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
 		NeoPlayer.Authorize();
 
-		const auto PlaylistName = gPlaylist->GetName();
-		if (!wcsstr(PlaylistName.c_str(), XOR(L"Playlist_Papaya")) && !wcsstr(PlaylistName.c_str(), XOR(L"Playlist_BattleLab")))
-		{
-			NeoPlayer.TeleportToSpawn();
-		}
+
 
 		if (NeoPlayer.Pawn)
 		{
@@ -225,7 +231,7 @@ namespace NeoRoyale
 
 			//UFunctions::ConsoleLog(XOR(L"\n\nWelcome to Neonite++\nMade with ♥ By Kemo (@xkem0x on twitter)."));
 
-			//NeoPlayer.EquipWeapon(L"WID_Athena_FrenchYedoc_JWFriendly");
+			//NeoPlayer.EquipWeapon(L"WID_SMG_Recoil_Athena_SR");
 			//ConnectServer();
 
 

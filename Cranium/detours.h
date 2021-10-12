@@ -32,62 +32,39 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 
 	if (wcsstr(nFunc.c_str(), XOR(L"DynamicHandleLoadingScreenVisibilityChanged")) && wcsstr(nObj.c_str(), XOR(L"AthenaLobby")))
 	{
+
+		UFunctions::ConsoleLog(XOR(L"Welcome to Neonite++"));
 		if (bIsDebugCamera) bIsDebugCamera = !bIsDebugCamera;
 		//UFunctions::RegionCheck();
 	}
 
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerLoadingScreenDropped")) && bIsInit && bIsStarted)
 	{
-		/*auto buffetPawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"Class /Script/BuffetRuntime.BuffetFlyingPawn")));
 
-		MessageBoxW(nullptr, buffetPawn->GetFullName().c_str(), L"Test", MB_OK);
-
-		ObjectFinder::FindOffset(XOR(L"Class /Script/BuffetRuntime.BuffetFlyingPawn"), XOR(L"DeezNuts"));
-
-		MessageBoxW(nullptr, buffetPawn->GetFullName().c_str(), L"Test", MB_OK);*/
-
-		/*NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Sprint"));
+		auto buffetPawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"Class /Script/BuffetRuntime.BuffetFlyingPawn")));
+		//NeoPlayer.EnableGodMode();
+		/*
+		NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Sprint"));
 		NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Jump"));
 		NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Generic/Traits/DefaultPlayer/GA_DefaultPlayer_InteractUse.GA_DefaultPlayer_InteractUse_C"));
 		NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Generic/Traits/DefaultPlayer/GA_DefaultPlayer_InteractSearch.GA_DefaultPlayer_InteractSearch_C"));
 		*/
-		//UFunctions::SetupCustomInventory();
+		UFunctions::SetupCustomInventory();
 
-		//UFunctions::PlayCustomPlayPhaseAlert();
+		UFunctions::PlayCustomPlayPhaseAlert();
 		//LoadMoreClasses();
 		
-	}
-
-	if (bIsInit)
-	{
-		if (bWantsToJump)
-		{
-			NeoPlayer.Jump();
-			bWantsToJump = false;
-		}
-
-		else if (bWantsToOpenGlider)
-		{
-			NeoPlayer.ForceOpenParachute();
-			bWantsToOpenGlider = false;
-		}
-
-		else if (bWantsToSkydive)
-		{
-			NeoPlayer.Skydive();
-			bWantsToSkydive = false;
-		}
-
-		else if (bWantsToShowPickaxe)
-		{
-			NeoPlayer.ShowPickaxe();
-			bWantsToShowPickaxe = false;
-		}
 	}
 	// NOTE: (irma) This is better.
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerAttemptAircraftJump")))
 	{
-		NeoPlayer.Respawn(); //NOTE TIMMY: Still isn't working properly, seems like function ServerAttemptAircraftJump isn't getting called properly and this causes a crash when trying to teleport
+		//NeoPlayer.GetLocation();
+		//NeoPlayer.StartSkydiving(0);
+		//NeoPlayer.StartSkydiving(0);
+		//NeoPlayer.StartSkydiving(22222);
+		//NeoPlayer.TeleportToSpawn();
+		NeoPlayer.Respawn(); 
+		NeoPlayer.TeleportTo(NeoPlayer.GetLocation());//NOTE TIMMY: Still isn't working properly, seems like function ServerAttemptAircraftJump isn't getting called properly and this causes a crash when trying to teleport
 	}
 
 	if (wcsstr(nFunc.c_str(), XOR(L"OnWeaponEquipped")))
@@ -101,6 +78,24 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 			UFunctions::DestroyActor(OldWeapon);
 			OldWeapon = nullptr;
 		}
+	}
+	if (wcsstr(nFunc.c_str(), XOR(L"CheatScript")))
+	{
+		FString ScriptNameF = static_cast<UCheatManager_CheatScript_Params*>(pParams)->ScriptName;
+		if (ScriptNameF.IsValid())
+		{
+			std::wstring ScriptNameW = ScriptNameF.ToWString();
+			if (wcsstr(ScriptNameW.c_str(), XOR(L"help")))
+			{
+				UFunctions::ConsoleLog(XOR(L"ehh yes there are no commands. just do 'cheatscipt WID_xxxxx' or something"));
+			}
+			else if (ScriptNameW.starts_with(XOR(L"FortWeapon")) || ScriptNameW.starts_with(XOR(L"AthenaGadget")) || ScriptNameW.starts_with(XOR(L"WID")))
+			{
+			//Neoroyale::PlayerPawn->EquipWeapon(ScriptNameW.c_str(), 0);
+				NeoPlayer.EquipWeapon(ScriptNameW.c_str(), 0);
+			}
+		}
+		UFunctions::ConsoleLog(XOR(L"Carbon moment"));
 	}
 
 	if (wcsstr(nFunc.c_str(), XOR(L"BP_OnDeactivated")) && wcsstr(nObj.c_str(), XOR(L"PickerOverlay_EmoteWheel")))
@@ -146,14 +141,22 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 			Bots.push_back(Bot);
 		}
 	}
+	if (wcsstr(nFunc.c_str(), XOR(L"OnWeaponEquipped")))
+	{
+		auto params = static_cast<AFortPawn_OnWeaponEquipped_Params*>(pParams);
+		auto OldWeapon = params->PrevWeapon;
+		if (OldWeapon && !Util::IsBadReadPtr(OldWeapon))
+		{
+			UFunctions::DestroyActor(OldWeapon);
+			OldWeapon = nullptr;
+		}
+	}
 
 
 	if (wcsstr(nFunc.c_str(), XOR(L"ExecuteConsoleCommand")))
 	{
 		FString ScriptNameF = static_cast<UKismetSystemLibrary_ExecuteConsoleCommand_Params*>(pParams)->Command;
 
-		if (ScriptNameF.IsValid())
-		{
 			std::wstring ScriptNameW = ScriptNameF.ToWString();
 
 			std::wstring arg;
@@ -167,8 +170,9 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 
 			switch (CMD)
 			{
-			case TEST:
+			case HELP:
 			{
+				UFunctions::ConsoleLog(ScriptNameW);
 				break;
 			}
 
@@ -185,7 +189,7 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 			}
 			case EVENT:
 			{
-				/*if (gVersion == 14.60f)
+				if (gVersion == 14.60f)
 				{
 					UFunctions::Play(GALACTUS_EVENT_PLAYER);
 				}
@@ -204,13 +208,13 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 				else
 				{
 					UFunctions::ConsoleLog(XOR(L"Sorry the version you are using doesn't have any event we support."));
-				}*/
+				}
 				break;
 			}
 
 			case DEBUG_CAMERA:
 			{
-				//bIsDebugCamera = !bIsDebugCamera;
+				bIsDebugCamera = !bIsDebugCamera;
 				break;
 			}
 
@@ -370,7 +374,7 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 
 			default: break;
 			}
-		}
+		
 	}
 #ifdef FUNCLOGGING
 	//Logging
@@ -418,3 +422,12 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 
 out: return ProcessEvent(pObj, pFunc, pParams);
 }
+
+namespace CameraHook
+{
+	inline float Speed = 0.1;
+	inline float FOV = 52.0;
+	inline FVector Camera(52.274170, 125912.695313, 89.249969);
+	inline FRotator Rotation = { 0.870931, -88.071960, 0.008899 };
+}
+
