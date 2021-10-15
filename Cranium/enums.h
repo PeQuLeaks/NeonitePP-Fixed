@@ -17,6 +17,14 @@
 #define RIFT_TOUR_STAIRS_MAP XOR(L"Buffet_Escher")
 #define RIFT_TOUR_POSITIONS_MAP XOR(L"Buffet_Shard")
 #define RIFT_TOUR_CLOUDS_MAP XOR(L"Buffet_Cloud")
+#define MOTHERSHIP_EVENT XOR(L"Kiwi_P")
+#define KIWI_SPACE XOR(L"Kiwi_Space")
+#define KIWI_TUBES XOR(L"Kiwi_Tubes")
+#define KIWI_OBSERVATIONHALLWAY XOR(L"Kiwi_ObservationHallway")
+#define KIWI_PRISONBLOCKS XOR(L"Kiwi_PrisonBlocks")
+#define KIWI_PRISONJUNCTION XOR(L"Kiwi_PrisonJunction")
+#define KIWI_HANGAR XOR(L"Kiwi_Hangar")
+#define KIWI_KEVINROOM XOR(L"Kiwi_KevinRoom")
 
 #define GALACTUS_EVENT_PLAYER XOR(L"LevelSequencePlayer /Junior/Levels/Junior_Map_LevelInstance_1.Junior_Map.PersistentLevel.Junior_Master_Rep_2.AnimationPlayer")
 #define JERKY_EVENT_PLAYER XOR(L"LevelSequencePlayer /CycloneJerky/Levels/JerkySequenceMap_LevelInstance_1.JerkySequenceMap.PersistentLevel.Jerky.AnimationPlayer")
@@ -28,6 +36,7 @@
 #define RIFT_TOUR_STAIRS_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_Escher.Buffet_Escher.PersistentLevel.Buffet_Animation_Escher_2.AnimationPlayer")
 #define RIFT_TOUR_POSITIONS_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_Shard.Buffet_Shard.PersistentLevel.Buffet_Animation_Shards_2.AnimationPlayer")
 #define RIFT_TOUR_CLOUDS_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_Cloud.Buffet_Cloud.PersistentLevel.Buffet_Master.AnimationPlayer")
+#define MOTHERSHIP_EVENT_PLAYER XOR(L"LevelSequencePlayer /Kiwi/Levels/Kiwi_P.Kiwi_P.PersistentLevel.Kiwi_Master.AnimationPlayer")
 
 
 enum ECommands

@@ -224,26 +224,6 @@ namespace UFunctions
 		ProcessEvent(Sequence, Play, nullptr);
 	}
 
-	inline void StartBuffet()
-	{
-		auto BuffetScripting = UE4::FindObject<UObject*>(XOR(L"BP_Buffet_Master_Scripting_C /Buffet/Levels/Buffet_P.Buffet_P.PersistentLevel.BP_Event_Master_Scripting_2"));
-		auto StartEvent = UE4::FindObject<UFunction*>(XOR(L"Function /Buffet/Gameplay/Blueprints/BP_Buffet_Master_Scripting.BP_Buffet_Master_Scripting_C.startevent"));
-		auto InitializeLevelLoader = UE4::FindObject<UFunction*>(XOR(L"Function /Buffet/Gameplay/Blueprints/BP_Buffet_Master_Scripting.BP_Buffet_Master_Scripting_C.InitializeLevelLoader"));
-		auto LoadNextBuffetLevel = UE4::FindObject<UFunction*>(XOR(L"Function /Buffet/Gameplay/Blueprints/BP_Buffet_Master_Scripting.BP_Buffet_Master_Scripting_C.LoadNextBuffetLevel"));
-		auto StartEventAtPhase = UE4::FindObject<UFunction*>(XOR(L"Function /Buffet/Gameplay/Blueprints/BP_Buffet_Master_Scripting.BP_Buffet_Master_Scripting_C.StartEventAtPhase"));
-		auto EventLeadUp = UE4::FindObject<UFunction*>(XOR(L"Function /Buffet/Gameplay/Blueprints/BP_Buffet_Master_Scripting.BP_Buffet_Master_Scripting_C.EventLeadUp"));
-		auto GetSequenceAndPlay = UE4::FindObject<UFunction*>(XOR(L"Function /Buffet/Gameplay/Blueprints/BP_Buffet_Master_Scripting.BP_Buffet_Master_Scripting_C.GetSequenceAndPlay"));
-		auto Update_Apollo_Terrain_Visibility = UE4::FindObject<UFunction*>(XOR(L"Function /Buffet/Gameplay/Blueprints/BP_Buffet_Master_Scripting.BP_Buffet_Master_Scripting_C.Update_Apollo_Terrain_Visibility"));
-
-		ProcessEvent(BuffetScripting, InitializeLevelLoader, nullptr);;
-		//ProcessEvent(BuffetScripting, LoadNextBuffetLevel, nullptr);
-		//ProcessEvent(BuffetScripting, StartEventAtPhase, nullptr);
-		//ProcessEvent(BuffetScripting, EventLeadUp, nullptr);
-		//ProcessEvent(BuffetScripting, GetSequenceAndPlay, nullptr);
-		//ProcessEvent(BuffetScripting, Update_Apollo_Terrain_Visibility, nullptr);
-		ProcessEvent(BuffetScripting, StartEvent, nullptr);
-	}
-
 	inline void ConsoleLog(std::wstring message)
 	{
 		

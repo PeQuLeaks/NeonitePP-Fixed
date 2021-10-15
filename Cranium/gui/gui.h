@@ -574,11 +574,6 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 				{
 					UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
 				}
-				if (Button(XOR("Start Rift Tour Event 2")))
-				{
-					UFunctions::StartBuffet();
-					//UFunctions::StartBuffetLevel();
-				}
 				if (Button(XOR("Start Rift Tour Cuddle")))
 				{
 					UFunctions::Play(RIFT_TOUR_CUDDLE_PLAYER);
@@ -599,6 +594,57 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 				{
 					UFunctions::Play(RIFT_TOUR_POSITIONS_PLAYER);
 				}
+				EndTabItem();
+
+			}
+
+#endif
+
+#ifdef SkyFireGUI
+			if (BeginTabItem("Sky Fire"))
+			{
+				Text("Teleport to maps");
+
+				if (Button(XOR("Teleport to main Sky Fire map")))
+				{
+					UFunctions::Travel(MOTHERSHIP_EVENT);
+				}
+				if (Button(XOR("Teleport to Space Map")))
+				{
+					UFunctions::Travel(KIWI_SPACE);
+				}
+				if (Button(XOR("Teleport to Tubes Map")))
+				{
+					UFunctions::Travel(KIWI_TUBES);
+				}
+				if (Button(XOR("Teleport to Observation Hallway")))
+				{
+					UFunctions::Travel(KIWI_OBSERVATIONHALLWAY);
+				}
+				if (Button(XOR("Teleport to Prison Blocks Map")))
+				{
+					UFunctions::Travel(KIWI_PRISONBLOCKS);
+				}
+				if (Button(XOR("Teleport to Prison Junction Map")))
+				{
+					UFunctions::Travel(KIWI_PRISONJUNCTION);
+				}
+				if (Button(XOR("Teleport to Hangar Map")))
+				{
+					UFunctions::Travel(KIWI_HANGAR);
+				}
+				if (Button(XOR("Teleport to Kevin Room")))
+				{
+					UFunctions::Travel(KIWI_KEVINROOM);
+				}
+
+				NewLine();
+				Text("Start event sequences");
+				if (Button(XOR("Start Sky Fire Event")))
+				{
+					UFunctions::Play(MOTHERSHIP_EVENT_PLAYER);
+				}
+				Text("This Sequence can only be started from the Main Sky Fire Map");
 				EndTabItem();
 
 			}

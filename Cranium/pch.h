@@ -5,6 +5,7 @@
 //#define SSL_BYPASS
 #define HOOKS
 #define RiftTourGUI
+#define SkyFireGUI
 //#define INJECT_ASAP
 
 
