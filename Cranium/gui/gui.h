@@ -682,7 +682,7 @@ etc)");
 					SetCursorPosX(GetCursorPosX() + 50);
 					SetCursorPosY(GetCursorPosY() + 5);
 
-					Text(XOR("PeQU (@PeQuLeaks): General, Event related stuff, bug fixes"));
+					Text(XOR("PeQU (@RatioFN2): General, Event related stuff, bug fixes"));
 
 					SetCursorPosX(GetCursorPosX() + 50);
 					SetCursorPosY(GetCursorPosY() + 5);
