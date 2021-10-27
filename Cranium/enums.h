@@ -91,7 +91,6 @@ auto str2enum(const std::wstring& str)
 //Memory
 namespace Patterns
 {
-
 	//Works on 10.40^
 	namespace Curl
 	{
@@ -102,9 +101,6 @@ namespace Patterns
 			constexpr const char* CurlSetOpt =
 				"\x48\x89\x5C\x24\x08\x48\x89\x6C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x83\xEC\x30\x33\xED\x49\x8B\xF0\x48\x8B\xD9";
 		}
-
-		constexpr const char* CurlSetOpt =
-			"\x48\x89\x5C\x24\x08\x48\x89\x6C\x24\x10\x48\x89\x74\x24\x18\x48\x89\x7C\x24\x20\x41\x56\x48\x83\xEC\x40\x33\xED\x49\x8B\xF0\x44";
 	}
 
 	//16.60
@@ -117,6 +113,7 @@ namespace Patterns
 	//Works on 10.40^
 	namespace bGlobal
 	{
+
 		//Dead
 		constexpr const char* GEngine = "\x48\x8B\x0D\x00\x00\x00\x00\x48\x8B\xD3\xE8\x00\x00\x00\x00\x84\xC0";
 
@@ -317,6 +314,14 @@ enum class EAthenaGamePhaseStep
 	EndGame,
 	Count,
 	EAthenaGamePhaseStep_MAX,
+};
+
+enum class EFortQuickBars : uint8_t
+{
+	Primary = 0,
+	Secondary = 1,
+	Max_None = 2,
+	EFortQuickBars_MAX = 3
 };
 
 enum class ECameraProjectionMode : uint8_t

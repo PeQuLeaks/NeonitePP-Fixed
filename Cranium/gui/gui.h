@@ -48,6 +48,7 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	else if (GetAsyncKeyState(VK_F10)) //When button F9 is pressed
 	{
 		NeoPlayer.Possess();
+		NeoPlayer.ShowSkin();
 		NeoPlayer.UpdatePlayerController();
 
 	}
@@ -102,7 +103,6 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 			fileDialog.SetTypeFilters({".png"});
 			InitImGui();
 			initgui = true;
-			Console::ExecuteConsoleCommand(XOR(L"god"));
 		}
 
 		else return oPresent(pSwapChain, SyncInterval, Flags);
@@ -435,7 +435,7 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 								if (Selectable(wid.c_str(), is_selected))
 								{
 									currentItem = gWeapons[n];
-									std::string commandS = "equip " + wid;
+									std::string commandS = "cheatscript equip " + wid;
 									strcpy(command, commandS.c_str());
 								}
 								if (is_selected)
@@ -455,7 +455,7 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 								if (Selectable(blueprint.c_str(), is_selected))
 								{
 									currentBlueprint = gBlueprints[n];
-									std::string commandS = "summon " + blueprint;
+									std::string commandS = "cheatscript summon " + blueprint;
 									strcpy(command, commandS.c_str());
 								}
 								if (is_selected)
@@ -657,32 +657,11 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 
 					Text(
 						R"(
-Commands
----------------------------
-event - Triggers the event for your version (e.g. Junior, Jerky, Flatter).
-debugcamera - Toggles a custom version of the debug camera.
-skydive | skydiving - Puts you in a skydive with deploy at 1500m above the ground.
-equip <WID | AGID> - Equips a weapon / pickaxe. (You can get them from the modifers tap)
-setgravity <NewGravityScaleFloat> - Changes the gravity scale.
-speed | setspeed <NewCharacterSpeedMultiplier> - Changes the movement speed multiplier.
-setplaylist <Playlist> - Overrides the current playlist.
-respawn - Respawns the player (duh)
-sethealth <NewHealthFloat> - Changes your health value.
-setshield <NewShieldFloat> - Changes your shield value.
-setmaxhealth <NewMaxHealthFloat> - Changes your max health value.
-setmaxshield <newMaxShieldFloat> - Changes your max shield value.
-dump - Dumps a list of all GObjects. (output at win64 folder)
-dumpbps - Dumps a list all blueprints. (output at win64 folder)
-fly - Toggles flying.
-enablecheats - Enables cheatmanager.
-summon <BlueprintClass> - Summons a blueprint class. (You can get them from the helpers tap)
----------------------------
-F3 - Back to lobby.
-` (backquote key) - Open UE4 console.
-<> - Argument (e.g: <NewHealthFloat> is replaced with 1.0).
-| - Or.
-)");
-
+if you want to teleport to XXX type xxx in console
+main map - streammap buffet_P
+etc
+etc)");
+					NewLine();
 
 					EndTabItem();
 				}
@@ -703,7 +682,7 @@ F3 - Back to lobby.
 					SetCursorPosX(GetCursorPosX() + 50);
 					SetCursorPosY(GetCursorPosY() + 5);
 
-					Text(XOR("PeQU (@RatioFN): General, Event related stuff, bug fixes"));
+					Text(XOR("PeQU (@PeQuLeaks): General, Event related stuff, bug fixes"));
 
 					SetCursorPosX(GetCursorPosX() + 50);
 					SetCursorPosY(GetCursorPosY() + 5);

@@ -283,6 +283,11 @@ struct UField : UObject
 	void* padding_02;
 };
 
+
+struct ACharacter_OnRep_IsParachuteOpen_Params
+{
+	bool bPreviousState;
+};
 struct UStruct : UField
 {
 	UStruct* SuperStruct;
@@ -469,6 +474,7 @@ struct AFortPawn_EquipWeaponDefinition_Params
 {
 	UObject* WeaponData;
 	FGuid ItemEntryGuid;
+	float Durability;
 	UObject* ReturnValue;
 };
 
@@ -561,6 +567,12 @@ struct FUObjectItem
 struct PreFUObjectItem
 {
 	FUObjectItem* FUObject[10];
+};
+
+struct ItemCount
+{
+	char Bytes[0xC];
+	int Count;
 };
 
 struct GObjects

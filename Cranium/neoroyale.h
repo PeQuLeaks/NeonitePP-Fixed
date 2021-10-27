@@ -9,7 +9,7 @@
 #include "mods.h"
 #include "server.h"
 #include "enums.h"
-
+#include "console.h"
 
 inline std::vector<std::wstring> gWeapons;
 inline std::vector<std::wstring> gBlueprints;
@@ -54,11 +54,25 @@ namespace NeoRoyale
 
 	inline void LoadMoreClasses()
 	{
-		static auto BPGClass = UE4::FindObject<UClass*>(XOR(L"Class /Script/Engine.BlueprintGeneratedClass"));
+		auto BPGClass = UE4::FindObject<UClass*>(XOR(L"Class /Script/Engine.BlueprintGeneratedClass"));
 
-		//Mech
-		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Athena/DrivableVehicles/Mech/TestMechVehicle.TestMechVehicle_C"));
 
+		//Husks
+		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Characters/Enemies/Husk/Blueprints/HuskPawn.HuskPawn_C"));
+		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Characters/Enemies/DudeBro/Blueprints/DUDEBRO_Pawn.DUDEBRO_Pawn_C"));
+
+
+		//CameraFilters
+		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_FilmNoir.PP_FilmNoir_C"));
+		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Crazy.PP_Crazy_C"));
+		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Dark.PP_Dark_C"));
+		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_HappyPlace.PP_HappyPlace_C"));
+		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Oak.PP_Oak_C"));
+		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Pixelizer.PP_Pixelizer_C"));
+		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Red.PP_Red_C"));
+		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Retro.PP_Retro_C"));
+		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Sepia.PP_Sepia_C"));
+		UE4::StaticLoadObjectEasy(BPGClass, XOR(L"/Game/Creative/PostProcess/PP_Spooky.PP_Spooky_C"));
 
 	}
 	inline void InitCombos()
@@ -100,27 +114,27 @@ namespace NeoRoyale
 			if (NeoPlayer.Pawn && (GetAsyncKeyState(VK_SPACE) & 1))
 			{
 
-				if (NeoPlayer.IsInAircraft())
+				if (!NeoPlayer.IsInAircraft())
 				{
-
+					// Glide
+					if (NeoPlayer.IsSkydiving() && !NeoPlayer.IsParachuteOpen() && !NeoPlayer.IsParachuteForcedOpen())
+					{
+						//NeoPlayer.SetMovementMode(EMovementMode::MOVE_Custom, 3);
+						//NeoPlayer.OnRep_IsParachuteOpen(false);
+					}
+					// Skydive
+					else if (NeoPlayer.IsSkydiving() && NeoPlayer.IsParachuteOpen() && !NeoPlayer.IsParachuteForcedOpen())
+					{
+						NeoPlayer.SetMovementMode(EMovementMode::MOVE_Custom, 3);
+						NeoPlayer.SetMovementMode(EMovementMode::MOVE_Custom, 4);
+						//NeoPlayer.OnRep_IsParachuteOpen(true);
+					}
+					//Jump
+					else if (!NeoPlayer.IsJumpProvidingForce())
+					{
+						NeoPlayer.Jump();
+					}
 				}
-				else if (NeoPlayer.IsSkydiving() && !NeoPlayer.IsInAircraft() && !NeoPlayer.IsParachuteOpen())
-				{
-					NeoPlayer.ForceOpenParachute();
-					//NeoPlayer.SetMovementMode(EMovementMode::MOVE_Custom, 2L);
-				}
-				else if (!NeoPlayer.IsJumpProvidingForce())
-				{
-					NeoPlayer.Jump();
-				}
-				/*
-				else if (PlayerPawn->IsSkydiving() && !PlayerPawn->IsParachuteOpen() && !PlayerPawn->IsParachuteForcedOpen()) {
-						PlayerPawn->SetMovementMode(EMovementMode::MOVE_Custom, 2L);
-				}
-				else if (PlayerPawn->IsParachuteOpen() && !PlayerPawn->IsParachuteForcedOpen()) {
-					PlayerPawn->SetMovementMode(EMovementMode::MOVE_Custom, 3L);
-				}
-				*/
 			}
 			if (NeoPlayer.Pawn && GetAsyncKeyState(0x31) /* 1 key */)
 			{
@@ -133,11 +147,9 @@ namespace NeoRoyale
 				NeoPlayer.StartSkydiving(22222);
 				Sleep(100);
 			}
-			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F12))
+			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F12)) //default debugging key, please dont bind this to anything important, ty -Timmy
 			{
-				NeoPlayer.SetMovementMode(EMovementMode::MOVE_Custom, 7);
-				//NeoPlayer.Nop((void*)Masks::bGlobal::CurrentMovementStyleCheckAddress, 6);
-				Sleep(100);
+				NeoPlayer.UpdateInventory();
 			}
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F6)) // Cleaned up fly toggling - Max 23/09/2021
 			{
@@ -184,7 +196,7 @@ namespace NeoRoyale
 				NeoPlayer.ShowPickaxe();
 				bWantsToShowPickaxe = false;
 			}
-			Sleep(1000 / 60);
+			Sleep(1000 / 100);
 		}
 	}
 
@@ -192,18 +204,15 @@ namespace NeoRoyale
 	inline void Init()
 	{
 		UFunctions::DestroyAll(UE4::FindObject<UClass*>(XOR(L"Class /Script/FortniteGame.FortHLODSMActor")));
+		//NeoPlayer.DummyPawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
 		NeoPlayer.Pawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
 		NeoPlayer.Authorize();
 
-
-
 		if (NeoPlayer.Pawn)
 		{
+			NeoPlayer.Authorize();
+
 			NeoPlayer.Possess();
-
-			NeoPlayer.ShowSkin();
-
-			NeoPlayer.ShowPickaxe();
 
 			NeoPlayer.ToggleInfiniteAmmo();
 
@@ -215,7 +224,15 @@ namespace NeoRoyale
 
 			UFunctions::SetPlaylist();
 
+			NeoPlayer.Respawn();
+
+			NeoPlayer.Respawn();
+
 			UFunctions::SetGamePhase();
+
+			NeoPlayer.ShowSkin();
+
+			NeoPlayer.ShowPickaxe();
 
 			UFunctions::StartMatch();
 
@@ -223,13 +240,15 @@ namespace NeoRoyale
 
 			InitCombos();
 
+			//LoadMoreClasses();
+
 			CreateThread(nullptr, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Thread), nullptr, NULL, nullptr);
 
 			NeoPlayer.EnableConsole();
 
 			NeoPlayer.EnableCheatManager();
 
-			//UFunctions::ConsoleLog(XOR(L"\n\nWelcome to Neonite++\nMade with ♥ By Kemo (@xkem0x on twitter)."));
+			UFunctions::ConsoleLog(XOR(L"\n\nWelcome to Neonite++\nMade with ♥ By Kemo (@xkem0x on twitter)."));
 
 			//NeoPlayer.EquipWeapon(L"WID_SMG_Recoil_Athena_SR");
 			//ConnectServer();

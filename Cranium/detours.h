@@ -9,14 +9,11 @@
 #include "neoroyale.h"
 #include "kismet.h"
 
-#ifndef PROD
- //#define LOGGING
-#endif
 
 using namespace NeoRoyale;
 
 inline bool bIsDebugCamera;
-inline bool bIsFlying;
+inline bool bIsFlying; 
 
 inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 {
@@ -28,11 +25,13 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 	{
 		printf(XOR("\n[NeoRoyale] Init!\n"));
 		Init();
+		Console::ExecuteConsoleCommand(XOR(L"god"));
+		NeoPlayer.StartSkydiving(10);
 	}
 
 	if (wcsstr(nFunc.c_str(), XOR(L"DynamicHandleLoadingScreenVisibilityChanged")) && wcsstr(nObj.c_str(), XOR(L"AthenaLobby")))
 	{
-
+		//NeoPlayer.StartSkydiving(9999);
 		UFunctions::ConsoleLog(XOR(L"Welcome to Neonite++"));
 		if (bIsDebugCamera) bIsDebugCamera = !bIsDebugCamera;
 		//UFunctions::RegionCheck();
@@ -40,8 +39,8 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerLoadingScreenDropped")) && bIsInit && bIsStarted)
 	{
-
-		auto buffetPawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"Class /Script/BuffetRuntime.BuffetFlyingPawn")));
+		
+		NeoPlayer.SetHealth(100);
 		//NeoPlayer.EnableGodMode();
 		/*
 		NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Sprint"));
@@ -49,8 +48,9 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Generic/Traits/DefaultPlayer/GA_DefaultPlayer_InteractUse.GA_DefaultPlayer_InteractUse_C"));
 		NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Generic/Traits/DefaultPlayer/GA_DefaultPlayer_InteractSearch.GA_DefaultPlayer_InteractSearch_C"));
 		*/
+		//LoadMoreClasses();
 		UFunctions::SetupCustomInventory();
-
+		//NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Generic/Traits/DefaultPlayer/GA_DefaultPlayer_InteractUse.GA_DefaultPlayer_InteractUse_C"));
 		UFunctions::PlayCustomPlayPhaseAlert();
 		//LoadMoreClasses();
 		
@@ -64,6 +64,7 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		//NeoPlayer.StartSkydiving(22222);
 		//NeoPlayer.TeleportToSpawn();
 		NeoPlayer.Respawn(); 
+		Console::ExecuteConsoleCommand(XOR(L"god"));
 		NeoPlayer.TeleportTo(NeoPlayer.GetLocation());//NOTE TIMMY: Still isn't working properly, seems like function ServerAttemptAircraftJump isn't getting called properly and this causes a crash when trying to teleport
 	}
 
@@ -87,15 +88,80 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 			std::wstring ScriptNameW = ScriptNameF.ToWString();
 			if (wcsstr(ScriptNameW.c_str(), XOR(L"help")))
 			{
-				UFunctions::ConsoleLog(XOR(L"ehh yes there are no commands. just do 'cheatscipt WID_xxxxx' or something"));
+				UFunctions::ConsoleLog(XOR(L"ehh yes there are no commands. just do 'cheatscipt equip WID_xxxxx' or something"));
 			}
-			else if (ScriptNameW.starts_with(XOR(L"FortWeapon")) || ScriptNameW.starts_with(XOR(L"AthenaGadget")) || ScriptNameW.starts_with(XOR(L"WID")))
+			else if (wcsstr(ScriptNameW.c_str(), XOR(L"dump")))
 			{
-			//Neoroyale::PlayerPawn->EquipWeapon(ScriptNameW.c_str(), 0);
-				NeoPlayer.EquipWeapon(ScriptNameW.c_str(), 0);
+				UFunctions::ConsoleLog(XOR(L"Dumping all items and blueprints!"));
+				UE4::DumpBPs();
+				UE4::DumpGObjects();
+			}
+			else if (wcsstr(ScriptNameW.c_str(), XOR(L"startgame")))
+			{
+
+				const auto arg = ScriptNameW.erase(0, ScriptNameW.find(XOR(L" ")) + 1);
+
+				if (!arg.empty())
+				{
+					bIsStarted = false;
+					bIsInit = false;
+
+					gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/ItemTest/Playlist_ItemTest.Playlist_ItemTest"));
+					Start(arg.c_str());
+				}
+				else
+				{
+					bIsStarted = false;
+					bIsInit = false;
+
+					auto Map = APOLLO_TERRAIN;
+					gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /BuffetPlaylist/Playlist/Playlist_Buffet.Playlist_Buffet")); //Buffet Event		gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /BuffetPlaylist/Playlist/Playlist_Buffet.Playlist_Buffet")); //Buffet Event
+	
+					Start(Map);
+
+					
+				}
+			}
+			else if (ScriptNameW == XOR(L"test"))
+			{
+				struct AFortBroadcastRemoteClientInfo_ServerSetPlayerInventoryActive_Params
+				{
+					bool bInventorypActive;
+				};
+
+				const auto FortBroadcastRemoteClientInfo = UE4::FindObject<UObject*>(
+					XOR(L"FortBroadcastRemoteClientInfo /Game/Athena/Apollo/Maps/Apollo_Terrain.Apollo_Terrain:PersistentLevel.FortBroadcastRemoteClientInfo_"));
+
+				const auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortBroadcastRemoteClientInfo:ServerSetPlayerInventoryActive"));
+
+				AFortBroadcastRemoteClientInfo_ServerSetPlayerInventoryActive_Params params;
+				params.bInventorypActive = true;
+
+				ProcessEvent(FortBroadcastRemoteClientInfo, fn, &params);
+			}
+
+			else if (ScriptNameW.starts_with(XOR(L"equip")))
+			{
+				const auto arg = ScriptNameW.erase(0, ScriptNameW.find(XOR(L" ")) + 1);
+
+				if (!arg.empty())
+				{
+					if (arg.starts_with(XOR(L"WID_")) || arg.starts_with(XOR(L"AGID_")))
+					{
+						NeoPlayer.EquipWeapon(arg.c_str());
+					}
+					else
+					{
+						UFunctions::ConsoleLog(XOR(L"This command only works with WIDs and AGIDs."));
+					}
+				}
+				else
+				{
+					UFunctions::ConsoleLog(XOR(L"This command requires an argument"));
+				}
 			}
 		}
-		UFunctions::ConsoleLog(XOR(L"Carbon moment"));
+		//UFunctions::ConsoleLog(XOR(L"hi"));
 	}
 
 	if (wcsstr(nFunc.c_str(), XOR(L"BP_OnDeactivated")) && wcsstr(nObj.c_str(), XOR(L"PickerOverlay_EmoteWheel")))
@@ -135,23 +201,12 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 
 		if (Bot.Pawn)
 		{
-			Bot.SetSkeletalMesh(XOR(L"SK_M_MALE_Base"));
-			Bot.Emote(UE4::FindObject<UObject*>(XOR(L"EID_HightowerSquash.EID_HightowerSquash"), true));
+			//Bot.SetSkeletalMesh(XOR(L"SK_M_MALE_Base"));
+			//Bot.Emote(UE4::FindObject<UObject*>(XOR(L"EID_HightowerSquash.EID_HightowerSquash"), true));
 
 			Bots.push_back(Bot);
 		}
 	}
-	if (wcsstr(nFunc.c_str(), XOR(L"OnWeaponEquipped")))
-	{
-		auto params = static_cast<AFortPawn_OnWeaponEquipped_Params*>(pParams);
-		auto OldWeapon = params->PrevWeapon;
-		if (OldWeapon && !Util::IsBadReadPtr(OldWeapon))
-		{
-			UFunctions::DestroyActor(OldWeapon);
-			OldWeapon = nullptr;
-		}
-	}
-
 
 	if (wcsstr(nFunc.c_str(), XOR(L"ExecuteConsoleCommand")))
 	{
@@ -411,6 +466,7 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		!wcsstr(nFunc.c_str(), L"BindVolumeEvents") &&
 		//!wcsstr(nFunc.c_str(), L"BindVolumeEvents") &&
 		!wcsstr(nFunc.c_str(), L"Update") &&
+		!wcsstr(nObj.c_str(), L"B_Athena_PartModifier_Fire_BandageNinja_C_2147470383") &&
 		!wcsstr(nFunc.c_str(), L"UpdateStateEvent") &&
 		!wcsstr(nObj.c_str(), L"BGA_HeldObject_Physics_Explosive_PropaneTank_C_2147448779") &&
 		!wcsstr(nFunc.c_str(), L"ReadyToEndMatch"))

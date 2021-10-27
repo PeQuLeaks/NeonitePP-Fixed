@@ -25,18 +25,15 @@ bool WINAPI ImguiThread()
 void WINAPI dllMain()
 {
 #ifdef CONSOLE
-	//#ifndef PROD
 	FILE* fDummy;
 	AllocConsole();
 	freopen_s(&fDummy, "CONIN$", "r", stdin);
 	freopen_s(&fDummy, "CONOUT$", "w", stderr);
 	freopen_s(&fDummy, "CONOUT$", "w", stdout);
-	//freopen_s(&fDummy, "ProcessEvent.log", "w", stdout);
-//#endif
-	printf(XOR("[=] Cranium made by Kemo, Sizzy, PeQu and Timmy \n"));
+	printf(XOR("\n\n[=] Cranium made by Kemo, Sizzy, PeQu and Timmy \n\n"));
 #endif
 
-#ifdef SSL_BYPASS
+#ifdef PLATANIUMV2
 	Hooks::Init();
 #endif
 
@@ -53,15 +50,14 @@ void WINAPI dllMain()
 		//		break;
 		//	}
 		//}
-		 if (GetAsyncKeyState(VK_F3))
+		 if (isReady || GetAsyncKeyState(VK_F3))
 		{
-			if (Hooks::Misc(99.99f))
+			if (Hooks::Misc(17.30f))
 			{
 				ImguiThread();
 				break;
 			}
 		}
-		Sleep(1000 / 30); //30 fps  
 	}
 #endif
 }

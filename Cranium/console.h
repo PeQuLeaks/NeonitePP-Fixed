@@ -26,8 +26,9 @@ namespace Console
 		params.Command = command;
 		params.SpecificPlayer = PlayerControllerFinder.GetObj();
 
-		ProcessEventDetour(KismetSysLib, fn, &params);
+		ProcessEvent(KismetSysLib, fn, &params);
 		printf(XOR("\n[NeoRoyale] Executed a console command!\n"));
 	}
 }
+
 //apollo_terrain?game=/script/engine.gamemodebase

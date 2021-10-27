@@ -3,11 +3,12 @@
 
 #define CONSOLE
 //#define SSL_BYPASS
+//#define PLATANIUMV2
 #define HOOKS
 #define RiftTourGUI
 #define SkyFireGUI
+//#define FUNCLOGGING
 //#define INJECT_ASAP
-
 
 #include "framework.h"
 
