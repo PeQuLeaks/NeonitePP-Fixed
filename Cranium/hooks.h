@@ -202,12 +202,12 @@ namespace Hooks
 
 
 
-		auto Map = APOLLO_TERRAIN;
+		auto Map = GUAVA_P;
 #ifdef RiftTourGUI
 		//gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /BuffetPlaylist/Playlist/Playlist_Buffet.Playlist_Buffet")); //Buffet Event
-		//gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/ItemTest/Playlist_ItemTest.Playlist_ItemTest")); //Epic Test Gamemode
+		//gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /GuavaPlaylist/Playlist/Playlist_Guava.Playlist_Guava")); //Guava Event
 		//gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /KiwiPlaylist/Playlists/Playlist_Kiwi.Playlist_Kiwi")); // Kiwi Event
-		gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab")); //Battlelab
+		gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /GuavaPlaylist/Playlist/Playlist_Guava.Playlist_Guava")); //Battlelab
 #else
 	gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/Mash/Playlist_Mash_Squads_Legacy.Playlist_Mash_Squads_Legacy")); //Battlelab
 #endif

@@ -2,6 +2,8 @@
 #include "../mods.h"
 #include "../console.h"
 #include "ImGui/imgui.h"
+#include "../console.h"
+#include "../console.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -307,6 +309,11 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 							NeoPlayer.Respawn();
 						}
 
+						if (Button("Possess"))
+						{
+							NeoPlayer.Possess();
+						}
+
 						if (Button("Pick Custom Body Texture"))
 						{
 							fileDialog.Open();
@@ -538,35 +545,18 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						EndTabItem();
 					}
 				}
+
 #ifdef RiftTourGUI
 			if (BeginTabItem("Rift Tour"))
 			{
-				Text("Teleport to maps");
+				Text("To teleport to the Event maps type this in the console:");
 
-				if (Button(XOR("Teleport to main map")))
-				{
-					UFunctions::Travel(RIFT_TOUR_EVENT_MAP);
-				}
-				if (Button(XOR("Teleport to cuddle map")))
-				{
-					UFunctions::Travel(RIFT_TOUR_CUDDLE_MAP);
-				}
-				if (Button(XOR("Teleport to storm king map")))
-				{
-					UFunctions::Travel(RIFT_TOUR_STORMKING_MAP);
-				}
-				if (Button(XOR("Teleport to stairs map")))
-				{
-					UFunctions::Travel(RIFT_TOUR_STAIRS_MAP);
-				}
-				if (Button(XOR("Teleport to positions map")))
-				{
-					UFunctions::Travel(RIFT_TOUR_POSITIONS_MAP);
-				}
-				if (Button(XOR("Teleport to clouds map")))
-				{
-					UFunctions::Travel(RIFT_TOUR_CLOUDS_MAP);
-				}
+				Text("Main Rift Tour Map - streammap Buffet_P");
+				Text("Rift Tour Cuddle Map - streammap Buffet_Part5");
+				Text("Rift Tour Storm King Map - streammap Buffet_Part_6");
+				Text("Rift Tour Stairs Map - streammap Buffet_Escher");
+				Text("Rift Tour Positions Map - streammap Buffet_Shard");
+				Text("Rift Tour Clouds Map - streammap Buffet_Clouds");
 
 				NewLine();
 				Text("Start event sequences");
@@ -574,6 +564,7 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 				{
 					UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
 				}
+				Text("This Sequence can only be started from the Main Sky Fire Map");
 				if (Button(XOR("Start Rift Tour Cuddle")))
 				{
 					UFunctions::Play(RIFT_TOUR_CUDDLE_PLAYER);
@@ -601,42 +592,17 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 #endif
 
 #ifdef SkyFireGUI
-			if (BeginTabItem("Sky Fire"))
+			if (BeginTabItem("SkyFire"))
 			{
-				Text("Teleport to maps");
+				Text("To teleport to the Event maps type this in the console:");
 
-				if (Button(XOR("Teleport to main Sky Fire map")))
-				{
-					UFunctions::Travel(MOTHERSHIP_EVENT);
-				}
-				if (Button(XOR("Teleport to Space Map")))
-				{
-					UFunctions::Travel(KIWI_SPACE);
-				}
-				if (Button(XOR("Teleport to Tubes Map")))
-				{
-					UFunctions::Travel(KIWI_TUBES);
-				}
-				if (Button(XOR("Teleport to Observation Hallway")))
-				{
-					UFunctions::Travel(KIWI_OBSERVATIONHALLWAY);
-				}
-				if (Button(XOR("Teleport to Prison Blocks Map")))
-				{
-					UFunctions::Travel(KIWI_PRISONBLOCKS);
-				}
-				if (Button(XOR("Teleport to Prison Junction Map")))
-				{
-					UFunctions::Travel(KIWI_PRISONJUNCTION);
-				}
-				if (Button(XOR("Teleport to Hangar Map")))
-				{
-					UFunctions::Travel(KIWI_HANGAR);
-				}
-				if (Button(XOR("Teleport to Kevin Room")))
-				{
-					UFunctions::Travel(KIWI_KEVINROOM);
-				}
+				Text("Main SkyFire Map - streammap Kiwi_P");
+				Text("SkyFire Space Map - streammap Kiwi_Space");
+				Text("SkyFire Observation Hallway map - streammap Kiwi_ObservationHallway");
+				Text("SkyFire Prison Junction Map - streammap Kiwi_PrisonJunction");
+				Text("SkyFire Prison Blocks Map - streammap Kiwi_PrisonBlocks");
+				Text("SkyFire Hangar Map - streammap Kiwi_Hangar");
+				Text("SkyFire Kevin Room Map - streammap Kiwi_KevinRoom");
 
 				NewLine();
 				Text("Start event sequences");
@@ -650,6 +616,45 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 			}
 
 #endif
+
+			if (BeginTabItem("The End"))
+			{
+				Text("To teleport to the Event maps type this in the console:");
+
+				Text("Main The End Map - streammap Guava_Persistent");
+				Text("The End Bridge Map - streammap Guava_Bridge");
+				Text("The End Swim Map - streammap Guava_Breach");
+
+				NewLine();
+				Text("Start event sequences:");
+				if (Button(XOR("Start The End Event")))
+				{
+					UFunctions::Play(GUAVA_EVENT_PLAYER);
+				}
+				Text("This Sequence can only be started from the Main Sky Fire Map");
+
+				if (Button(XOR("Start The End Bridge")))
+				{
+					UFunctions::Play(GUAVA_BRIDGE_PLAYER);
+					Console::ExecuteConsoleCommand(XOR(L"bugitgo -2500 12000 550"));
+				}
+				if (Button(XOR("Start The End Swim")))
+				{
+					UFunctions::Play(GUAVA_SWIM_PLAYER);
+				}
+				if (Button(XOR("Start The End Cutscene")))
+				{
+					UFunctions::Play(GUAVA_PRESHOW_PLAYER);
+				}
+
+				NewLine();
+				if (Button(XOR("Teleport to The Bridge Location")))
+				{
+					Console::ExecuteConsoleCommand(XOR(L"bugitgo -2500 12000 550"));
+				}
+				EndTabItem();
+
+			}
 
 				if (BeginTabItem("Help"))
 				{

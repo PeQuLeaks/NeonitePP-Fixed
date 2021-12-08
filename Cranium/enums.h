@@ -7,6 +7,11 @@
 #define APOLLO_PAPAYA XOR(L"Apollo_Papaya?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
 #define APOLLO_TERRAIN_BASE XOR(L"Apollo_Terrain?game=/Script/FortniteGame.FortGameModeBase")
 #define APOLLO_PAPAYA_BASE XOR(L"Apollo_Papaya?game=/Script/FortniteGame.FortGameModeBase")
+#define GUAVA_P XOR(L"Guava_Persistent?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
+#define GUAVA_BEAM_PLAYER XOR(L"Guava_Beam?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
+#define GUAVA_ATTACK XOR(L"Guava_Attack?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
+#define GUAVA_BRIDGE XOR(L"Guava_Bridge?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
+#define GUAVA_BREACH XOR(L"Guava_Breach?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
 
 #define GALACTUS_EVENT_MAP XOR(L"Junior_Map")
 #define JERKY_EVENT_MAP XOR(L"JerkySequenceMap")
@@ -25,6 +30,7 @@
 #define KIWI_PRISONJUNCTION XOR(L"Kiwi_PrisonJunction")
 #define KIWI_HANGAR XOR(L"Kiwi_Hangar")
 #define KIWI_KEVINROOM XOR(L"Kiwi_KevinRoom")
+#define GUAVA_BEAM XOR(L"Guava_Beam")
 
 #define GALACTUS_EVENT_PLAYER XOR(L"LevelSequencePlayer /Junior/Levels/Junior_Map_LevelInstance_1.Junior_Map.PersistentLevel.Junior_Master_Rep_2.AnimationPlayer")
 #define JERKY_EVENT_PLAYER XOR(L"LevelSequencePlayer /CycloneJerky/Levels/JerkySequenceMap_LevelInstance_1.JerkySequenceMap.PersistentLevel.Jerky.AnimationPlayer")
@@ -37,6 +43,10 @@
 #define RIFT_TOUR_POSITIONS_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_Shard.Buffet_Shard.PersistentLevel.Buffet_Animation_Shards_2.AnimationPlayer")
 #define RIFT_TOUR_CLOUDS_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_Cloud.Buffet_Cloud.PersistentLevel.Buffet_Master.AnimationPlayer")
 #define MOTHERSHIP_EVENT_PLAYER XOR(L"LevelSequencePlayer /Kiwi/Levels/Kiwi_P.Kiwi_P.PersistentLevel.Kiwi_Master.AnimationPlayer")
+#define GUAVA_EVENT_PLAYER XOR(L"LevelSequencePlayer /Guava/Levels/Guava_Persistent.Guava_Persistent.PersistentLevel.Guava_Rep_Master_2.AnimationPlayer")
+#define GUAVA_BRIDGE_PLAYER XOR(L"LevelSequencePlayer /Guava/Levels/Guava_Bridge.Guava_Bridge.PersistentLevel.Guava_Rep_Master_2.AnimationPlayer")
+#define GUAVA_SWIM_PLAYER XOR(L"LevelSequencePlayer /Guava/Levels/Guava_Breach.Guava_Breach.PersistentLevel.Guava_Rep_Master_2.AnimationPlayer")
+#define GUAVA_PRESHOW_PLAYER XOR(L"LevelSequencePlayer /GuavaPlaylist/Sequences/Guava_Preshow.Default__Guava_Preshow_C.AnimationPlayer")
 
 
 enum ECommands
