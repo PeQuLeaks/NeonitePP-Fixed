@@ -2,14 +2,11 @@
 #define PCH_H
 
 #define CONSOLE
-//#define SSL_BYPASS
-//#define PLATANIUMV2
+#define SSL_BYPASS
+#define FUNCLOGGING
 #define HOOKS
 #define RiftTourGUI
 #define SkyFireGUI
-//#define FUNCLOGGING
-//#define INJECT_ASAP
-
 #include "framework.h"
 
 #endif // PCH_H

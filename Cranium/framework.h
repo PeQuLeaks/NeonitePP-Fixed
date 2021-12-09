@@ -20,6 +20,7 @@
 #include <fcntl.h>
 #include <time.h>
 #include <stdint.h>
+#include <detours.h>
 
 
 #include "gui/kiero.h"

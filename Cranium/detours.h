@@ -20,6 +20,48 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 	auto nObj = pObj->GetName();
 	auto nFunc = pFunc->GetName();
 
+	if (gUrl.find(XOR("matchmakingservice")) != std::string::npos)
+	{
+		printf(XOR("\n\n[NeoRoyale] Start!"));
+		gPlaylist = nullptr;
+
+		//TODO: clean this mess;
+		std::string url = gUrl;
+		gUrl.clear();
+		std::string query = url.erase(0, url.find(XOR("%3A")) + 1);
+		query.erase(url.find("&"), url.size());
+		query.erase(0, url.find(XOR("playlist")));
+		std::string PlaylistName = query + "." + query;
+		const std::wstring PlaylistNameW(PlaylistName.begin(), PlaylistName.end());
+
+		auto Playlist = UE4::FindObject<UObject*>(PlaylistNameW.c_str(), true, true);
+		auto Map = APOLLO_TERRAIN;
+
+		if (PlaylistNameW.find(XOR(L"papaya")) != std::string::npos && !gPlaylist)
+		{
+			Map = APOLLO_PAPAYA;
+		}
+
+		if (PlaylistNameW.find(XOR(L"yogurt")) != std::string::npos && !gPlaylist)
+		{
+			Map = APOLLO_TERRAIN_YOGURT;
+			gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab"));
+		}
+
+		if (Playlist && !gPlaylist)
+		{
+			gPlaylist = Playlist;
+		}
+		else if (!Playlist && !gPlaylist)
+		{
+			MessageBoxW(nullptr, L"Cannot find playlis.\n Using battlelab instead", L"Error", MB_OK);
+			printf("[CRANIUM]Playlist not found! Using battlelab instead. \n");
+			gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab"));
+		}
+
+		Start(Map);
+
+	}
 
 	if (wcsstr(nFunc.c_str(), XOR(L"ReadyToStartMatch")) && bIsStarted && !bIsInit)
 	{
@@ -50,6 +92,7 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		*/
 		//LoadMoreClasses();
 		UFunctions::SetupCustomInventory();
+		printf("\n\n\n[CRANIUM] Found game version: %i\n\n\n", gVersion);
 		//NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Generic/Traits/DefaultPlayer/GA_DefaultPlayer_InteractUse.GA_DefaultPlayer_InteractUse_C"));
 		UFunctions::PlayCustomPlayPhaseAlert();
 		//LoadMoreClasses();
@@ -66,6 +109,12 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		NeoPlayer.Respawn(); 
 		Console::ExecuteConsoleCommand(XOR(L"god"));
 		NeoPlayer.TeleportTo(NeoPlayer.GetLocation());//NOTE TIMMY: Still isn't working properly, seems like function ServerAttemptAircraftJump isn't getting called properly and this causes a crash when trying to teleport
+	}
+
+	if (wcsstr(nFunc.c_str(), XOR(L"ExecuteUbergraph_B_RiftPortal_Papaya")))
+	{
+		NeoPlayer.StartSkydiving(22222);
+		NeoPlayer.SetMovementMode(EMovementMode::MOVE_Custom, 4);
 	}
 
 	if (wcsstr(nFunc.c_str(), XOR(L"OnWeaponEquipped")))
@@ -95,6 +144,38 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 				UFunctions::ConsoleLog(XOR(L"Dumping all items and blueprints!"));
 				UE4::DumpBPs();
 				UE4::DumpGObjects();
+			}
+			else if (wcsstr(ScriptNameW.c_str(), XOR(L"event")))
+			{
+				//UFunctions::ConsoleLog(XOR(L"Dumping all items and blueprints!"));
+				if (gVersion == 14.60f)
+				{
+					UFunctions::Play(GALACTUS_EVENT_PLAYER);
+				}
+				else if (gVersion == 12.41f)
+				{
+					UFunctions::Play(JERKY_EVENT_PLAYER);
+				}
+				else if (gVersion == 12.61f)
+				{
+					UFunctions::Play(DEVICE_EVENT_PLAYER);
+				}
+				else if (gVersion == 17.30f)
+				{
+					UFunctions::ConsoleLog(XOR(L"17.30 brr"));
+				}
+				else if (gVersion == 17.50f)
+				{
+					UFunctions::ConsoleLog(XOR(L"17.50 brr"));
+				}
+				else if (gVersion == 18.40f)
+				{
+					UFunctions::ConsoleLog(XOR(L"18.40 brr"));
+				}
+				else
+				{
+					UFunctions::ConsoleLog(XOR(L"Sorry the version you are using doesn't have any event we support."));
+				}
 			}
 			else if (wcsstr(ScriptNameW.c_str(), XOR(L"startgame")))
 			{

@@ -11,21 +11,47 @@
 
 static void* CurlEasyAddress;
 static void* CurlSetAddress;
-static void* RequestExitWithStatusAddress;
-static void* RequestExitAddress;
-static void* UnsafeEnvironmentPopupAddress;
+static void* PushWidgetAddress;
+//UE4
+static void* RequestExitWithStatusAddressUE4;
+static void* RequestExitAddressUE4;
+static void* UnsafeEnvironmentPopupAddressUE4;
+//UE5
+static void* UnsafeEnvironmentPopupAddressUE5;
+static void* RequestExitWithStatusAddressUE5;
+
+static __int64 (*PushWidget)(__int64 WidgetInstance, const TCHAR* Body, const TCHAR* Widget, const TCHAR* WidgetType);
+
+
 namespace Hooks
 {
-#ifdef PLATANIUMV2
-	void RequestExitWithStatusHook(bool unknown, bool force)
+#ifdef SSL_BYPASS
+
+	void RequestExitWithStatusHook(bool Force, uint8_t ReturnCode)
 	{
-		//printfc(FOREGROUND_BLUE, "[VEH] <REDACTED> Call IsForced: %i\n", force);
+		printf("[VEH] RequestExitWithStatusHook Call Forced: %i ReturnCode: %u\n", Force, ReturnCode);
 	}
 
-	void RequestExitHook(bool force)
+	__int64 PushWidgetHook(__int64 WidgetInstance, const TCHAR* Body, const TCHAR* Widget, const TCHAR* WidgetType)
 	{
-		printf("[VEH] RequestExit Call IsForced: %i\n");
+		const std::wstring bodyW(Body);
+		if (bodyW == L"Logging In...")
+		{
+			return PushWidget(WidgetInstance,
+				XOR(L"Ordering McDonalds for PeQu..."),
+				Widget,
+				WidgetType);
+		}
+		else if (bodyW == L"FILL")
+		{
+			DetourTransactionBegin();
+			DetourUpdateThread(GetCurrentThread());
+			DetourDetach(reinterpret_cast<void**>(&PushWidget), PushWidgetHook);
+			DetourTransactionCommit();
+		}
+		return PushWidget(WidgetInstance, Body, Widget, WidgetType);
 	}
+
 
 	void UnsafeEnvironmentPopupHook(wchar_t** unknown1,
 		unsigned __int8 _case,
@@ -35,106 +61,50 @@ namespace Hooks
 		//printfc(FOREGROUND_BLUE, "[VEH] <REDACTED> Call with Case: %i\n", _case);
 	}
 
-	/*bool HotfixIniFileHook(void* HotfixManager, const FString& FileName, const FString& IniData)
+	inline bool curl()
 	{
-		HotfixManagerInstance = HotfixManager;
-		DetourTransactionBegin();
-		DetourUpdateThread(GetCurrentThread());
-		DetourDetach(reinterpret_cast<void**>(&HotfixIniFile), HotfixIniFileHook);
-		DetourTransactionCommit();
-		return HotfixIniFile(HotfixManager, FileName, IniData);
-	}*/
+		//cURL Hooking.
+		//Works on all versions
 
-	void VerifyPeerPatch()
+	UnsafeEnvironmentPopupAddressUE4 = Util::FindPatternAV(Patterns::Curl::UnsafeEnvironmentPopup.first, Patterns::Curl::UnsafeEnvironmentPopup.second);
+	if (!UnsafeEnvironmentPopupAddressUE4)
 	{
-		auto* const VerifyPeerAdd = Util::FindPattern("\x41\x39\x28\x0F\x95\xC0\x88\x83\x50\x04\x00\x00",
-			"xxxxxxxxxx??");
-		auto* const bytes = (uint8_t*)VerifyPeerAdd;
-		bytes[4] = 0x94; //SETE
-		printf("[DLL] VerifyPeer was changed!.\n");
+		UnsafeEnvironmentPopupAddressUE5 = Util::FindPatternAV(Patterns::Curl::UnsafeEnvironmentPopup.first, Patterns::Curl::UnsafeEnvironmentPopup.second);
+		//VALIDATE_ADDRESS(UnsafeEnvironmentPopupAddressUE5, "UnsafeEnvironmentPopup pattern is outdated.")
 	}
-	inline CURLcode CurlEasySetOptHook(struct Curl_easy* data, CURLoption tag, ...)
+
+
+	RequestExitWithStatusAddressUE4 = Util::FindPatternAV(Patterns::Curl::RequestExitWithStatus.first, Patterns::Curl::RequestExitWithStatus.second);
+	if (!RequestExitWithStatusAddressUE4)
 	{
-		va_list arg;
-		va_start(arg, tag);
-
-		CURLcode result = {};
-
-		if (!data)
-			return CURLE_BAD_FUNCTION_ARGUMENT;
-
-
-		if (tag == CURLOPT_SSL_VERIFYPEER)
-		{
-			result = CurlSetOpt_(data, tag, 0);
-		}
-
-		if (tag == CURLOPT_PROXY)
-		{
-			result = CurlSetOpt_(data, tag, "");
-		}
-
-		else if (tag == CURLOPT_URL)
-		{
-			std::string url = va_arg(arg, char*);
-
-			Uri uri = Uri::Parse(url);
-
-			if (uri.Host.ends_with("ol.epicgames.com")
-				|| uri.Host.ends_with(".akamaized.net")
-				|| uri.Host.ends_with("on.epicgames.com"))
-			{
-				//printf("LogURL: %s\n", url.c_str());
-				if (strcmp(URL_HOST, XOR("localhost")) == 0)
-				{
-					url = Uri::CreateUri(URL_PROTOCOL, URL_HOST, URL_PORT, uri.Path, uri.QueryString);
-				}
-			}
-
-
-			result = CurlSetOpt_(data, tag, url.c_str());
-		}
-
-		else
-		{
-			result = CurlSetOpt(data, tag, arg);
-		}
-
-		va_end(arg);
-		return result;
+		UnsafeEnvironmentPopupAddressUE5 = Util::FindPatternAV(Patterns::Curl::UnsafeEnvironmentPopup.first, Patterns::Curl::UnsafeEnvironmentPopup.second);
+		//VALIDATE_ADDRESS(RequestExitWithStatusAddressUE5, "UnsafeEnvironmentPopup pattern is outdated.")
 	}
-	inline bool Init()
-	{
-		//SSL BYPASS GO BRRRRRR -Timmy
-		UnsafeEnvironmentPopupAddress = Util::FindPattern(PlatPatterns::UnsafeEnvironmentPopup.first,
-			PlatPatterns::UnsafeEnvironmentPopup.second);
-		VALIDATE_ADDRESS(UnsafeEnvironmentPopupAddress, "First pattern is outdated.")
-
-			RequestExitWithStatusAddress = Util::FindPattern(PlatPatterns::RequestExitWithStatus.first,
-				PlatPatterns::RequestExitWithStatus.second);
-		VALIDATE_ADDRESS(RequestExitWithStatusAddress, "Second pattern is outdated.")
-
-			RequestExitAddress = Util::FindPattern(
-				"\x40\x53\x48\x83\xEC\x30\x41\xB9\x00\x00\x00\x00\x0F\xB6\xD9\x44\x38\x0D\x00\x00\x00\x00\x72\x20\x48\x8D\x05\x00\x00\x00\x00\x89\x5C\x24\x28\x4C\x8D\x05\x00\x00\x00\x00\x48\x89\x44\x24\x00\x33\xD2\x33\xC9\xE8\x00\x00\x00\x00",
-				"xxxxxxxx????xxxxxx????xxxxx????xxxxxxx????xxxx?xxxxx????");
-		VALIDATE_ADDRESS(RequestExitAddress, "SecondV2 pattern is outdated.")
 
 
-			CurlEasyAddress = Util::FindPattern(PlatPatterns::CurlEasySetOpt.first, PlatPatterns::CurlEasySetOpt.second);
-		VALIDATE_ADDRESS(CurlEasyAddress, "Curl easy pattern is outdated.")
+		CurlEasyAddress = Util::FindPatternAV(Patterns::Curl::CurlEasySetOpt.first, Patterns::Curl::CurlEasySetOpt.second);
+		VALIDATE_ADDRESS(CurlEasyAddress, "curl_easy_setopt pattern is outdated.")
 
-			CurlSetAddress = Util::FindPattern(PlatPatterns::CurlSetOpt.first, PlatPatterns::CurlSetOpt.second);
-		VALIDATE_ADDRESS(CurlSetAddress, "Curl set pattern is outdated.")
+		CurlSetAddress = Util::FindPatternAV(Patterns::Curl::CurlSetOpt.first, Patterns::Curl::CurlSetOpt.second);
+		VALIDATE_ADDRESS(CurlSetAddress, "curl_setopt pattern is outdated.")
+
+		PushWidgetAddress = Util::FindPatternAV(Patterns::Curl::PushWidget.first, Patterns::Curl::PushWidget.second);
+		VALIDATE_ADDRESS(PushWidgetAddress, "Third pattern is outdated.")
+
 
 		CurlEasySetOpt = decltype(CurlEasySetOpt)(CurlEasyAddress);
 
 		CurlSetOpt = decltype(CurlSetOpt)(CurlSetAddress);
 
-		DetoursEasy(UnsafeEnvironmentPopupAddress, UnsafeEnvironmentPopupHook);
-		DetoursEasy(RequestExitWithStatusAddress, RequestExitWithStatusHook);
-		DetoursEasy(RequestExitAddress, RequestExitHook);
+		PushWidget = decltype(PushWidget)(PushWidgetAddress);
 
-		DetoursEasy(CurlEasySetOpt, CurlEasySetOptHook);
+
+		DetoursEasy(CurlEasySetOpt, CurlEasySetOptDetour)
+		DetoursEasy(PushWidget, PushWidgetHook)
+		DetoursEasy(RequestExitWithStatusAddressUE5, RequestExitWithStatusHook);
+		DetoursEasy(UnsafeEnvironmentPopupAddressUE4, UnsafeEnvironmentPopupHook);
+		DetoursEasy(RequestExitWithStatusAddressUE4, RequestExitWithStatusHook);
+		
 
 		return true;
 	}
@@ -155,9 +125,14 @@ namespace Hooks
 
 		GObjs = decltype(GObjs)(RELATIVE_ADDRESS(GObjectsAdd, 7));
 
-		auto FNameToStringAdd = Util::FindPattern(Patterns::New::FNameToString, Masks::New::FNameToString);
-		VALIDATE_ADDRESS(FNameToStringAdd, XOR("Failed to find FNameToString Address."));
+		auto FNameToStringAdd = UE4::FindByString(FNAMETOSTRING_STRINGREF, { CALL }, true, 1);
+		if (!FNameToStringAdd)
+		{
+			MessageBoxW(nullptr, L"Cannot find FNameToString.", L"Error", MB_OK);
+			return false;
+		}
 
+		FNameToString = decltype(FNameToString)(FNameToStringAdd);
 		/*const auto offset = *reinterpret_cast<int32_t*>(FNameToStringAdd + 1);
 		FNameToStringAdd = FNameToStringAdd + 5 + offset;*/
 
@@ -168,16 +143,22 @@ namespace Hooks
 
 
 		uintptr_t ProcessEventAdd;
-		if (version >= 16.00f)
-		{
-			const auto vtable = *reinterpret_cast<void***>(GEngine);
-			ProcessEventAdd = (uintptr_t)vtable[0x44];
+
+		if (gVersion > 19.00f) {
 
 		}
-		else
-		{
-			//ProcessEventAdd = Util::FindPattern(Patterns::bGlobal::ProcessEvent, Masks::bGlobal::ProcessEvent);
-			//VALIDATE_ADDRESS(ProcessEventAdd, XOR("Failed to find ProcessEvent Address."));
+		else if (gVersion < 19.00f) {
+			if (version >= 16.00f)
+			{
+				const auto vtable = *reinterpret_cast<void***>(GEngine);
+				ProcessEventAdd = (uintptr_t)vtable[0x44];
+
+			}
+			else
+			{
+				//ProcessEventAdd = Util::FindPattern(Patterns::bGlobal::ProcessEvent, Masks::bGlobal::ProcessEvent);
+				//VALIDATE_ADDRESS(ProcessEventAdd, XOR("Failed to find ProcessEvent Address."));
+			}
 		}
 
 
@@ -199,21 +180,6 @@ namespace Hooks
 		VALIDATE_ADDRESS(SpawnActorAdd, XOR("Failed to find SpawnActor Address."));
 
 		SpawnActor = decltype(SpawnActor)(SpawnActorAdd);
-
-
-
-		auto Map = GUAVA_P;
-#ifdef RiftTourGUI
-		//gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /BuffetPlaylist/Playlist/Playlist_Buffet.Playlist_Buffet")); //Buffet Event
-		//gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /GuavaPlaylist/Playlist/Playlist_Guava.Playlist_Guava")); //Guava Event
-		//gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /KiwiPlaylist/Playlists/Playlist_Kiwi.Playlist_Kiwi")); // Kiwi Event
-		gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /GuavaPlaylist/Playlist/Playlist_Guava.Playlist_Guava")); //Battlelab
-#else
-	gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/Mash/Playlist_Mash_Squads_Legacy.Playlist_Mash_Squads_Legacy")); //Battlelab
-#endif
-		//gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/ItemTest/Playlist_ItemTest.Playlist_ItemTest"));
-		//gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/Playlist_DefaultSolo.Playlist_DefaultSolo")); //Solos
-		Start(Map);
 
 		return true;
 	}

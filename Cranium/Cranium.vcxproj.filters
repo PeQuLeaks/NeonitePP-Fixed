@@ -237,4 +237,7 @@
       <Filter>Auth Library</Filter>
     </Library>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

@@ -33,26 +33,17 @@ void WINAPI dllMain()
 	printf(XOR("\n\n[=] Cranium made by Kemo, Sizzy, PeQu and Timmy \n\n"));
 #endif
 
-#ifdef PLATANIUMV2
-	Hooks::Init();
+#ifdef SSL_BYPASS
+	Hooks::curl();
 #endif
 
 
 #ifdef HOOKS
 	while (true)
 	{
-		//if (isReady)
-		//{
-		//	//Deprecated
-		//	if (Hooks::Misc(99.99f)) //&& Console::Unlock()) //&& ForceSettings())
-		//	{
-		//		ImguiThread();
-		//		break;
-		//	}
-		//}
 		 if (isReady || GetAsyncKeyState(VK_F3))
 		{
-			if (Hooks::Misc(17.30f))
+			if (Hooks::Misc(gVersion))
 			{
 				ImguiThread();
 				break;

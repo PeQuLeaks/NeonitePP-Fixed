@@ -545,116 +545,116 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						EndTabItem();
 					}
 				}
+				if (gVersion == 17.30f) {
+					if (BeginTabItem("Rift Tour"))
+					{
+						Text("To teleport to the Event maps type this in the console:");
 
-#ifdef RiftTourGUI
-			if (BeginTabItem("Rift Tour"))
-			{
-				Text("To teleport to the Event maps type this in the console:");
+						Text("Main Rift Tour Map - streammap Buffet_P");
+						Text("Rift Tour Cuddle Map - streammap Buffet_Part5");
+						Text("Rift Tour Storm King Map - streammap Buffet_Part_6");
+						Text("Rift Tour Stairs Map - streammap Buffet_Escher");
+						Text("Rift Tour Positions Map - streammap Buffet_Shard");
+						Text("Rift Tour Clouds Map - streammap Buffet_Clouds");
 
-				Text("Main Rift Tour Map - streammap Buffet_P");
-				Text("Rift Tour Cuddle Map - streammap Buffet_Part5");
-				Text("Rift Tour Storm King Map - streammap Buffet_Part_6");
-				Text("Rift Tour Stairs Map - streammap Buffet_Escher");
-				Text("Rift Tour Positions Map - streammap Buffet_Shard");
-				Text("Rift Tour Clouds Map - streammap Buffet_Clouds");
+						NewLine();
+						Text("Start event sequences");
+						if (Button(XOR("Start Rift Tour Event")))
+						{
+							UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
+						}
+						Text("This Sequence can only be started from the Main Sky Fire Map");
+						if (Button(XOR("Start Rift Tour Cuddle")))
+						{
+							UFunctions::Play(RIFT_TOUR_CUDDLE_PLAYER);
+						}
+						if (Button(XOR("Start Rift Tour Storm King")))
+						{
+							UFunctions::Play(RIFT_TOUR_STORMKING_PLAYER);
+						}
+						if (Button(XOR("Start Rift Tour Clouds")))
+						{
+							UFunctions::Play(RIFT_TOUR_CLOUDS_PLAYER);
+						}
+						if (Button(XOR("Start Rift Tour Stairs")))
+						{
+							UFunctions::Play(RIFT_TOUR_STAIRS_PLAYER);
+						}
+						if (Button(XOR("Start Rift Tour Positions")))
+						{
+							UFunctions::Play(RIFT_TOUR_POSITIONS_PLAYER);
+						}
+						EndTabItem();
 
-				NewLine();
-				Text("Start event sequences");
-				if (Button(XOR("Start Rift Tour Event")))
-				{
-					UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
+					}
 				}
-				Text("This Sequence can only be started from the Main Sky Fire Map");
-				if (Button(XOR("Start Rift Tour Cuddle")))
-				{
-					UFunctions::Play(RIFT_TOUR_CUDDLE_PLAYER);
-				}		
-				if (Button(XOR("Start Rift Tour Storm King")))
-				{
-					UFunctions::Play(RIFT_TOUR_STORMKING_PLAYER);
+				else if (gVersion == 17.50f) {
+					if (BeginTabItem("SkyFire"))
+					{
+						Text("To teleport to the Event maps type this in the console:");
+
+						Text("Main SkyFire Map - streammap Kiwi_P");
+						Text("SkyFire Space Map - streammap Kiwi_Space");
+						Text("SkyFire Observation Hallway map - streammap Kiwi_ObservationHallway");
+						Text("SkyFire Prison Junction Map - streammap Kiwi_PrisonJunction");
+						Text("SkyFire Prison Blocks Map - streammap Kiwi_PrisonBlocks");
+						Text("SkyFire Hangar Map - streammap Kiwi_Hangar");
+						Text("SkyFire Kevin Room Map - streammap Kiwi_KevinRoom");
+
+						NewLine();
+						Text("Start event sequences");
+						if (Button(XOR("Start Sky Fire Event")))
+						{
+							UFunctions::Play(MOTHERSHIP_EVENT_PLAYER);
+						}
+						Text("This Sequence can only be started from the Main Sky Fire Map");
+						EndTabItem();
+
+					}
 				}
-				if (Button(XOR("Start Rift Tour Clouds")))
-				{
-					UFunctions::Play(RIFT_TOUR_CLOUDS_PLAYER);
-				}
-				if (Button(XOR("Start Rift Tour Stairs")))
-				{
-					UFunctions::Play(RIFT_TOUR_STAIRS_PLAYER);
-				}
-				if (Button(XOR("Start Rift Tour Positions")))
-				{
-					UFunctions::Play(RIFT_TOUR_POSITIONS_PLAYER);
-				}
-				EndTabItem();
+				else if (gVersion == 18.40f) {
 
-			}
 
-#endif
+					if (BeginTabItem("The End"))
+					{
+						Text("To teleport to the Event maps type this in the console:");
 
-#ifdef SkyFireGUI
-			if (BeginTabItem("SkyFire"))
-			{
-				Text("To teleport to the Event maps type this in the console:");
+						Text("Main The End Map - streammap Guava_Persistent");
+						Text("The End Bridge Map - streammap Guava_Bridge");
+						Text("The End Swim Map - streammap Guava_Breach");
 
-				Text("Main SkyFire Map - streammap Kiwi_P");
-				Text("SkyFire Space Map - streammap Kiwi_Space");
-				Text("SkyFire Observation Hallway map - streammap Kiwi_ObservationHallway");
-				Text("SkyFire Prison Junction Map - streammap Kiwi_PrisonJunction");
-				Text("SkyFire Prison Blocks Map - streammap Kiwi_PrisonBlocks");
-				Text("SkyFire Hangar Map - streammap Kiwi_Hangar");
-				Text("SkyFire Kevin Room Map - streammap Kiwi_KevinRoom");
+						NewLine();
+						Text("Start event sequences:");
+						if (Button(XOR("Start The End Event")))
+						{
+							UFunctions::Play(GUAVA_EVENT_PLAYER);
+						}
+						Text("This Sequence can only be started from the Main Sky Fire Map");
 
-				NewLine();
-				Text("Start event sequences");
-				if (Button(XOR("Start Sky Fire Event")))
-				{
-					UFunctions::Play(MOTHERSHIP_EVENT_PLAYER);
-				}
-				Text("This Sequence can only be started from the Main Sky Fire Map");
-				EndTabItem();
+						if (Button(XOR("Start The End Bridge")))
+						{
+							UFunctions::Play(GUAVA_BRIDGE_PLAYER);
+							Console::ExecuteConsoleCommand(XOR(L"bugitgo -2500 12000 550"));
+						}
+						if (Button(XOR("Start The End Swim")))
+						{
+							UFunctions::Play(GUAVA_SWIM_PLAYER);
+						}
+						if (Button(XOR("Start The End Cutscene")))
+						{
+							UFunctions::Play(GUAVA_PRESHOW_PLAYER);
+						}
 
-			}
+						NewLine();
+						if (Button(XOR("Teleport to The Bridge Location")))
+						{
+							Console::ExecuteConsoleCommand(XOR(L"bugitgo -2500 12000 550"));
+						}
+						EndTabItem();
 
-#endif
-
-			if (BeginTabItem("The End"))
-			{
-				Text("To teleport to the Event maps type this in the console:");
-
-				Text("Main The End Map - streammap Guava_Persistent");
-				Text("The End Bridge Map - streammap Guava_Bridge");
-				Text("The End Swim Map - streammap Guava_Breach");
-
-				NewLine();
-				Text("Start event sequences:");
-				if (Button(XOR("Start The End Event")))
-				{
-					UFunctions::Play(GUAVA_EVENT_PLAYER);
-				}
-				Text("This Sequence can only be started from the Main Sky Fire Map");
-
-				if (Button(XOR("Start The End Bridge")))
-				{
-					UFunctions::Play(GUAVA_BRIDGE_PLAYER);
-					Console::ExecuteConsoleCommand(XOR(L"bugitgo -2500 12000 550"));
-				}
-				if (Button(XOR("Start The End Swim")))
-				{
-					UFunctions::Play(GUAVA_SWIM_PLAYER);
-				}
-				if (Button(XOR("Start The End Cutscene")))
-				{
-					UFunctions::Play(GUAVA_PRESHOW_PLAYER);
+					}
 				}
 
-				NewLine();
-				if (Button(XOR("Teleport to The Bridge Location")))
-				{
-					Console::ExecuteConsoleCommand(XOR(L"bugitgo -2500 12000 550"));
-				}
-				EndTabItem();
-
-			}
 
 				if (BeginTabItem("Help"))
 				{
@@ -662,10 +662,31 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 
 					Text(
 						R"(
-if you want to teleport to XXX type xxx in console
-main map - streammap buffet_P
-etc
-etc)");
+Commands
+---------------------------
+event - Triggers the event for your version (e.g. Junior, Jerky, Flatter).
+debugcamera - Toggles a custom version of the debug camera.
+skydive | skydiving - Puts you in a skydive with deploy at 1500m above the ground.
+equip <WID | AGID> - Equips a weapon / pickaxe. (You can get them from the modifers tap)
+setgravity <NewGravityScaleFloat> - Changes the gravity scale.
+speed | setspeed <NewCharacterSpeedMultiplier> - Changes the movement speed multiplier.
+setplaylist <Playlist> - Overrides the current playlist.
+respawn - Respawns the player (duh)
+sethealth <NewHealthFloat> - Changes your health value.
+setshield <NewShieldFloat> - Changes your shield value.
+setmaxhealth <NewMaxHealthFloat> - Changes your max health value.
+setmaxshield <newMaxShieldFloat> - Changes your max shield value.
+dump - Dumps a list of all GObjects. (output at win64 folder)
+dumpbps - Dumps a list all blueprints. (output at win64 folder)
+fly - Toggles flying.
+enablecheats - Enables cheatmanager.
+summon <BlueprintClass> - Summons a blueprint class. (You can get them from the helpers tap)
+---------------------------
+F3 - Back to lobby.
+` (backquote key) - Open UE4 console.
+<> - Argument (e.g: <NewHealthFloat> is replaced with 1.0).
+| - Or.
+)");
 					NewLine();
 
 					EndTabItem();

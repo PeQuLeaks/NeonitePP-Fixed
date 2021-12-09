@@ -9,6 +9,13 @@
         return 0; \
     }
 
+#define DetoursEasy(address, hook) \
+	DetourTransactionBegin(); \
+    DetourUpdateThread(GetCurrentThread()); \
+    DetourAttach(reinterpret_cast<void**>(&address), hook); \
+    DetourTransactionCommit();
+
+
 #define RELATIVE_ADDRESS(address, size) ((PBYTE)((UINT_PTR)(address) + *(PINT)((UINT_PTR)(address) + ((size) - sizeof(INT))) + (size)))
 
 #define READ_POINTER(base, offset) (*(PVOID *)(((PBYTE)base + offset)))
@@ -30,6 +37,31 @@ private:
 	}
 
 public:
+	static inline PVOID FindPatternAV(PVOID pBase, DWORD dwSize, LPCSTR lpPattern, LPCSTR lpMask)
+	{
+		dwSize -= static_cast<DWORD>(strlen(lpMask));
+
+		for (auto index = 0UL; index < dwSize; ++index)
+		{
+			auto pAddress = reinterpret_cast<PBYTE>(pBase) + index;
+
+			if (MaskCompare(pAddress, lpPattern, lpMask))
+				return pAddress;
+		}
+
+		return NULL;
+	}
+
+	static inline PVOID FindPatternAV(LPCSTR lpPattern, LPCSTR lpMask)
+	{
+		MODULEINFO info = { 0 };
+
+		GetModuleInformation(GetCurrentProcess(), GetModuleHandle(0), &info, sizeof(info));
+
+		return FindPatternAV(info.lpBaseOfDll, info.SizeOfImage, lpPattern, lpMask);
+	}
+
+	//OLDIES
 	static __forceinline uintptr_t FindPattern(PVOID pBase, DWORD dwSize, LPCSTR lpPattern, LPCSTR lpMask)
 	{
 		dwSize -= static_cast<DWORD>(strlen(lpMask));

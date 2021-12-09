@@ -1,10 +1,5 @@
 #include "pch.h"
 #pragma once
-#define DetoursEasy(address, hook) \
-	DetourTransactionBegin(); \
-    DetourUpdateThread(GetCurrentThread()); \
-    DetourAttach(reinterpret_cast<void**>(&address), hook); \
-    DetourTransactionCommit();
 
 
 namespace PlatPatterns
