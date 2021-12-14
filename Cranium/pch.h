@@ -3,7 +3,7 @@
 
 #define CONSOLE
 #define SSL_BYPASS
-//#define FUNCLOGGING
+#define FUNCLOGGING
 #define HOOKS
 #define RiftTourGUI
 #define SkyFireGUI

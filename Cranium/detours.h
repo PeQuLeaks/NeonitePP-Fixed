@@ -128,6 +128,11 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		NeoPlayer.TeleportTo(NeoPlayer.GetLocation());//NOTE TIMMY: Still isn't working properly, seems like function ServerAttemptAircraftJump isn't getting called properly and this causes a crash when trying to teleport
 	}
 
+	if (wcsstr(nFunc.c_str(), XOR(L"OnBurst")) && nObj.starts_with(XOR(L"Default__GCN_Athena_OutsideSafeZoneDamage_C")))
+	{
+		NeoPlayer.SetHealth(100);
+	}
+
 	if (wcsstr(nFunc.c_str(), XOR(L"ExecuteUbergraph_B_RiftPortal_Papaya")))
 	{
 		NeoPlayer.StartSkydiving(22222);
@@ -553,7 +558,8 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		!wcsstr(nFunc.c_str(), L"Update") &&
 		!wcsstr(nObj.c_str(), L"B_Athena_PartModifier_Fire_BandageNinja_C_2147470383") &&
 		!wcsstr(nFunc.c_str(), L"UpdateStateEvent") &&
-		!wcsstr(nObj.c_str(), L"BGA_HeldObject_Physics_Explosive_PropaneTank_C_2147448779") &&
+		!wcsstr(nObj.c_str(), L"BGA_HeldObject_Physics_Explosive_PropaneTank_C_2147446606") &&
+		!wcsstr(nObj.c_str(), L"BGA_Athena_FlopperSpawn_World_C_2147446154") &&
 		!wcsstr(nFunc.c_str(), L"ReadyToEndMatch"))
 	{
 		printf(XOR("[Object]: %ws [Function]: %ws\n"), nObj.c_str(), nFunc.c_str());
