@@ -8,6 +8,7 @@
 #include "curlhooks.h"
 #include "hooks.h"
 #include "gui/gui.h"
+#include "neoroyale.h"
 
 bool WINAPI ImguiThread()
 {
@@ -42,13 +43,14 @@ void WINAPI dllMain()
 	while (true)
 	{
 		 if (isReady || GetAsyncKeyState(VK_F3))
-		{
-			if (Hooks::Misc(gVersion))
+		 {
+			 if (Hooks::Misc(gVersion));
 			{
 				ImguiThread();
 				break;
 			}
-		}
+		 }
+		 Sleep(100);
 	}
 #endif
 }

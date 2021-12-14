@@ -38,7 +38,7 @@ namespace Hooks
 		if (bodyW == L"Logging In...")
 		{
 			return PushWidget(WidgetInstance,
-				XOR(L"Ordering McDonalds for PeQu..."),
+				XOR(L"PeQu why is event still broken"),
 				Widget,
 				WidgetType);
 		}
@@ -67,19 +67,12 @@ namespace Hooks
 		//Works on all versions
 
 	UnsafeEnvironmentPopupAddressUE4 = Util::FindPatternAV(Patterns::Curl::UnsafeEnvironmentPopup.first, Patterns::Curl::UnsafeEnvironmentPopup.second);
-	if (!UnsafeEnvironmentPopupAddressUE4)
-	{
-		UnsafeEnvironmentPopupAddressUE5 = Util::FindPatternAV(Patterns::Curl::UnsafeEnvironmentPopup.first, Patterns::Curl::UnsafeEnvironmentPopup.second);
-		//VALIDATE_ADDRESS(UnsafeEnvironmentPopupAddressUE5, "UnsafeEnvironmentPopup pattern is outdated.")
-	}
 
 
+	//UnsafeEnvironmentPopupAddressUE5 = Util::FindPatternAV(Patterns::Curl::UnsafeEnvironmentPopup_UE5.first, Patterns::Curl::UnsafeEnvironmentPopup_UE5.second);
 	RequestExitWithStatusAddressUE4 = Util::FindPatternAV(Patterns::Curl::RequestExitWithStatus.first, Patterns::Curl::RequestExitWithStatus.second);
-	if (!RequestExitWithStatusAddressUE4)
-	{
-		UnsafeEnvironmentPopupAddressUE5 = Util::FindPatternAV(Patterns::Curl::UnsafeEnvironmentPopup.first, Patterns::Curl::UnsafeEnvironmentPopup.second);
-		//VALIDATE_ADDRESS(RequestExitWithStatusAddressUE5, "UnsafeEnvironmentPopup pattern is outdated.")
-	}
+	RequestExitWithStatusAddressUE5 = Util::FindPatternAV(Patterns::Curl::RequestExitWithStatus_UE5.first, Patterns::Curl::RequestExitWithStatus_UE5.second);
+
 
 
 		CurlEasyAddress = Util::FindPatternAV(Patterns::Curl::CurlEasySetOpt.first, Patterns::Curl::CurlEasySetOpt.second);
@@ -121,7 +114,7 @@ namespace Hooks
 
 		//GObject Array
 		auto GObjectsAdd = Util::FindPattern(Patterns::bGlobal::GObjects, Masks::bGlobal::GObjects);
-		VALIDATE_ADDRESS(GObjectsAdd, XOR("Failed to find GObjects Address."));
+		VALIDATE_ADDRESS(GObjectsAdd, XOR("Failed to find GObjects Address.\n"));
 
 		GObjs = decltype(GObjs)(RELATIVE_ADDRESS(GObjectsAdd, 7));
 
@@ -133,36 +126,36 @@ namespace Hooks
 		}
 
 		FNameToString = decltype(FNameToString)(FNameToStringAdd);
-		/*const auto offset = *reinterpret_cast<int32_t*>(FNameToStringAdd + 1);
-		FNameToStringAdd = FNameToStringAdd + 5 + offset;*/
-
-		FNameToString = decltype(FNameToString)(FNameToStringAdd);
 
 		//A work around instead of using a pattern.
 		GEngine = UE4::FindObject<UEngine*>(XOR(L"FortEngine /Engine/Transient.FortEngine_"));
+		VALIDATE_ADDRESS(GEngine, XOR("Failed to find GEngine Address.\n"));
+		printf("GEngine found.\n");
 
-
-		uintptr_t ProcessEventAdd;
-
-		if (gVersion > 19.00f) {
-
-		}
-		else if (gVersion < 19.00f) {
-			if (version >= 16.00f)
+		intptr_t ProcessEventAdd;
+		if (version >= 16.00f)
+		{
+			if (version >= 19.00f)
 			{
 				const auto vtable = *reinterpret_cast<void***>(GEngine);
+				ProcessEventAdd = (uintptr_t)vtable[0x4B];
+			}
+			else {
+				const auto vtable = *reinterpret_cast<void***>(GEngine);
 				ProcessEventAdd = (uintptr_t)vtable[0x44];
+			}
 
-			}
-			else
-			{
-				//ProcessEventAdd = Util::FindPattern(Patterns::bGlobal::ProcessEvent, Masks::bGlobal::ProcessEvent);
-				//VALIDATE_ADDRESS(ProcessEventAdd, XOR("Failed to find ProcessEvent Address."));
-			}
+			VALIDATE_ADDRESS(ProcessEventAdd, XOR("Failed to find ProcessEvent Address.\n"));
+		}
+		else
+		{
+			ProcessEventAdd = Util::FindPattern(Patterns::bGlobal::ProcessEvent, Masks::bGlobal::ProcessEvent);
+			VALIDATE_ADDRESS(ProcessEventAdd, XOR("Failed to find ProcessEvent Address."));
 		}
 
-
 		ProcessEvent = decltype(ProcessEvent)(ProcessEventAdd);
+		if (!ProcessEvent)
+			printf("PROCESS EVENT NOT FOUND\n");
 		MH_CreateHook(reinterpret_cast<void*>(ProcessEventAdd), ProcessEventDetour, reinterpret_cast<void**>(&ProcessEvent));
 		MH_EnableHook(reinterpret_cast<void*>(ProcessEventAdd));
 
@@ -172,7 +165,7 @@ namespace Hooks
 		auto SCOIAdd = Util::FindPattern(Patterns::bGlobal::SCOI, Masks::bGlobal::SCOI);
 		VALIDATE_ADDRESS(SCOIAdd, XOR("Failed to find SCOI Address. Check Number 1"));
 
-		StaticConstructObject = decltype(StaticConstructObject)(SCOIAdd);
+		//StaticConstructObject = decltype(StaticConstructObject)(SCOIAdd);
 
 
 		//Used to spawn actors

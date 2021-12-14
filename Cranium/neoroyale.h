@@ -149,13 +149,13 @@ namespace NeoRoyale
 			}
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F12)) //default debugging key, please dont bind this to anything important, ty -Timmy
 			{
-				NeoPlayer.UpdateInventory();
+				NeoPlayer.EnableGod();
+				printf("Pressed debug button\n");
 			}
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F6)) // Cleaned up fly toggling - Max 23/09/2021
 			{
-				bisFlying = !bisFlying;
-				NeoPlayer.Fly(bisFlying);
-				Sleep(1000);
+				NeoPlayer.debugtest();
+				printf("Debug go brrr\n");
 			}
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_OEM_PLUS)) // Speed modifications (Increase) - Max 23/09/2021
 			{
@@ -204,17 +204,20 @@ namespace NeoRoyale
 	inline void Init()
 	{
 		UFunctions::DestroyAll(UE4::FindObject<UClass*>(XOR(L"Class /Script/FortniteGame.FortHLODSMActor")));
+		printf("yee\n");
+		//Console::ExecuteConsoleCommand(XOR(L"summon PlayerPawn_Athena_C"));
 		//NeoPlayer.DummyPawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
 		NeoPlayer.Pawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
+		printf("yee3\n");
 		NeoPlayer.Authorize();
-
+		printf("yee4\n");
 		if (NeoPlayer.Pawn)
 		{
 			NeoPlayer.Authorize();
 
 			NeoPlayer.Possess();
-
-			NeoPlayer.ToggleInfiniteAmmo();
+			printf("yee5");
+			//NeoPlayer.ToggleInfiniteAmmo();
 
 			//NeoPlayer.SkinOverride = L"Test";
 
@@ -238,7 +241,7 @@ namespace NeoRoyale
 
 			UFunctions::ServerReadyToStartMatch();
 
-			InitCombos();
+			//InitCombos();
 
 			//LoadMoreClasses();
 
@@ -246,7 +249,7 @@ namespace NeoRoyale
 
 			NeoPlayer.EnableConsole();
 
-			NeoPlayer.EnableCheatManager();
+			//NeoPlayer.EnableCheatManager();
 
 			UFunctions::ConsoleLog(XOR(L"\n\nWelcome to Neonite++\nMade with ♥ By Kemo (@xkem0x on twitter)."));
 

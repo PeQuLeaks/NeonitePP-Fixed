@@ -14,6 +14,7 @@ using namespace NeoRoyale;
 
 inline bool bIsDebugCamera;
 inline bool bIsFlying; 
+inline bool bIsGuavaPlaylist = false;
 
 inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 {
@@ -35,7 +36,16 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		const std::wstring PlaylistNameW(PlaylistName.begin(), PlaylistName.end());
 
 		auto Playlist = UE4::FindObject<UObject*>(PlaylistNameW.c_str(), true, true);
-		auto Map = APOLLO_TERRAIN;
+		auto Map = ARTEMIS_TERRAIN;
+
+		if (gVersion > 19.00f) {
+			Map = ARTEMIS_TERRAIN;
+		}
+		else
+		{
+			Map = APOLLO_TERRAIN;
+		}
+
 
 		if (PlaylistNameW.find(XOR(L"papaya")) != std::string::npos && !gPlaylist)
 		{
@@ -45,7 +55,11 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		if (PlaylistNameW.find(XOR(L"yogurt")) != std::string::npos && !gPlaylist)
 		{
 			Map = APOLLO_TERRAIN_YOGURT;
-			gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab"));
+			//gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab"));
+		}
+		if (PlaylistNameW.find(XOR(L"guava")) != std::string::npos && !gPlaylist)// If the playlist name in the URL is guava(The End) execute special functions such as maps
+		{
+			bIsGuavaPlaylist = true;
 		}
 
 		if (Playlist && !gPlaylist)
@@ -54,7 +68,7 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		}
 		else if (!Playlist && !gPlaylist)
 		{
-			MessageBoxW(nullptr, L"Cannot find playlis.\n Using battlelab instead", L"Error", MB_OK);
+			MessageBoxW(nullptr, L"Cannot find playlist.\n Using battlelab instead", L"Error", MB_OK);
 			printf("[CRANIUM]Playlist not found! Using battlelab instead. \n");
 			gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab"));
 		}
@@ -67,8 +81,8 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 	{
 		printf(XOR("\n[NeoRoyale] Init!\n"));
 		Init();
-		Console::ExecuteConsoleCommand(XOR(L"god"));
-		NeoPlayer.StartSkydiving(10);
+		//Console::ExecuteConsoleCommand(XOR(L"god"));
+		//NeoPlayer.StartSkydiving(10);
 	}
 
 	if (wcsstr(nFunc.c_str(), XOR(L"DynamicHandleLoadingScreenVisibilityChanged")) && wcsstr(nObj.c_str(), XOR(L"AthenaLobby")))
@@ -83,7 +97,7 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 	{
 		
 		NeoPlayer.SetHealth(100);
-		//NeoPlayer.EnableGodMode();
+		//Console::ExecuteConsoleCommand(XOR(L"god"));
 		/*
 		NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Sprint"));
 		NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Jump"));
@@ -91,12 +105,15 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Generic/Traits/DefaultPlayer/GA_DefaultPlayer_InteractSearch.GA_DefaultPlayer_InteractSearch_C"));
 		*/
 		//LoadMoreClasses();
-		UFunctions::SetupCustomInventory();
+		//UFunctions::SetupCustomInventory();
 		printf("\n\n\n[CRANIUM] Found game version: %i\n\n\n", gVersion);
 		//NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Generic/Traits/DefaultPlayer/GA_DefaultPlayer_InteractUse.GA_DefaultPlayer_InteractUse_C"));
-		UFunctions::PlayCustomPlayPhaseAlert();
-		//LoadMoreClasses();
-		
+		//UFunctions::PlayCustomPlayPhaseAlert();
+		//LoadMoreClasses();	
+		if (bIsGuavaPlaylist)
+		{
+			UFunctions::ConsoleLog(XOR(L"Welcome to the epic playlist bro"));
+		}
 	}
 	// NOTE: (irma) This is better.
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerAttemptAircraftJump")))
@@ -205,20 +222,7 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 			}
 			else if (ScriptNameW == XOR(L"test"))
 			{
-				struct AFortBroadcastRemoteClientInfo_ServerSetPlayerInventoryActive_Params
-				{
-					bool bInventorypActive;
-				};
-
-				const auto FortBroadcastRemoteClientInfo = UE4::FindObject<UObject*>(
-					XOR(L"FortBroadcastRemoteClientInfo /Game/Athena/Apollo/Maps/Apollo_Terrain.Apollo_Terrain:PersistentLevel.FortBroadcastRemoteClientInfo_"));
-
-				const auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortBroadcastRemoteClientInfo:ServerSetPlayerInventoryActive"));
-
-				AFortBroadcastRemoteClientInfo_ServerSetPlayerInventoryActive_Params params;
-				params.bInventorypActive = true;
-
-				ProcessEvent(FortBroadcastRemoteClientInfo, fn, &params);
+				NeoPlayer.testWeapon();
 			}
 
 			else if (ScriptNameW.starts_with(XOR(L"equip")))

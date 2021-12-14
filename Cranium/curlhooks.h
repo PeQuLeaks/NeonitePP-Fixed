@@ -5,6 +5,11 @@
 #define URL_PROTOCOL XOR("http")
 #define URL_HOST XOR("127.0.0.1")
 #define URL_PORT XOR("5595")
+/*
+#define URL_HOST XOR("scuffedeggs.cf")
+#define URL_PORT XOR("80")
+
+*/
 //NPP port = 5746
 //NV2 port = 5595
 
@@ -86,7 +91,7 @@ inline CURLcode CurlEasySetOptDetour(struct Curl_easy* data, CURLoption tag, ...
 			std::string listData = list->data;
 			if (listData.starts_with(XOR("User-Agent:")))
 			{
-				const auto version = listData.erase(0, listData.find_first_of("0123456789")); //find first number
+				const auto version = listData.erase(0,listData.find_first_of("0123456789")); //find first number
 				gVersion = std::stof(version); 
 				bIsVersionFound = !bIsVersionFound;
 			}
