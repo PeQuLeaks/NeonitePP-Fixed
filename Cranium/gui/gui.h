@@ -44,14 +44,13 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	
 	else if (GetAsyncKeyState(VK_F9)) //When button F9 is pressed
 	{
-		NeoPlayer.UpdatePlayerController();
+		NeoPlayer.levelSwitch();
 
 	}
 	else if (GetAsyncKeyState(VK_F10)) //When button F9 is pressed
 	{
-		NeoPlayer.Possess();
-		NeoPlayer.ShowSkin();
-		NeoPlayer.UpdatePlayerController();
+		UE4::DumpBPs();
+		UE4::DumpGObjects();
 
 	}
 	

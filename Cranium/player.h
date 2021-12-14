@@ -246,7 +246,7 @@ public:
 	void Possess()
 	{
 
-			UpdatePlayerController();
+		UpdatePlayerController();
 		
 
 		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.Controller.Possess"));
@@ -256,6 +256,35 @@ public:
 
 		ProcessEvent(this->Controller, fn, &params);
 		printf(XOR("\n\n\n\n\n[NeoRoyale] PlayerPawn was possessed!\n\n\n\n"));
+	}
+
+
+	void debugtest()
+	{
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortCheatManager.TeleportToSafeZone"));
+
+		Empty_Params params;
+
+		ProcessEvent(this->Pawn, fn, &params);
+	}
+
+	void EnableGod()
+	{
+		//auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.CheatManager.God"));
+
+		ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
+		ObjectFinder LocalPlayer = EngineFinder.Find(XOR(L"GameInstance")).Find(XOR(L"LocalPlayers"));
+
+		ObjectFinder PlayerControllerFinder = LocalPlayer.Find(XOR(L"PlayerController"));
+		ObjectFinder CheatManagerFinder = PlayerControllerFinder.Find(XOR(L"CheatManager"));
+
+		const auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.CheatManager.God"));
+
+		Empty_Params params;
+
+		ProcessEvent(CheatManagerFinder.GetObj(), fn, &params);
+
+		ProcessEvent(this->Pawn, fn, &params);
 	}
 
 	auto StartSkydiving(float height)
@@ -495,6 +524,35 @@ public:
 
 		ProcessEvent(this->Pawn, fn, &params);
 	}
+	auto levelSwitch()
+	{
+
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.GameplayStatics.LoadStreamLevel"));
+
+		const FString URL = RIFT_TOUR_STORMKING_MAP;
+
+		APlayerController_SwitchLevel_Params params;
+		params.URL = URL;
+
+		ProcessEvent(this->Pawn, fn, &params);
+	}
+
+	auto testWeapon(int guid = rand())
+	{
+		FGuid GUID;
+		GUID.A = guid;
+		GUID.B = guid;
+		GUID.C = guid;
+		GUID.D = guid;
+
+		ServerExecuteInventoryItem_Params params;
+		params.ItemGuid = GUID;
+
+		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController.ServerExecuteInventoryItem"));
+		ProcessEvent(this->Pawn, fn, &params);
+	}
+
+
 
 	auto EquipWeapon(const wchar_t* weaponname, int guid = rand())
 	{

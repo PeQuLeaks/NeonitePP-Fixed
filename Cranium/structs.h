@@ -837,6 +837,11 @@ struct SetInventoryPanelOverride_Params
 	UObject* InInventoryPanelOverride;
 };
 
+struct ServerExecuteInventoryItem_Params
+{
+	FGuid ItemGuid;
+};
+
 struct FQosRegionInfo
 {
 	FText DisplayName;
