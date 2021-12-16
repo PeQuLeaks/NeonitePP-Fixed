@@ -172,6 +172,39 @@ namespace UFunctions
 		printf(XOR("\n[NeoRoyale] Game phase was set!\n"));
 	}
 
+	inline UObject* FindActor(UObject* Class, int Skip = 0)
+	{
+		ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
+		ObjectFinder GameViewPortClientFinder = EngineFinder.Find(L"GameViewport");
+		ObjectFinder WorldFinder = GameViewPortClientFinder.Find(L"World");
+
+		static UObject* Default__GameplayStatics = UE4::FindObject<UObject*>(L"GameplayStatics /Script/Engine.Default__GameplayStatics");
+		static UObject* GetAllActorsOfClass = UE4::FindObject<UFunction*>(L"Function /Script/Engine.GameplayStatics:GetAllActorsOfClass");
+
+		struct
+		{
+			UObject* World;
+			UObject* Class;
+			TArray<UObject*> ReturnValue;
+		} Params;
+
+		Params.World = WorldFinder.GetObj();
+		Params.Class = Class;
+
+		ProcessEvent(Default__GameplayStatics, GetAllActorsOfClass, &Params);
+
+		return Params.ReturnValue[Skip];
+	}
+
+	inline void Summon(UObject* Controller, FString ClassName)
+	{
+		static auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.CheatManager.Summon"));
+
+		auto CheatManager = reinterpret_cast<UObject**>(__int64(Controller) + __int64(0x340));
+
+		ProcessEvent(CheatManager, fn, &ClassName);
+	}
+
 	inline void StartGuava()
 	{
 

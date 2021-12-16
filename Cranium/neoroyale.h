@@ -207,7 +207,10 @@ namespace NeoRoyale
 		printf("yee\n");
 		//Console::ExecuteConsoleCommand(XOR(L"summon PlayerPawn_Athena_C"));
 		//NeoPlayer.DummyPawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
-		NeoPlayer.Pawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
+		NeoPlayer.UpdatePlayerController();
+		NeoPlayer.EnableCheatManager();
+		UFunctions::Summon(XOR(L"PlayerPawn_Athena_C"));
+		NeoPlayer.Pawn = UFunctions::FindActor(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
 		printf("yee3\n");
 		NeoPlayer.Authorize();
 		printf("yee4\n");
