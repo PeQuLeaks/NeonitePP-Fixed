@@ -210,7 +210,8 @@ namespace NeoRoyale
 		NeoPlayer.UpdatePlayerController();
 		NeoPlayer.EnableCheatManager();
 		UFunctions::Summon(XOR(L"PlayerPawn_Athena_C"));
-		NeoPlayer.Pawn = UFunctions::FindActor(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/PlayerPawn_Athena.PlayerPawn_Athena_C")));
+		Sleep(2000);
+		NeoPlayer.Pawn = UE4::FindObject<UObject*>(L"PersistentLevel.PlayerPawn_Athena_C_")
 		printf("yee3\n");
 		NeoPlayer.Authorize();
 		printf("yee4\n");
