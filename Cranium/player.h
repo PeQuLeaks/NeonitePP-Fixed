@@ -174,23 +174,22 @@ public:
 
 	void EnableCheatManager()
 	{
-		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.GameplayStatics.SpawnObject"));
-		auto statics = UE4::FindObject<UObject*>(XOR(L"GameplayStatics /Script/Engine.Default__GameplayStatics"));
-		auto CheatClass = UE4::FindObject<UObject*>(XOR(L"Class /Script/Engine.CheatManager"));
-		auto CheatManager = reinterpret_cast<UObject**>(__int64(this->Controller) + __int64(0x340));
-
-		struct
-		{
-			UObject* ObjectClass;
+		ObjectFinder ControllerFinder = ObjectFinder::EntryPoint(uintptr_t(this->Controller));
+		auto GameplayStatics = UE4::FindObject<UObject*>(L"GameplayStatics /Script/Engine.Default__GameplayStatics");
+		auto SpawnObject = UE4::FindObject<UFunction*>(L"Function /Script/Engine.GameplayStatics.SpawnObject");
+		auto CheatClass = UE4::FindObject<UClass*>(L"Class /Script/Engine.CheatManager");
+		ObjectFinder CheatManagerFinder = ControllerFinder.Find(L"CheatManager");
+		struct {
+			UClass* CheatClass;
 			UObject* Outer;
 			UObject* ReturnValue;
 		} params;
-		params.ObjectClass = CheatClass;
+		params.CheatClass = CheatClass;
 		params.Outer = this->Controller;
 
-		ProcessEvent(statics, fn, &params);
+		ProcessEvent(GameplayStatics, SpawnObject, &params);
 
-		*CheatManager = params.ReturnValue;
+		CheatManagerFinder.GetObj() = params.ReturnValue;
 		printf("Cheatmanager has been enabled\n");
 	}
 	void Authorize()
