@@ -184,15 +184,15 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 				}
 				else if (gVersion == 17.30f)
 				{
-					UFunctions::ConsoleLog(XOR(L"17.30 brr"));
+					UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
 				}
 				else if (gVersion == 17.50f)
 				{
-					UFunctions::ConsoleLog(XOR(L"17.50 brr"));
+					UFunctions::Play(MOTHERSHIP_EVENT_PLAYER);
 				}
 				else if (gVersion == 18.40f)
 				{
-					UFunctions::ConsoleLog(XOR(L"18.40 brr"));
+					UFunctions::Play(GUAVA_EVENT_PLAYER);
 				}
 				else
 				{
