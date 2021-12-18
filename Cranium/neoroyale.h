@@ -249,7 +249,7 @@ namespace NeoRoyale
 
 			NeoPlayer.EnableConsole();
 
-			//NeoPlayer.EnableCheatManager();
+			NeoPlayer.EnableCheatManager();
 
 			UFunctions::ConsoleLog(XOR(L"\n\nWelcome to Neonite++\nMade with ♥ By Kemo (@xkem0x on twitter)."));
 
