@@ -29,6 +29,7 @@
 #include "gui/imgui/imgui_impl_win32.h"
 #include "gui/imgui/imgui_impl_dx11.h"
 #include "xorstr.hpp"
+#include "skCryptor.h"
 
 #define XOR(STR) xorstr(STR).crypt_get()
 

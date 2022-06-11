@@ -1,14 +1,6 @@
-/**
- * Copyright (c) 2020-2021 Kareem Olim (Kemo)
- * All Rights Reserved. Licensed under the Neo License
- * https://neonite.dev/LICENSE.html
- */
-
 #pragma once
 #include "enums.h"
 #include <set>
-
-struct UObject;
 
 template <class T>
 struct TArray
@@ -16,11 +8,6 @@ struct TArray
 	friend struct FString;
 
 public:
-
-	T* Data;
-	int32_t Count;
-	int32_t Max;
-
 	TArray()
 	{
 		Data = nullptr;
@@ -47,14 +34,10 @@ public:
 		return i < Num();
 	}
 
-	int Add(UObject* NewItem)
-	{
-		Count = Count + 1;
-		Max = Max + 1;
-		Data = static_cast<UObject**>(malloc(Count * sizeof(UObject*)));
-		Data[Count - 1] = NewItem;
-		return Count;
-	}
+private:
+	T* Data;
+	int32_t Count;
+	int32_t Max;
 };
 
 struct FString : private TArray<wchar_t>
@@ -171,11 +154,6 @@ struct UKismetStringLibrary_Conv_StringToName_Params
 	FName ReturnValue;
 };
 
-struct TSoftObjectPtr
-{
-	char unknowndata[0x28];
-};
-
 struct UClass;
 
 struct UObject
@@ -186,6 +164,7 @@ struct UObject
 	UClass* Class;
 	FName NamePrivate;
 	UObject* Outer;
+
 
 	void ProcessEvent(void* fn, void* parms)
 	{
@@ -283,11 +262,6 @@ struct UField : UObject
 	void* padding_02;
 };
 
-
-struct ACharacter_OnRep_IsParachuteOpen_Params
-{
-	bool bPreviousState;
-};
 struct UStruct : UField
 {
 	UStruct* SuperStruct;
@@ -304,6 +278,13 @@ struct UStruct : UField
 
 struct UClass : UStruct
 {
+};
+
+struct SpawnObjectParams
+{
+	UObject* ObjectClass;
+	UObject* Outer;
+	UObject* ReturnValue;
 };
 
 struct UFunction : UStruct
@@ -393,22 +374,6 @@ struct UFortKismetLibrary_ApplyCharacterCosmetics_Params
 	bool bSuccess;
 };
 
-struct PickupActor_Params
-{
-	UObject* PickupTarget;
-	UObject* PlacementDecoItemDefinition;
-};
-
-struct APlayerController_ClientSetCameraMode_Params
-{
-	FName NewCamMode;
-};
-
-struct UPrimitiveComponent_SetOwnerNoSee_Params
-{
-	bool bNewOwnerNoSee;
-};
-
 struct AFortPlayerPawn_BeginSkydiving_Params
 {
 	bool bFromBus;
@@ -474,13 +439,7 @@ struct AFortPawn_EquipWeaponDefinition_Params
 {
 	UObject* WeaponData;
 	FGuid ItemEntryGuid;
-	float Durability;
 	UObject* ReturnValue;
-};
-
-struct FPointerToUberGraphFrame
-{
-	unsigned char UnknownData00[0x8];
 };
 
 struct AFortPawn_OnWeaponEquipped_Params
@@ -569,12 +528,6 @@ struct PreFUObjectItem
 	FUObjectItem* FUObject[10];
 };
 
-struct ItemCount
-{
-	char Bytes[0xC];
-	int Count;
-};
-
 struct GObjects
 {
 	PreFUObjectItem* ObjectArray;
@@ -658,8 +611,8 @@ struct FVector
 
 	FVector(float x, float y, float z)
 		: X(x),
-		Y(y),
-		Z(z)
+		  Y(y),
+		  Z(z)
 	{
 	}
 
@@ -686,50 +639,18 @@ struct FRotator
 	float Pitch;
 	float Yaw;
 	float Roll;
-
-	FRotator()
-		: Pitch(0),
-		Yaw(0),
-		Roll(0)
-	{
-	}
-
-	FRotator(float pitch, float yaw, float roll)
-		: Pitch(pitch),
-		Yaw(yaw),
-		Roll(roll)
-	{
-	}
 };
 
 struct FQuat
 {
 	float W, X, Y, Z;
-
-	FQuat()
-		: W(0),
-		X(0),
-		Y(0),
-		Z(0)
-	{
-	}
-
-	FQuat(float w, float x, float y, float z)
-		: W(w),
-		X(x),
-		Y(y),
-		Z(z)
-	{
-	}
 };
 
 struct FTransform
 {
 	FQuat Rotation;
-	FVector Translation;
-	char UnknownData_1C[0x4];
 	FVector Scale3D;
-	char UnknownData_2C[0x4];
+	FVector Translation;
 };
 
 struct FMinimalViewInfo
@@ -747,6 +668,132 @@ struct FMinimalViewInfo
 	unsigned char PreviousViewTransform[0x3];
 	TEnumAsByte<ECameraProjectionMode> ProjectionMode;
 };
+
+struct FLinearColor
+{
+	float R;
+	float G;
+	float B;
+	float A;
+
+	FLinearColor()
+		: R(0), G(0), B(0), A(0)
+	{
+	}
+
+	FLinearColor(float r, float g, float b, float a)
+		: R(r),
+		  G(g),
+		  B(b),
+		  A(a)
+	{
+	}
+};
+
+struct SetBrushFromTextureParams
+{
+	UObject* Texture;
+	bool bMatchSize;
+};
+
+struct SetInventoryPanelOverride_Params
+{
+	UObject* InInventoryPanelOverride;
+};
+
+struct FQosRegionInfo
+{
+	FText DisplayName;
+	FString RegionId;
+};
+
+struct UKismetRenderingLibrary_ImportFileAsTexture2D_Params
+{
+	UObject* WorldContextObject;
+	FString Filename;
+	UObject* ReturnValue;
+};
+
+struct ULevelStreamingDynamic_LoadLevelInstance_Params
+{
+	UObject* WorldContextObject;
+	FString LevelName;
+	FVector Location;
+	FRotator Rotation;
+	bool bOutSuccess;
+	FString OptionalLevelNameOverride;
+	UObject* ReturnValue;
+};
+
+struct AActor_K2_GetActorLocation_Params
+{
+	FVector ReturnValue;
+};
+
+struct AActor_ReceiveHit_Params
+{
+	UObject* MyComp;
+	UObject* Other;
+	UObject* OtherComp;
+	bool bSelfMoved;
+	FVector HitLocation;
+};
+
+struct AActor_K2_TeleportTo_Params
+{
+	FVector DestLocation;
+	FRotator DestRotation;
+	bool ReturnValue;
+};
+
+struct FLatentActionInfo
+{
+	int Linkage;
+	int UUID;
+	FName ExecutionFunction;
+	UObject* CallbackTarget;
+};
+
+struct UGameplayStatics_LoadStreamLevel_Params
+{
+	UObject* WorldContextObject;
+	struct FName LevelName;
+	bool bMakeVisibleAfterLoad;
+	bool bShouldBlockOnLoad;
+	FLatentActionInfo LatentInfo;
+};
+
+struct UFortKismetLibrary_SetTimeOfDay_Params
+{
+	UObject* WorldContextObject;
+	float TimeOfDay;
+};
+
+struct UKismetSystemLibrary_ExecuteConsoleCommand_Params
+{
+	UObject* WorldContextObject;
+	FString Command;
+	UObject* SpecificPlayer;
+};
+
+struct USkeletalMeshComponent_GetAnimInstance_Params
+{
+	UObject* ReturnValue;
+};
+
+struct UAnimInstance_GetCurrentActiveMontage_Params
+{
+	UObject* ReturnValue;
+};
+
+
+struct UAnimInstance_Montage_Stop_Params
+{
+	float InBlendOutTime;
+	UObject* Montage;
+};
+
+
 
 struct FActorSpawnParameters
 {
@@ -804,150 +851,6 @@ public:
 
 	EObjectFlags ObjectFlags;
 };
-
-struct FLinearColor
-{
-	float R;
-	float G;
-	float B;
-	float A;
-
-	FLinearColor()
-		: R(0), G(0), B(0), A(0)
-	{
-	}
-
-	FLinearColor(float r, float g, float b, float a)
-		: R(r),
-		G(g),
-		B(b),
-		A(a)
-	{
-	}
-};
-
-struct SetBrushFromTextureParams
-{
-	UObject* Texture;
-	bool bMatchSize;
-};
-
-struct SetInventoryPanelOverride_Params
-{
-	UObject* InInventoryPanelOverride;
-};
-
-struct ServerExecuteInventoryItem_Params
-{
-	FGuid ItemGuid;
-};
-
-struct FQosRegionInfo
-{
-	FText DisplayName;
-	FString RegionId;
-};
-
-struct UKismetRenderingLibrary_ImportFileAsTexture2D_Params
-{
-	UObject* WorldContextObject;
-	FString Filename;
-	UObject* ReturnValue;
-};
-
-struct UFortItemDefinition_CreateTemporaryItemInstanceBP_Params
-{
-	int Count;
-	int Level;
-	UObject* ReturnValue;
-};
-
-struct ULevelStreamingDynamic_LoadLevelInstance_Params
-{
-	UObject* WorldContextObject;
-	FString LevelName;
-	FVector Location;
-	FRotator Rotation;
-	bool bOutSuccess;
-	FString OptionalLevelNameOverride;
-	UObject* ReturnValue;
-};
-
-struct AActor_K2_GetActorLocation_Params
-{
-	FVector ReturnValue;
-};
-
-struct AActor_ReceiveHit_Params
-{
-	UObject* MyComp;
-	UObject* Other;
-	UObject* OtherComp;
-	bool bSelfMoved;
-	FVector HitLocation;
-};
-
-struct AActor_K2_TeleportTo_Params
-{
-	FVector DestLocation;
-	FRotator DestRotation;
-	bool ReturnValue;
-};
-
-struct FLatentActionInfo
-{
-	int Linkage;
-	int UUID;
-	FName ExecutionFunction;
-	UObject* CallbackTarget;
-};
-
-struct UGameplayStatics_LoadStreamLevel_Params
-{
-	UObject* WorldContextObject;
-	FName LevelName;
-	bool bMakeVisibleAfterLoad;
-	bool bShouldBlockOnLoad;
-	FLatentActionInfo LatentInfo;
-};
-
-struct GetAllActorsOfClass_Params
-{
-	UObject* WorldContextObject;
-	UObject* ActorClass; //AActor
-	TArray<UObject*> OutActors; //AActor
-};
-
-struct UFortKismetLibrary_SetTimeOfDay_Params
-{
-	UObject* WorldContextObject;
-	float TimeOfDay;
-};
-
-struct UKismetSystemLibrary_ExecuteConsoleCommand_Params
-{
-	UObject* WorldContextObject;
-	FString Command;
-	UObject* SpecificPlayer;
-};
-
-struct USkeletalMeshComponent_GetAnimInstance_Params
-{
-	UObject* ReturnValue;
-};
-
-struct UAnimInstance_GetCurrentActiveMontage_Params
-{
-	UObject* ReturnValue;
-};
-
-
-struct UAnimInstance_Montage_Stop_Params
-{
-	float InBlendOutTime;
-	UObject* Montage;
-};
-
 
 struct UFortMontageItemDefinitionBase_GetAnimationHardReference_Params
 {

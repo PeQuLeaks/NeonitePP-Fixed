@@ -21,9 +21,6 @@
     <ClCompile Include="gui\ImGui\imgui.cpp">
       <Filter>Rendering\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="veh.cpp">
-      <Filter>Hooks</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
@@ -154,6 +151,7 @@
     <ClInclude Include="cryptolens\SignatureVerifier_v20190401_to_v20180502.hpp">
       <Filter>Auth Library</Filter>
     </ClInclude>
+    <ClInclude Include="pawn.h" />
     <ClInclude Include="neoroyale.h" />
     <ClInclude Include="gui\kiero.h">
       <Filter>Rendering\Kiero</Filter>
@@ -192,9 +190,13 @@
     <ClInclude Include="neonitelogo.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="player.h" />
-    <ClInclude Include="console.h" />
-    <ClInclude Include="SSL.h">
+    <ClInclude Include="old.h">
+      <Filter>Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="skCryptor.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="almost.h">
       <Filter>Hooks</Filter>
     </ClInclude>
   </ItemGroup>

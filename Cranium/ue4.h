@@ -1,18 +1,15 @@
-/**
- * Copyright (c) 2020-2021 Kareem Olim (Kemo)
- * All Rights Reserved. Licensed under the Neo License
- * https://neonite.dev/LICENSE.html
- */
-
 #pragma once
 
 inline void* (*ProcessEvent)(void*, void*, void*);
+inline int (*GetViewPoint)(void*, FMinimalViewInfo*, BYTE);
+inline FString (*GetObjectNameInternal)(PVOID);
 inline UObject* (*SpawnActor)(UObject* UWorld, UClass* Class, FTransform const* UserTransformPtr,
 	const FActorSpawnParameters& SpawnParameters);
 inline void (*GetFullName)(FField* Obj, FString& ResultString, const UObject* StopOuter, EObjectFullNameFlags Flags);
+inline void (*GetObjectFullNameInternal)(UObject* Obj, FString& ResultString, const UObject* StopOuter, EObjectFullNameFlags Flags);
+inline void (*FreeInternal)(void*);
 inline GObjects* GObjs;
 inline UEngine* GEngine;
-
 inline UObject* (*StaticConstructObject)(
 	UClass* Class,
 	UObject* InOuter,
@@ -23,7 +20,7 @@ inline UObject* (*StaticConstructObject)(
 	bool bCopyTransientsFromClassDefaults,
 	void* InstanceGraph,
 	bool bAssumeTemplateIsArchetype
-	);
+);
 
 inline UObject* (*StaticLoadObject)(
 	UClass* ObjectClass,
@@ -34,136 +31,98 @@ inline UObject* (*StaticLoadObject)(
 	void* Sandbox,
 	bool bAllowObjectReconciliation,
 	void* InstancingContext
-	);
+);
+
 
 inline UObject* KismetRenderingLibrary;
 inline UObject* KismetStringLibrary;
 
+inline uintptr_t gProcessEventAdd;
 
-namespace UE4
+//Frees the memory for the name
+inline void Free(void* buffer)
 {
-	static void* FindStringRef(const std::wstring& string)
+	FreeInternal(buffer);
+}
+
+//Returns the very first name of the object (E.G: BP_PlayButton).
+inline std::wstring GetObjectFirstName(UObject* object)
+{
+	const FString internalName = GetObjectNameInternal(object);
+	if (!internalName.ToWString()) return L"";
+
+	std::wstring name(internalName.ToWString());
+
+	Free((void*)internalName.ToWString());
+
+	return name;
+}
+
+//The same as above but for FFields.
+inline std::wstring GetFirstName(FField* object)
+{
+	FString s;
+	GetFullName(object, s, nullptr, EObjectFullNameFlags::None);
+	std::wstring objectNameW = s.ToWString();
+
+	std::wstring token;
+	while (token != objectNameW)
 	{
-		uintptr_t base_address = reinterpret_cast<uintptr_t>(GetModuleHandle(nullptr));
-
-		const auto dosHeader = (PIMAGE_DOS_HEADER)base_address;
-		const auto ntHeaders = (PIMAGE_NT_HEADERS)((std::uint8_t*)base_address + dosHeader->e_lfanew);
-
-		IMAGE_SECTION_HEADER* textSection = nullptr;
-		IMAGE_SECTION_HEADER* rdataSection = nullptr;
-
-		auto sectionsSize = ntHeaders->FileHeader.NumberOfSections;
-		auto section = IMAGE_FIRST_SECTION(ntHeaders);
-
-		for (WORD i = 0; i < sectionsSize; section++)
-		{
-			auto secName = std::string((char*)section->Name);
-
-			if (secName == ".text")
-			{
-				textSection = section;
-			}
-			else if (secName == ".rdata")
-			{
-				rdataSection = section;
-			}
-
-			if (textSection && rdataSection)
-				break;
-		}
-
-		auto textStart = base_address + textSection->VirtualAddress;
-
-		auto rdataStart = base_address + rdataSection->VirtualAddress;
-		auto rdataEnd = rdataStart + rdataSection->Misc.VirtualSize;
-
-		const auto scanBytes = reinterpret_cast<std::uint8_t*>(textStart);
-
-		//scan only text section
-		for (DWORD i = 0x0; i < textSection->Misc.VirtualSize; i++)
-		{
-			if (&scanBytes[i])
-			{
-				if ((scanBytes[i] == ASM::CMOVL || scanBytes[i] == ASM::CMOVS) && scanBytes[i + 1] == ASM::LEA)
-				{
-					auto stringAdd = reinterpret_cast<uintptr_t>(&scanBytes[i]);
-					stringAdd = stringAdd + 7 + *reinterpret_cast<int32_t*>(stringAdd + 3);
-
-					//check if the pointer is actually a valid string by checking if it's inside the rdata section
-					if (stringAdd > rdataStart && stringAdd < rdataEnd)
-					{
-						std::wstring lea((wchar_t*)stringAdd);
-
-						if (lea == string)
-						{
-							return &scanBytes[i];
-						}
-					}
-				}
-			}
-		}
-
-		return nullptr;
+		token = objectNameW.substr(0, objectNameW.find_first_of(L":"));
+		objectNameW = objectNameW.substr(objectNameW.find_first_of(L":") + 1);
 	}
 
-	static void* FindByString(const std::wstring& string, std::vector<int> opcodesToFind = {}, bool bRelative = false, uint32_t offset = 0, bool forward = false)
+	Free((void*)s.ToWString());
+
+	return objectNameW;
+}
+
+//Returns Object Name (NOT FULL NAME, MORE LIKE A PATH).
+inline std::wstring GetObjectName(UObject* object)
+{
+	std::wstring name(L"");
+	for (auto i = 0; object; object = object->Outer, ++i)
 	{
-		auto ref = FindStringRef(string);
+		FString internalName = GetObjectNameInternal(object);
+		if (!internalName.ToWString()) break;
+		name = internalName.ToWString() + std::wstring(i > 0 ? L"." : L"") + name;
 
-		if (ref)
-		{
-			printf("Ref %ls %p\n", string.c_str(), ref);
-
-
-			const auto scanBytes = static_cast<std::uint8_t*>(ref);
-
-			//scan backwards till we hit a ret (and assume this is the function start)
-			for (auto i = 0; forward ? (i < 2048) : (i > -2048); forward ? i++ : i--)
-			{
-				if (opcodesToFind.size() == 0)
-				{
-					if (scanBytes[i] == ASM::INT3 || scanBytes[i] == ASM::RETN)
-					{
-						return &scanBytes[i + 1];
-					}
-				}
-				else
-				{
-					for (uint8_t byte : opcodesToFind)
-					{
-						if (scanBytes[i] == byte && byte != ASM::SKIP)
-						{
-							if (bRelative)
-							{
-								uintptr_t address = reinterpret_cast<uintptr_t>(&scanBytes[i]);
-								address = ((address + offset + 4) + *(int32_t*)(address + offset));
-								return (void*)address;
-							}
-							return &scanBytes[i];
-						}
-					}
-				}
-			}
-		}
-
-		return nullptr;
+		Free((void*)internalName.ToWString());
 	}
 
-	inline auto StaticLoadObjectEasy(UClass* inClass, const wchar_t* inName, UObject* inOuter = nullptr)
-	{
-		return StaticLoadObject(inClass, inOuter, inName, nullptr, 0, nullptr, false, nullptr);
-	}
+	return name;
+}
 
-	//Frees the memory for the name
-	inline void Free(void* buffer)
-	{
-		//FreeInternal(buffer);
-		std::free(buffer);
-	}
+//Return FULL Object name including it's type.
+inline std::wstring GetObjectFullName(UObject* object)
+{
+	FString s;
+	GetObjectFullNameInternal(object, s, nullptr, EObjectFullNameFlags::None);
+	std::wstring objectNameW = s.ToWString();
 
-	//Find any entity inside the UGlobalObjects array aka. GObjects.
-	template <typename T>
-	static T FindObject(wchar_t const* name, bool ends_with = false, bool to_lower = false, int toSkip = 0)
+	Free((void*)s.ToWString());
+
+	return objectNameW;
+}
+
+//Returns FField's type.
+inline std::wstring GetFieldClassName(FField* obj)
+{
+	FString s;
+	GetFullName(obj, s, nullptr, EObjectFullNameFlags::None);
+	const std::wstring objectName = s.ToWString();
+	auto className = Util::sSplit(objectName, L" ");
+
+	Free((void*)s.ToWString());
+
+	return className;
+}
+
+//Find any entity inside the UGlobalObjects array aka. GObjects.
+template <typename T>
+static T FindObject(wchar_t const* name, bool ends_with = false, bool to_lower = false, int toSkip = 0)
+{
+	if (gVersion > 16.00f)
 	{
 		for (auto i = 0x0; i < GObjs->NumElements; ++i)
 		{
@@ -205,29 +164,7 @@ namespace UE4
 		}
 		return nullptr;
 	}
-
-	inline void DumpGObjects()
-	{
-		std::wofstream log("GObjects.log");
-
-		for (auto i = 0x0; i < GObjs->NumElements; ++i)
-		{
-			auto object = GObjs->GetByIndex(i);
-			if (object == nullptr)
-			{
-				continue;
-			}
-			std::wstring className = object->Class->GetFullName();
-			std::wstring objectName = object->GetFullName();
-			std::wstring item = L"\n[" + std::to_wstring(i) + L"] Object:[" + objectName + L"] Class:[" + className +
-				L"]\n";
-			log << item;
-		}
-	}
-
-	inline void DumpBPs()
-	{
-		std::wofstream log("Blueprints.log");
+	else {
 		for (auto i = 0x0; i < GObjs->NumElements; ++i)
 		{
 			auto object = GObjs->GetByIndex(i);
@@ -236,14 +173,77 @@ namespace UE4
 				continue;
 			}
 
-			auto ClassName = object->Class->GetName();
+			auto objectFullName = GetObjectFullName(object);
 
-			if (ClassName == XOR(L"BlueprintGeneratedClass"))
+			if (to_lower)
 			{
-				auto objectNameW = object->GetName();
-				log << objectNameW + L"\n";
+				std::transform(objectFullName.begin(), objectFullName.end(), objectFullName.begin(),
+					[](const unsigned char c) { return std::tolower(c); });
+			}
+
+			if (!ends_with)
+			{
+				if (objectFullName.starts_with(name))
+				{
+					if (toSkip > 0)
+					{
+						toSkip--;
+					}
+					else
+					{
+						return reinterpret_cast<T>(object);
+					}
+				}
+			}
+			else
+			{
+				if (objectFullName.ends_with(name))
+				{
+					return reinterpret_cast<T>(object);
+				}
 			}
 		}
-		log.flush();
+		return nullptr;
 	}
+}
+
+inline void DumpGObjects()
+{
+	std::wofstream log("GObjects.log");
+
+	for (auto i = 0x0; i < GObjs->NumElements; ++i)
+	{
+		auto object = GObjs->GetByIndex(i);
+		if (object == nullptr)
+		{
+			continue;
+		}
+		std::wstring className = GetObjectName(static_cast<UObject*>(object->Class)).c_str();
+		std::wstring objectName = GetObjectFullName(object).c_str();
+		std::wstring item = L"\n[" + std::to_wstring(i) + L"] Object:[" + objectName + L"] Class:[" + className + L"]\n";
+		log << item;
+	}
+	log.flush();
+}
+
+inline void DumpBPs()
+{
+	std::wofstream log("Blueprints.log");
+	for (auto i = 0x0; i < GObjs->NumElements; ++i)
+	{
+		auto object = GObjs->GetByIndex(i);
+		if (object == nullptr)
+		{
+			continue;
+		}
+
+		auto ClassName = GetObjectFirstName(object->Class);
+
+		if (ClassName == XOR(L"BlueprintGeneratedClass"))
+		{
+			auto objectNameW = GetObjectFirstName(object);
+			log << objectNameW + L"\n";
+		}
+	}
+	log.flush();
 }

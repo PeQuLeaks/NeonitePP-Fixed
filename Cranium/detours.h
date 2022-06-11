@@ -1,26 +1,35 @@
-/**
- * Copyright (c) 2020-2021 Kareem Olim (Kemo)
- * All Rights Reserved. Licensed under the Neo License
- * https://neonite.dev/LICENSE.html
- */
-
 #pragma once
 #include "ue4.h"
 #include "neoroyale.h"
 #include "kismet.h"
 
+#ifndef PROD
+//#define LOGGING
+#endif
 
 using namespace NeoRoyale;
 
 inline bool bIsDebugCamera;
-inline bool bIsFlying; 
-inline bool bIsGuavaPlaylist = false;
+inline bool bIsFlying;
 
-inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
+inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 {
-	auto nObj = pObj->GetName();
-	auto nFunc = pFunc->GetName();
+	std::wstring nObj;
+	std::wstring nFunc;
 
+	if (gVersion > 16.00f)
+	{
+		nObj = pObj->GetName();;
+		nFunc = pFunc->GetName();
+	}
+	else
+	{
+		nObj = GetObjectFirstName(pObj);
+		nFunc = GetObjectFirstName(pFunc);
+	}
+
+
+	//If the game requested matchmaking we open the game mode
 	if (gUrl.find(XOR("matchmakingservice")) != std::string::npos)
 	{
 		printf(XOR("\n\n[NeoRoyale] Start!"));
@@ -35,7 +44,7 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		std::string PlaylistName = query + "." + query;
 		const std::wstring PlaylistNameW(PlaylistName.begin(), PlaylistName.end());
 
-		auto Playlist = UE4::FindObject<UObject*>(PlaylistNameW.c_str(), true, true);
+		auto Playlist = FindObject<UObject*>(PlaylistNameW.c_str(), true, true);
 		auto Map = ARTEMIS_TERRAIN;
 
 		if (gVersion > 19.00f) {
@@ -45,8 +54,6 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		{
 			Map = APOLLO_TERRAIN;
 		}
-
-
 		if (PlaylistNameW.find(XOR(L"papaya")) != std::string::npos && !gPlaylist)
 		{
 			Map = APOLLO_PAPAYA;
@@ -55,13 +62,7 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		if (PlaylistNameW.find(XOR(L"yogurt")) != std::string::npos && !gPlaylist)
 		{
 			Map = APOLLO_TERRAIN_YOGURT;
-			//gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab"));
 		}
-		if (PlaylistNameW.find(XOR(L"guava")) != std::string::npos && !gPlaylist)// If the playlist name in the URL is guava(The End) execute special functions such as maps
-		{
-			bIsGuavaPlaylist = true;
-		}
-
 		if (Playlist && !gPlaylist)
 		{
 			gPlaylist = Playlist;
@@ -70,73 +71,73 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		{
 			MessageBoxW(nullptr, L"Cannot find playlist.\n Using battlelab instead", L"Error", MB_OK);
 			printf("[CRANIUM]Playlist not found! Using battlelab instead. \n");
-			gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab"));
+			gPlaylist = FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab"));
 		}
-
 		Start(Map);
-
 	}
 
 	if (wcsstr(nFunc.c_str(), XOR(L"ReadyToStartMatch")) && bIsStarted && !bIsInit)
 	{
 		printf(XOR("\n[NeoRoyale] Init!\n"));
 		Init();
-		//Console::ExecuteConsoleCommand(XOR(L"god"));
-		//NeoPlayer.StartSkydiving(10);
 	}
 
 	if (wcsstr(nFunc.c_str(), XOR(L"DynamicHandleLoadingScreenVisibilityChanged")) && wcsstr(nObj.c_str(), XOR(L"AthenaLobby")))
 	{
-		//NeoPlayer.StartSkydiving(9999);
-		UFunctions::ConsoleLog(XOR(L"Welcome to Neonite++"));
 		if (bIsDebugCamera) bIsDebugCamera = !bIsDebugCamera;
-		//UFunctions::RegionCheck();
 	}
 
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerLoadingScreenDropped")) && bIsInit && bIsStarted)
 	{
-		
-		NeoPlayer.SetHealth(100);
-		//Console::ExecuteConsoleCommand(XOR(L"god"));
-		/*
-		NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Sprint"));
-		NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Jump"));
-		NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Generic/Traits/DefaultPlayer/GA_DefaultPlayer_InteractUse.GA_DefaultPlayer_InteractUse_C"));
-		NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Generic/Traits/DefaultPlayer/GA_DefaultPlayer_InteractSearch.GA_DefaultPlayer_InteractSearch_C"));
-		*/
-		//LoadMoreClasses();
-		//UFunctions::SetupCustomInventory();
-		printf("\n\n\n[CRANIUM] Found game version: %i\n\n\n", gVersion);
-		//NeoPlayer.GrantAbility(UE4::FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Generic/Traits/DefaultPlayer/GA_DefaultPlayer_InteractUse.GA_DefaultPlayer_InteractUse_C"));
-		//UFunctions::PlayCustomPlayPhaseAlert();
-		//LoadMoreClasses();	
-		if (bIsGuavaPlaylist)
-		{
-			UFunctions::ConsoleLog(XOR(L"Welcome to the epic playlist bro"));
-		}
+
 	}
+
+	//Toggle our fly function on "fly" command.
+	if (wcsstr(nFunc.c_str(), XOR(L"Fly")) && nObj.starts_with(XOR(L"CheatManager_")))
+	{
+		NeoPlayer.Fly(bIsFlying);
+		bIsFlying = !bIsFlying;
+	}
+
 	// NOTE: (irma) This is better.
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerAttemptAircraftJump")))
 	{
-		//NeoPlayer.GetLocation();
-		//NeoPlayer.StartSkydiving(0);
-		//NeoPlayer.StartSkydiving(0);
-		//NeoPlayer.StartSkydiving(22222);
-		//NeoPlayer.TeleportToSpawn();
-		NeoPlayer.Respawn(); 
-		Console::ExecuteConsoleCommand(XOR(L"god"));
-		NeoPlayer.TeleportTo(NeoPlayer.GetLocation());//NOTE TIMMY: Still isn't working properly, seems like function ServerAttemptAircraftJump isn't getting called properly and this causes a crash when trying to teleport
+		NeoPlayer.ExecuteConsoleCommand(XOR(L"PAUSESAFEZONE"));
+		NeoPlayer.Respawn();
+		auto currentLocation = NeoPlayer.GetLocation();
+		UFunctions::TeleportToCoords(currentLocation.X, currentLocation.Y, currentLocation.Z);
 	}
 
-	if (wcsstr(nFunc.c_str(), XOR(L"OnBurst")) && nObj.starts_with(XOR(L"Default__GCN_Athena_OutsideSafeZoneDamage_C")))
+	if (bIsInit)
 	{
-		NeoPlayer.SetHealth(100);
+		if (bWantsToJump)
+		{
+			NeoPlayer.Jump();
+			bWantsToJump = false;
+		}
+
+		else if (bWantsToOpenGlider)
+		{
+			NeoPlayer.ForceOpenParachute();
+			bWantsToOpenGlider = false;
+		}
+
+		else if (bWantsToSkydive)
+		{
+			NeoPlayer.Skydive();
+			bWantsToSkydive = false;
+		}
+
+		else if (bWantsToShowPickaxe)
+		{
+			NeoPlayer.ShowPickaxe();
+			bWantsToShowPickaxe = false;
+		}
 	}
 
-	if (wcsstr(nFunc.c_str(), XOR(L"ExecuteUbergraph_B_RiftPortal_Papaya")))
+	if (wcsstr(nFunc.c_str(), XOR(L"EnableCheats")))
 	{
-		NeoPlayer.StartSkydiving(22222);
-		NeoPlayer.SetMovementMode(EMovementMode::MOVE_Custom, 4);
+		Console::CheatManager();
 	}
 
 	if (wcsstr(nFunc.c_str(), XOR(L"OnWeaponEquipped")))
@@ -147,118 +148,19 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 
 		if (OldWeapon && !Util::IsBadReadPtr(OldWeapon))
 		{
-			UFunctions::DestroyActor(OldWeapon);
+			UFunctions::DestoryActor(OldWeapon);
 			OldWeapon = nullptr;
 		}
-	}
-	if (wcsstr(nFunc.c_str(), XOR(L"CheatScript")))
-	{
-		FString ScriptNameF = static_cast<UCheatManager_CheatScript_Params*>(pParams)->ScriptName;
-		if (ScriptNameF.IsValid())
-		{
-			std::wstring ScriptNameW = ScriptNameF.ToWString();
-			if (wcsstr(ScriptNameW.c_str(), XOR(L"help")))
-			{
-				UFunctions::ConsoleLog(XOR(L"ehh yes there are no commands. just do 'cheatscipt equip WID_xxxxx' or something"));
-			}
-			else if (wcsstr(ScriptNameW.c_str(), XOR(L"dump")))
-			{
-				UFunctions::ConsoleLog(XOR(L"Dumping all items and blueprints!"));
-				UE4::DumpBPs();
-				UE4::DumpGObjects();
-			}
-			else if (wcsstr(ScriptNameW.c_str(), XOR(L"event")))
-			{
-				//UFunctions::ConsoleLog(XOR(L"Dumping all items and blueprints!"));
-				if (gVersion == 14.60f)
-				{
-					UFunctions::Play(GALACTUS_EVENT_PLAYER);
-				}
-				else if (gVersion == 12.41f)
-				{
-					UFunctions::Play(JERKY_EVENT_PLAYER);
-				}
-				else if (gVersion == 12.61f)
-				{
-					UFunctions::Play(DEVICE_EVENT_PLAYER);
-				}
-				else if (gVersion == 17.30f)
-				{
-					UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
-				}
-				else if (gVersion == 17.50f)
-				{
-					UFunctions::Play(MOTHERSHIP_EVENT_PLAYER);
-				}
-				else if (gVersion == 18.40f)
-				{
-					UFunctions::Play(GUAVA_EVENT_PLAYER);
-				}
-				else
-				{
-					UFunctions::ConsoleLog(XOR(L"Sorry the version you are using doesn't have any event we support."));
-				}
-			}
-			else if (wcsstr(ScriptNameW.c_str(), XOR(L"startgame")))
-			{
-
-				const auto arg = ScriptNameW.erase(0, ScriptNameW.find(XOR(L" ")) + 1);
-
-				if (!arg.empty())
-				{
-					bIsStarted = false;
-					bIsInit = false;
-
-					gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/ItemTest/Playlist_ItemTest.Playlist_ItemTest"));
-					Start(arg.c_str());
-				}
-				else
-				{
-					bIsStarted = false;
-					bIsInit = false;
-
-					auto Map = APOLLO_TERRAIN;
-					gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /BuffetPlaylist/Playlist/Playlist_Buffet.Playlist_Buffet")); //Buffet Event		gPlaylist = UE4::FindObject<UObject*>(XOR(L"FortPlaylistAthena /BuffetPlaylist/Playlist/Playlist_Buffet.Playlist_Buffet")); //Buffet Event
-	
-					Start(Map);
-
-					
-				}
-			}
-			else if (ScriptNameW == XOR(L"test"))
-			{
-				NeoPlayer.testWeapon();
-			}
-
-			else if (ScriptNameW.starts_with(XOR(L"equip")))
-			{
-				const auto arg = ScriptNameW.erase(0, ScriptNameW.find(XOR(L" ")) + 1);
-
-				if (!arg.empty())
-				{
-					if (arg.starts_with(XOR(L"WID_")) || arg.starts_with(XOR(L"AGID_")))
-					{
-						NeoPlayer.EquipWeapon(arg.c_str());
-					}
-					else
-					{
-						UFunctions::ConsoleLog(XOR(L"This command only works with WIDs and AGIDs."));
-					}
-				}
-				else
-				{
-					UFunctions::ConsoleLog(XOR(L"This command requires an argument"));
-				}
-			}
-		}
-		//UFunctions::ConsoleLog(XOR(L"hi"));
 	}
 
 	if (wcsstr(nFunc.c_str(), XOR(L"BP_OnDeactivated")) && wcsstr(nObj.c_str(), XOR(L"PickerOverlay_EmoteWheel")))
 	{
 		if (NeoPlayer.Pawn)
 		{
-			ObjectFinder PlayerControllerFinder = ObjectFinder::EntryPoint(uintptr_t(NeoPlayer.Controller));
+			ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
+			ObjectFinder LocalPlayer = EngineFinder.Find(XOR(L"GameInstance")).Find(XOR(L"LocalPlayers"));
+
+			ObjectFinder PlayerControllerFinder = LocalPlayer.Find(XOR(L"PlayerController"));
 
 			ObjectFinder LastEmotePlayedFinder = PlayerControllerFinder.Find(XOR(L"LastEmotePlayed"));
 
@@ -285,23 +187,39 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		const auto Params = static_cast<AActor_ReceiveHit_Params*>(pParams);
 		auto HitLocation = Params->HitLocation;
 
-		HitLocation.Z = HitLocation.Z + 200;
-
-		Bot.Pawn = UE4::SpawnActorEasy(UE4::FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/AI/Phoebe/BP_PlayerPawn_Athena_Phoebe.BP_PlayerPawn_Athena_Phoebe_C")), HitLocation);
+		NeoPlayer.Summon(XOR(L"BP_PlayerPawn_Athena_Phoebe_C"));
+		Bot.Pawn = ObjectFinder::FindActor(XOR(L"BP_PlayerPawn_Athena_Phoebe_C"), Bots.size());
 
 		if (Bot.Pawn)
 		{
-			//Bot.SetSkeletalMesh(XOR(L"SK_M_MALE_Base"));
-			//Bot.Emote(UE4::FindObject<UObject*>(XOR(L"EID_HightowerSquash.EID_HightowerSquash"), true));
+			HitLocation.Z = HitLocation.Z + 200;
+
+			FRotator Rotation;
+			Rotation.Yaw = 0;
+			Rotation.Roll = 0;
+			Rotation.Pitch = 0;
+
+			Bot.TeleportTo(HitLocation, Rotation);
+
+			Bot.SetSkeletalMesh(XOR(L"SK_M_MALE_Base"));
+			Bot.Emote(FindObject<UObject*>(XOR(L"EID_HightowerSquash.EID_HightowerSquash"), true));
 
 			Bots.push_back(Bot);
 		}
 	}
 
-	if (wcsstr(nFunc.c_str(), XOR(L"ExecuteConsoleCommand")))
+	if (wcsstr(nFunc.c_str(), XOR(L"BlueprintOnInteract")) && nObj.starts_with(XOR(L"BGA_FireExtinguisher_Pickup_C_")))
 	{
-		FString ScriptNameF = static_cast<UKismetSystemLibrary_ExecuteConsoleCommand_Params*>(pParams)->Command;
+		NeoPlayer.EquipWeapon(XOR(L"WID_FireExtinguisher_Spray"));
+	}
 
+
+	if (wcsstr(nFunc.c_str(), XOR(L"CheatScript")))
+	{
+		FString ScriptNameF = static_cast<UCheatManager_CheatScript_Params*>(pParams)->ScriptName;
+
+		if (ScriptNameF.IsValid())
+		{
 			std::wstring ScriptNameW = ScriptNameF.ToWString();
 
 			std::wstring arg;
@@ -317,21 +235,41 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 			{
 			case HELP:
 			{
-				UFunctions::ConsoleLog(ScriptNameW);
+				UFunctions::ConsoleLog(CheatScriptHelp);
+				break;
+			}
+
+			case TEST:
+			{
 				break;
 			}
 
 			case DUMP:
 			{
-				UE4::DumpGObjects();
+				DumpGObjects();
 				break;
 			}
 
 			case DUMPBPS:
 			{
-				UE4::DumpBPs();
+				DumpBPs();
 				break;
 			}
+#ifndef PROD
+			case ACTIVATE:
+			{
+				if (!arg.empty())
+				{
+					UFunctions::ConsoleLog(XOR(L"Couldn't process your activation code!."));
+
+				}
+				else
+				{
+					UFunctions::ConsoleLog(XOR(L"Please input your activation key!."));
+				}
+				break;
+			}
+#endif
 			case EVENT:
 			{
 				if (gVersion == 14.60f)
@@ -346,10 +284,6 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 				{
 					UFunctions::Play(DEVICE_EVENT_PLAYER);
 				}
-				else if (gVersion == 16.00f)
-				{
-					UFunctions::Play(YOUGURT_EVENT_PLAYER);
-				}
 				else
 				{
 					UFunctions::ConsoleLog(XOR(L"Sorry the version you are using doesn't have any event we support."));
@@ -360,13 +294,6 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 			case DEBUG_CAMERA:
 			{
 				bIsDebugCamera = !bIsDebugCamera;
-				break;
-			}
-
-			case FLY:
-			{
-				NeoPlayer.Fly(bIsFlying);
-				bIsFlying = !bIsFlying;
 				break;
 			}
 
@@ -471,7 +398,7 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 			{
 				if (!arg.empty())
 				{
-					auto Playlist = UE4::FindObject<UObject*>(ScriptNameW.c_str());
+					auto Playlist = FindObject<UObject*>(ScriptNameW.c_str());
 					if (Playlist)
 					{
 						gPlaylist = Playlist;
@@ -506,22 +433,23 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 			{
 				if (!arg.empty())
 				{
-					const auto BPGClass = UE4::FindObject<UClass*>(XOR(L"Class /Script/Engine.BlueprintGeneratedClass"));
+					const auto BPGClass = FindObject<UClass*>(XOR(L"Class /Script/Engine.BlueprintGeneratedClass"));
 
-					UE4::StaticLoadObjectEasy(BPGClass, arg.c_str());
+					UFunctions::StaticLoadObjectEasy(BPGClass, arg.c_str());
 				}
 				else
 				{
 					UFunctions::ConsoleLog(XOR(L"This command requires an argument"));
 				}
-				break;
 			}
 
-			default: break;
+			default:
+				break;
 			}
-		
+		}
 	}
-#ifdef FUNCLOGGING
+
+#ifdef LOGGING
 	//Logging
 	if (!wcsstr(nFunc.c_str(), L"EvaluateGraphExposedInputs") &&
 		!wcsstr(nFunc.c_str(), L"Tick") &&
@@ -529,45 +457,25 @@ inline void* ProcessEventDetour(UObject* pObj, UFunction* pFunc, void* pParams)
 		!wcsstr(nFunc.c_str(), L"OnSubmixSpectralAnalysis") &&
 		!wcsstr(nFunc.c_str(), L"OnMouse") &&
 		!wcsstr(nFunc.c_str(), L"Pulse") &&
-		!wcsstr(nFunc.c_str(), L"IsAcceptablePositionForPlacement") &&
-		!wcsstr(nFunc.c_str(), L"OnContextualReticleChanged") &&
-		!wcsstr(nFunc.c_str(), L"OnUpdateVisuals") &&
-		!wcsstr(nFunc.c_str(), L"Light Flash Timeline__Loop__EventFunc") &&
-		!wcsstr(nFunc.c_str(), L"Play Ambient Audio") &&
-		!wcsstr(nFunc.c_str(), L"OnUpdateScale") &&
-		!wcsstr(nFunc.c_str(), L"SetScalarParameterValueOnAllPreviewMIDs") &&
 		!wcsstr(nFunc.c_str(), L"BlueprintUpdateAnimation") &&
 		!wcsstr(nFunc.c_str(), L"BlueprintPostEvaluateAnimation") &&
 		!wcsstr(nFunc.c_str(), L"BlueprintModifyCamera") &&
 		!wcsstr(nFunc.c_str(), L"BlueprintModifyPostProcess") &&
 		!wcsstr(nFunc.c_str(), L"Loop Animation Curve") &&
 		!wcsstr(nFunc.c_str(), L"UpdateTime") &&
-		!wcsstr(nFunc.c_str(), L"Timeline_UpdateFunc") &&
 		!wcsstr(nFunc.c_str(), L"GetMutatorByClass") &&
 		!wcsstr(nFunc.c_str(), L"UpdatePreviousPositionAndVelocity") &&
 		!wcsstr(nFunc.c_str(), L"IsCachedIsProjectileWeapon") &&
 		!wcsstr(nFunc.c_str(), L"LockOn") &&
-		!wcsstr(nFunc.c_str(), L"HandleSimulatingComponentHit") &&
-		!wcsstr(nFunc.c_str(), L"RecieveHit") &&
-		!wcsstr(nFunc.c_str(), L"Light Flash Timeline__UpdateFunc") &&
-		!wcsstr(nFunc.c_str(), L"ExecuteUbergraph_B_Athena_FlopperSpawnWorld_Placement") &&
 		!wcsstr(nFunc.c_str(), L"GetAbilityTargetingLevel") &&
-		!wcsstr(nFunc.c_str(), L"HandleSimulatingComponentHit") &&
-		!wcsstr(nFunc.c_str(), L"BindVolumeEvents") &&
-		//!wcsstr(nFunc.c_str(), L"BindVolumeEvents") &&
-		!wcsstr(nFunc.c_str(), L"Update") &&
-		!wcsstr(nObj.c_str(), L"B_Athena_PartModifier_Fire_BandageNinja_C_2147470383") &&
-		!wcsstr(nFunc.c_str(), L"UpdateStateEvent") &&
-		!wcsstr(nObj.c_str(), L"BGA_HeldObject_Physics_Explosive_PropaneTank_C_2147446606") &&
-		!wcsstr(nObj.c_str(), L"BGA_Athena_FlopperSpawn_World_C_2147446154") &&
 		!wcsstr(nFunc.c_str(), L"ReadyToEndMatch"))
 	{
-		printf(XOR("[Object]: %ws [Function]: %ws\n"), nObj.c_str(), nFunc.c_str());
+		printf(XOR("[Object]: %ws [Function]: %ws [Class]: %ws\n"), nObj.c_str(), nFunc.c_str(), GetObjectFullName(static_cast<UObject*>(pObj)->Class).c_str());
 	}
 #endif
 
-
-out: return ProcessEvent(pObj, pFunc, pParams);
+out:
+	return ProcessEvent(pObj, pFunc, pParams);
 }
 
 namespace CameraHook
@@ -575,6 +483,55 @@ namespace CameraHook
 	inline float Speed = 0.1;
 	inline float FOV = 52.0;
 	inline FVector Camera(52.274170, 125912.695313, 89.249969);
-	inline FRotator Rotation = { 0.870931, -88.071960, 0.008899 };
+	inline FRotator Rotation = {0.870931, -88.071960, 0.008899};
 }
 
+inline int GetViewPointDetour(void* pPlayer, FMinimalViewInfo* pViewInfo, BYTE stereoPass)
+{
+	const auto CurrentViewPoint = GetViewPoint(pPlayer, pViewInfo, stereoPass);
+
+	if (bIsDebugCamera)
+	{
+		//fov increase and decrease
+		if (GetAsyncKeyState(VK_OEM_PLUS) == 0) CameraHook::FOV += CameraHook::Speed;
+
+		if (GetAsyncKeyState(VK_OEM_MINUS) == 0) CameraHook::FOV -= CameraHook::Speed;
+
+		//froward and backward left and right
+		if (GetAsyncKeyState(0x57) == 0) CameraHook::Camera.Y += CameraHook::Speed;
+
+		if (GetAsyncKeyState(0x53) == 0) CameraHook::Camera.Y -= CameraHook::Speed;
+
+		if (GetAsyncKeyState(0x41) == 0) CameraHook::Camera.X += CameraHook::Speed;
+
+		if (GetAsyncKeyState(0x44) == 0) CameraHook::Camera.X -= CameraHook::Speed;
+
+		//up and down
+		if (GetAsyncKeyState(0x45) == 0) CameraHook::Camera.Z += CameraHook::Speed;
+
+		if (GetAsyncKeyState(0x51) == 0) CameraHook::Camera.Z -= CameraHook::Speed;
+
+
+		//looking around
+		if (GetAsyncKeyState(VK_UP) == 0) CameraHook::Rotation.Pitch -= CameraHook::Speed;
+
+		if (GetAsyncKeyState(VK_DOWN) == 0) CameraHook::Rotation.Pitch += CameraHook::Speed;
+
+		if (GetAsyncKeyState(VK_LEFT) == 0) CameraHook::Rotation.Yaw += CameraHook::Speed;
+
+		if (GetAsyncKeyState(VK_RIGHT) == 0) CameraHook::Rotation.Yaw -= CameraHook::Speed;
+
+		//assign our hooked variables
+		pViewInfo->Location.X = CameraHook::Camera.X;
+		pViewInfo->Location.Y = CameraHook::Camera.Y;
+		pViewInfo->Location.Z = CameraHook::Camera.Z;
+
+		pViewInfo->Rotation.Pitch = CameraHook::Rotation.Pitch;
+		pViewInfo->Rotation.Yaw = CameraHook::Rotation.Yaw;
+		pViewInfo->Rotation.Roll = CameraHook::Rotation.Roll;
+
+		pViewInfo->FOV = CameraHook::FOV;
+	}
+
+	return CurrentViewPoint;
+}

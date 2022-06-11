@@ -1,14 +1,8 @@
-﻿/**
- * Copyright (c) 2020-2021 Kareem Olim (Kemo)
- * All Rights Reserved. Licensed under the Neo License
- * https://neonite.dev/LICENSE.html
- */
-
-#include "pch.h"
+﻿#include "pch.h"
 #include "curlhooks.h"
 #include "hooks.h"
 #include "gui/gui.h"
-#include "neoroyale.h"
+#include "kismet.h"
 
 bool WINAPI ImguiThread()
 {
@@ -23,42 +17,29 @@ bool WINAPI ImguiThread()
 	return true;
 }
 
-void WINAPI dllMain()
+void dllMain()
 {
-#ifdef CONSOLE
-	FILE* fDummy;
-	AllocConsole();
-	freopen_s(&fDummy, "CONIN$", "r", stdin);
-	freopen_s(&fDummy, "CONOUT$", "w", stderr);
-	freopen_s(&fDummy, "CONOUT$", "w", stdout);
-	printf(XOR("\n\n[=] Cranium made by Kemo, Sizzy, PeQu and Timmy \n\n"));
-#endif
-
-#ifdef SSL_BYPASS
-	Hooks::curl();
-#endif
-
+	KismetFunctions::CreateConsole();
+	Hooks::curlhook();
+	Hooks::exithook();
 
 #ifdef HOOKS
 	while (true)
 	{
-		 if (isReady || GetAsyncKeyState(VK_F3))
-		 {
-			 if (Hooks::Misc(gVersion));
+		if (isReady)
+		{													   //Deprecated
+			if (Hooks::Misc(gVersion))// && Console::Unlock()) //&& ForceSettings())
 			{
-				ImguiThread();
+				//ImguiThread();
 				break;
 			}
-		 }
-		 Sleep(100);
+		}
+		Sleep(1000 / 30); //30 fps  
 	}
 #endif
 }
-//Apollo_Terrain?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C
 
-
-
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
+BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
 	switch (dwReason)
 	{

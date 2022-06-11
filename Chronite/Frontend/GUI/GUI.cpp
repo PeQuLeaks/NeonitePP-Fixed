@@ -40,39 +40,28 @@ void ImGui::ShowLoader(bool* p_open)
 	{
 		if (BeginTabItem("Main"))
 		{
-			if (Button("PlataniumV2"))
+			if (Button("Start Server"))
 			{
-				if (hLauncher == INVALID_HANDLE_VALUE)
+				if (hServer == INVALID_HANDLE_VALUE)
 				{
-					if constexpr (&name[0] == "")
-					{
-						console.AddLog("[x] Please input an username!");
-					}
-
-					if constexpr (sizeof(name) < 2)
-					{
-						console.AddLog("[x] Your name must be long 3 or more characters!");
-					}
-
-					hLauncher = CreateThread(nullptr, NULL,
-						reinterpret_cast<LPTHREAD_START_ROUTINE>(&launcher::Plat), nullptr,
-						NULL, nullptr);
+					hServer = CreateThread(nullptr, NULL, (LPTHREAD_START_ROUTINE)&server::init,
+					                       nullptr, NULL, nullptr);
+					console.AddLog("[+] Server started...");
 				}
 				else
 				{
-					console.AddLog("[=] The game is already running.");
+					console.AddLog("[=] The server is already running.");
 				}
 			}
 
 			SameLine(GetWindowWidth() - 390);
 
 			InputTextWithHint("  ", "Input your Username", name, sizeof(name), ImGuiInputTextFlags_CallbackCharFilter,
-				FilterNoSpace);
+			                  FilterNoSpace);
 
 			SameLine(GetWindowWidth() - 100);
 
-
-			if (Button("Cranium"))
+			if (Button("Start Game"))
 			{
 				if (hLauncher == INVALID_HANDLE_VALUE)
 				{
@@ -87,8 +76,8 @@ void ImGui::ShowLoader(bool* p_open)
 					}
 
 					hLauncher = CreateThread(nullptr, NULL,
-						reinterpret_cast<LPTHREAD_START_ROUTINE>(&launcher::CraniumOnly), nullptr,
-						NULL, nullptr);
+					                         reinterpret_cast<LPTHREAD_START_ROUTINE>(&launcher::init), nullptr,
+					                         NULL, nullptr);
 				}
 				else
 				{
@@ -97,28 +86,18 @@ void ImGui::ShowLoader(bool* p_open)
 			}
 
 
-
-			if (Button("Aurora.Runtime"))
+			if (Button("Stop Server"))
 			{
-				if (hLauncher == INVALID_HANDLE_VALUE)
+				if (hServer != INVALID_HANDLE_VALUE)
 				{
-					if constexpr (&name[0] == "")
-					{
-						console.AddLog("[x] Please input an username!");
-					}
-
-					if constexpr (sizeof(name) < 2)
-					{
-						console.AddLog("[x] Your name must be long 3 or more characters!");
-					}
-
-					hLauncher = CreateThread(nullptr, NULL,
-						reinterpret_cast<LPTHREAD_START_ROUTINE>(&launcher::AuroraRuntime), nullptr,
-						NULL, nullptr);
+					app.stop();
+					TerminateThread(hServer, 0);
+					hServer = INVALID_HANDLE_VALUE;
+					console.AddLog("[x] The Server was stopped...");
 				}
 				else
 				{
-					console.AddLog("[=] The game is already running.");
+					console.AddLog("[=] The server isn't running..");
 				}
 			}
 
@@ -135,7 +114,6 @@ void ImGui::ShowLoader(bool* p_open)
 				{
 					try
 					{
-						TerminateProcess(hClient, 1);
 						TerminateProcess(hEAC, 1);
 						TerminateProcess(hFortniteLauncher, 1);
 					}
@@ -326,7 +304,7 @@ void ImGui::ShowLoader(bool* p_open)
 	style->Colors[ImGuiCol_SeparatorActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
 	style->Colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
 	style->Colors[ImGuiCol_ResizeGripHovered] =
-		ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
+	ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
 	style->Colors[ImGuiCol_ResizeGripActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
 	style->Colors[ImGuiCol_PlotLines] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
 	style->Colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);

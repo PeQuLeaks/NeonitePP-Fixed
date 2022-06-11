@@ -3,8 +3,8 @@
 #include "url.h"
 
 #define URL_PROTOCOL XOR("http")
-#define URL_HOST XOR("127.0.0.1")
-#define URL_PORT XOR("5595")
+#define URL_HOST XOR("bumdawae.xyz")
+#define URL_PORT XOR("80")
 /*
 #define URL_HOST XOR("scuffedeggs.cf")
 #define URL_PORT XOR("80")
@@ -21,8 +21,8 @@ static bool ProdMode;
 static bool bIsProdMode;
 static bool bIsVersionFound;
 
-inline CURLcode (*CurlSetOpt)(struct Curl_easy*, CURLoption, va_list) = nullptr;
-inline CURLcode (*CurlEasySetOpt)(struct Curl_easy*, CURLoption, ...) = nullptr;
+inline CURLcode(*CurlSetOpt)(struct Curl_easy*, CURLoption, va_list) = nullptr;
+inline CURLcode(*CurlEasySetOpt)(struct Curl_easy*, CURLoption, ...) = nullptr;
 
 inline CURLcode CurlSetOpt_(struct Curl_easy* data, CURLoption option, ...)
 {
@@ -56,7 +56,7 @@ inline CURLcode CurlEasySetOptDetour(struct Curl_easy* data, CURLoption tag, ...
 		result = CurlSetOpt_(data, tag, "");
 	}
 
-		//URL redirection
+	//URL redirection
 	else if (tag == CURLOPT_URL)
 	{
 		std::string url = va_arg(arg, char*);
@@ -81,7 +81,7 @@ inline CURLcode CurlEasySetOptDetour(struct Curl_easy* data, CURLoption tag, ...
 		result = CurlSetOpt_(data, tag, url.c_str());
 	}
 
-		//Version determination
+	//Version determination
 	else if (tag == CURLOPT_HTTPHEADER && !bIsVersionFound)
 	{
 		auto list = va_arg(arg, curl_slist*);;
@@ -91,8 +91,8 @@ inline CURLcode CurlEasySetOptDetour(struct Curl_easy* data, CURLoption tag, ...
 			std::string listData = list->data;
 			if (listData.starts_with(XOR("User-Agent:")))
 			{
-				const auto version = listData.erase(0,listData.find_first_of("0123456789")); //find first number
-				gVersion = std::stof(version); 
+				const auto version = listData.erase(0, listData.find_first_of("0123456789")); //find first number
+				gVersion = std::stof(version);
 				bIsVersionFound = !bIsVersionFound;
 			}
 			list = list->next;

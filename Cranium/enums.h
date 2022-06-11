@@ -1,63 +1,61 @@
 #pragma once
 
 #define FRONTEND XOR(L"Frontend?game=/Script/FortniteGame.FortGameModeFrontEnd")
-#define APOLLO_TERRAIN XOR(L"Apollo_Terrain?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C");
-#define ARTEMIS_TERRAIN XOR(L"Artemis_Terrain?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C");
-#define APOLLO_TERRAIN_YOGURT XOR(L"Apollo_Terrain_Yogurt?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
+#define APOLLO_TERRAIN XOR(L"Apollo_Terrain?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
 #define APOLLO_TERRAIN_VALKYIRE XOR(L"Apollo_Terrain?game=/Game/Athena/Valkyrie/Valkyrie_GameMode.Valkyrie_GameMode_C")
 #define APOLLO_PAPAYA XOR(L"Apollo_Papaya?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
 #define APOLLO_TERRAIN_BASE XOR(L"Apollo_Terrain?game=/Script/FortniteGame.FortGameModeBase")
 #define APOLLO_PAPAYA_BASE XOR(L"Apollo_Papaya?game=/Script/FortniteGame.FortGameModeBase")
-#define GUAVA_P XOR(L"Guava_Persistent?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
-#define GUAVA_BEAM_PLAYER XOR(L"Guava_Beam?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
-#define GUAVA_ATTACK XOR(L"Guava_Attack?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
-#define GUAVA_BRIDGE XOR(L"Guava_Bridge?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
-#define GUAVA_BREACH XOR(L"Guava_Breach?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
+#define APOLLO_TERRAIN_YOGURT XOR(L"Apollo_Terrain_Yogurt?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
+#define ARTEMIS_TERRAIN XOR(L"Artemis_Terrain?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C");
 
 #define GALACTUS_EVENT_MAP XOR(L"Junior_Map")
 #define JERKY_EVENT_MAP XOR(L"JerkySequenceMap")
 #define DEVICE_EVENT_MAP XOR(L"FritterSequenceLevel")
-#define RIFT_TOUR_EVENT_MAP XOR(L"Buffet_P")
-#define RIFT_TOUR_CUDDLE_MAP XOR(L"Buffet_Part5")
-#define RIFT_TOUR_STORMKING_MAP XOR(L"Buffet_Part_6")
-#define RIFT_TOUR_STAIRS_MAP XOR(L"Buffet_Escher")
-#define RIFT_TOUR_POSITIONS_MAP XOR(L"Buffet_Shard")
-#define RIFT_TOUR_CLOUDS_MAP XOR(L"Buffet_Cloud")
-#define MOTHERSHIP_EVENT XOR(L"Kiwi_P")
-#define KIWI_SPACE XOR(L"Kiwi_Space")
-#define KIWI_TUBES XOR(L"Kiwi_Tubes")
-#define KIWI_OBSERVATIONHALLWAY XOR(L"Kiwi_ObservationHallway")
-#define KIWI_PRISONBLOCKS XOR(L"Kiwi_PrisonBlocks")
-#define KIWI_PRISONJUNCTION XOR(L"Kiwi_PrisonJunction")
-#define KIWI_HANGAR XOR(L"Kiwi_Hangar")
-#define KIWI_KEVINROOM XOR(L"Kiwi_KevinRoom")
-#define GUAVA_BEAM XOR(L"Guava_Beam")
 
-#define GALACTUS_EVENT_PLAYER XOR(L"LevelSequencePlayer /Junior/Levels/Junior_Map_LevelInstance_1.Junior_Map.PersistentLevel.Junior_Master_Rep_2.AnimationPlayer")
-#define JERKY_EVENT_PLAYER XOR(L"LevelSequencePlayer /CycloneJerky/Levels/JerkySequenceMap_LevelInstance_1.JerkySequenceMap.PersistentLevel.Jerky.AnimationPlayer")
-#define DEVICE_EVENT_PLAYER XOR(L"LevelSequencePlayer /Fritter/Level/FritterSequenceLevel_LevelInstance_1.FritterSequenceLevel.PersistentLevel.Fritter_2.AnimationPlayer")
-#define YOUGURT_EVENT_PLAYER XOR(L"LevelSequencePlayer /Yogurt/Levels/YogurtLoaderLevel.YogurtLoaderLevel.PersistentLevel.Yogurt_Master_2.AnimationPlayer")
-#define RIFT_TOUR_EVENT_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_P.Buffet_P.PersistentLevel.Buffet_Master_3.AnimationPlayer")
-#define RIFT_TOUR_CUDDLE_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_Part5.Buffet_Part5.PersistentLevel.Buffet_Master_2.AnimationPlayer")
-#define RIFT_TOUR_STORMKING_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_Part_6.Buffet_Part_6.PersistentLevel.BeatSync_Phase5Test_2.AnimationPlayer")
-#define RIFT_TOUR_STAIRS_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_Escher.Buffet_Escher.PersistentLevel.Buffet_Animation_Escher_2.AnimationPlayer")
-#define RIFT_TOUR_POSITIONS_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_Shard.Buffet_Shard.PersistentLevel.Buffet_Animation_Shards_2.AnimationPlayer")
-#define RIFT_TOUR_CLOUDS_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_Cloud.Buffet_Cloud.PersistentLevel.Buffet_Master.AnimationPlayer")
-#define MOTHERSHIP_EVENT_PLAYER XOR(L"LevelSequencePlayer /Kiwi/Levels/Kiwi_P.Kiwi_P.PersistentLevel.Kiwi_Master.AnimationPlayer")
-#define GUAVA_EVENT_PLAYER XOR(L"LevelSequencePlayer /Guava/Levels/Guava_Persistent.Guava_Persistent.PersistentLevel.Guava_Rep_Master_2.AnimationPlayer")
-#define GUAVA_BRIDGE_PLAYER XOR(L"LevelSequencePlayer /Guava/Levels/Guava_Bridge.Guava_Bridge.PersistentLevel.Guava_Rep_Master_2.AnimationPlayer")
-#define GUAVA_SWIM_PLAYER XOR(L"LevelSequencePlayer /Guava/Levels/Guava_Breach.Guava_Breach.PersistentLevel.Guava_Rep_Master_2.AnimationPlayer")
-#define GUAVA_PRESHOW_PLAYER XOR(L"LevelSequencePlayer /GuavaPlaylist/Sequences/Guava_Preshow.Default__Guava_Preshow_C.AnimationPlayer")
+#define GALACTUS_EVENT_PLAYER XOR(L"LevelSequencePlayer /Junior/Levels/Junior_Map_LevelInstance_1.Junior_Map:PersistentLevel.Junior_Master_Rep_2.AnimationPlayer")
+#define JERKY_EVENT_PLAYER XOR(L"LevelSequencePlayer /CycloneJerky/Levels/JerkySequenceMap_LevelInstance_1.JerkySequenceMap:PersistentLevel.Jerky.AnimationPlayer")
+#define DEVICE_EVENT_PLAYER XOR(L"LevelSequencePlayer /Fritter/Level/FritterSequenceLevel_LevelInstance_1.FritterSequenceLevel:PersistentLevel.Fritter_2.AnimationPlayer")
 
+
+constexpr auto FNAMETOSTRING_STRINGREF = L"%s %s SetTimer passed a negative or zero time. The associated timer may fail to be created/fire! If using InitialStartDelayVariance, be sure it is smaller than (Time + InitialStartDelay).";
+
+#define GObjects_G "49 63 C8 48 8D 14 40 48 8B 05 ? ? ? ? 48 8B 0C C8 48 8D 04 D1" //10
+#define FNTS_C1 "48 89 5C 24 ? 57 48 83 EC 30 83 79 04 00 48 8B DA 48 8B F9"
+#define Free_G "48 85 C9 74 2E 53"
+#define ProcessEvent_G "40 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 48 8D 6C 24 ? 48 89 9D ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C5 48 89 85 ? ? ? ? 8B 41 0C 45 33 F6 3B 05 ? ? ? ? 4D 8B F8 48 8B F2 4C 8B E1 41 B8 ? ? ? ? 7D 2A"
+
+
+const wchar_t* CheatScriptHelp =
+LR"(
+Custom Cheatscript Commands
+---------------------------
+cheatscript event - Triggers the event for your version (e.g. Junior, Jerky, NightNight).
+cheatscript debugcamera - Toggles a custom version of the debug camera.
+cheatscript skydive | skydiving - Puts you in a skydive with deploy at 500m above the ground.
+cheatscript equip <WID | AGID> - Equips a weapon / pickaxe.
+cheatscript setgravity <NewGravityScaleFloat> - Changes the gravity scale.
+cheatscript speed | setspeed <NewCharacterSpeedMultiplier> - Changes the movement speed multiplier.
+cheatscript setplaylist <Playlist> - Overrides the current playlist.
+cheatscript respawn - Respawns the player (duh)
+cheatscript sethealth <NewHealthFloat> - Changes your health value.
+cheatscript setshield <NewShieldFloat> - Changes your shield value.
+cheatscript setmaxhealth <NewMaxHealthFloat> - Changes your max health value.
+cheatscript setmaxshield <newMaxShieldFloat> - Changes your max shield value.
+cheatscript dump - Dumps a list of all GObjects.
+cheatscript dumpbps - Dumps all blueprints.
+fly - Toggles flying.
+enablecheats - Enables cheatmanager.
+)";
 
 enum ECommands
 {
+	HELP,
 	ACTIVATE,
 	EVENT,
 	DEBUG_CAMERA,
 	SKYDIVE,
 	EQUIP,
-	FLY,
 	SET_GRAVITY,
 	SET_SPEED,
 	SET_PLAYLIST,
@@ -67,7 +65,6 @@ enum ECommands
 	SET_MAX_HEALTH,
 	SET_MAX_SHIELD,
 	DUMP,
-	HELP,
 	DUMPBPS,
 	TEST,
 	LOADBPC,
@@ -77,9 +74,9 @@ enum ECommands
 auto str2enum(const std::wstring& str)
 {
 	if (str.starts_with(L"event")) return EVENT;
+	else if (str.starts_with(L"help")) return HELP;
 	else if (str.starts_with(L"activate")) return DEBUG_CAMERA;
 	else if (str.starts_with(L"debugcamera")) return DEBUG_CAMERA;
-	else if (str.starts_with(L"fly")) return FLY;
 	else if (str.starts_with(L"skydive")) return SKYDIVE;
 	else if (str.starts_with(L"skydiving")) return SKYDIVE;
 	else if (str.starts_with(L"equip")) return EQUIP;
@@ -98,16 +95,32 @@ auto str2enum(const std::wstring& str)
 	else return NONE;
 }
 
-constexpr auto STATICLOADOBJECTINTERNAL_STRINGREF = L"STAT_LoadObject";
-constexpr auto FNAMETOSTRING_STRINGREF = L"%s %s SetTimer passed a negative or zero time. The associated timer may fail to be created/fire! If using InitialStartDelayVariance, be sure it is smaller than (Time + InitialStartDelay).";
-constexpr auto GOBJECTS_STRINGREF = L"Showing Debug for %s, Press [PageUp] and [PageDown] to cycle between targets.";
-constexpr auto PROCESSEVENT_STRINGREF = L"UMeshNetworkComponent::ProcessEvent: Invalid mesh network node type: %s";
-
 
 //Memory
 namespace Patterns
 {
-	//Works on 10.40^
+	namespace Exit
+	{
+		inline std::pair<const char*, const char*> UnsafeEnvironmentPopupUE4{
+			"\x4C\x8B\xDC\x55\x49\x8D\xAB\x00\x00\x00\x00\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4\x48\x89\x85\x00\x00\x00\x00\x49\x89\x73\xF0\x49\x89\x7B\xE8\x48\x8B\xF9\x4D\x89\x63\xE0\x4D\x8B\xE0\x4D\x89\x6B\xD8",
+			"xxxxxxx????xxx????xxx????xxxxxx????xxxxxxxxxxxxxxxxxxxxxx"
+		};
+		inline std::pair<const char*, const char*> RequestExitWithStatusUE4{
+			"\x48\x89\x5C\x24\x00\x57\x48\x83\xEC\x40\x41\xB9\x00\x00\x00\x00\x0F\xB6\xF9\x44\x38\x0D\x00\x00\x00\x00\x0F\xB6\xDA\x72\x24\x89\x5C\x24\x30\x48\x8D\x05\x00\x00\x00\x00\x89\x7C\x24\x28\x4C\x8D\x05\x00\x00\x00\x00\x33\xD2\x48\x89\x44\x24\x00\x33\xC9\xE8\x00\x00\x00\x00",
+			"xxxx?xxxxxxx????xxxxxx????xxxxxxxxxxxx????xxxxxxx????xxxxxx?xxx????"
+		};
+
+		//19.00+
+		inline std::pair<const char*, const char*> UnsafeEnvironmentPopupUE5{
+			"\x4C\x8B\xDC\x55\x49\x8D\xAB\x00\x00\x00\x00\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4\x48\x89\x85\x00\x00\x00\x00",
+			"xxxxxxx????xxx????xxx????xxxxxx????"
+		};
+		inline std::pair<const char*, const char*> RequestExitWithStatusUE5{
+			"\x48\x8B\xC4\x48\x89\x58\x18\x88\x50\x10\x88\x48\x08\x57\x48\x83\xEC\x30",
+			"xxxxxxxxxxxxxxxxxx"
+		};
+	}
+	//Works on 9.40^
 	namespace Curl
 	{
 		inline std::pair<const char*, const char*> CurlEasySetOpt{
@@ -119,87 +132,59 @@ namespace Patterns
 			"\x48\x89\x5C\x24\x08\x48\x89\x6C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x83\xEC\x30\x33\xED\x49\x8B\xF0\x48\x8B\xD9",
 			"xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 		};
+	}
 
-		inline std::pair<const char*, const char*> UnsafeEnvironmentPopup{
-			"\x4C\x8B\xDC\x55\x49\x8D\xAB\x00\x00\x00\x00\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4\x48\x89\x85\x00\x00\x00\x00\x49\x89\x73\xF0\x49\x89\x7B\xE8\x48\x8B\xF9\x4D\x89\x63\xE0\x4D\x8B\xE0\x4D\x89\x6B\xD8",
-			"xxxxxxx????xxx????xxx????xxxxxx????xxxxxxxxxxxxxxxxxxxxxx"
-		};
-
-
-		inline std::pair<const char*, const char*> RequestExitWithStatus{
-			"\x48\x89\x5C\x24\x00\x57\x48\x83\xEC\x40\x41\xB9\x00\x00\x00\x00\x0F\xB6\xF9\x44\x38\x0D\x00\x00\x00\x00\x0F\xB6\xDA\x72\x24\x89\x5C\x24\x30\x48\x8D\x05\x00\x00\x00\x00\x89\x7C\x24\x28\x4C\x8D\x05\x00\x00\x00\x00\x33\xD2\x48\x89\x44\x24\x00\x33\xC9\xE8\x00\x00\x00\x00",
-			"xxxx?xxxxxxx????xxxxxx????xxxxxxxxxxxx????xxxxxxx????xxxxxx?xxx????"
-		};
-
+	namespace Misc
+	{
 		inline std::pair<const char*, const char*> PushWidget{
 			"\x48\x89\x5C\x24\x00\x48\x89\x6C\x24\x00\x48\x89\x74\x24\x00\x57\x48\x83\xEC\x30\x48\x8B\xE9\x49\x8B\xD9\x48\x8D\x0D\x00\x00\x00\x00\x49\x8B\xF8\x48\x8B\xF2\xE8\x00\x00\x00\x00\x4C\x8B\xCF\x48\x89\x5C\x24\x00\x4C\x8B\xC6\x48\x8B\xD5\x48\x8B\x48\x78",
 			"xxxx?xxxx?xxxx?xxxxxxxxxxxxxx????xxxxxxx????xxxxxxx?xxxxxxxxxx"
 		};
-
-		// 19.00+
-		inline std::pair<const char*, const char*> UnsafeEnvironmentPopup_UE5{
-			"\x4C\x8B\xDC\x55\x49\x8D\xAB\x00\x00\x00\x00\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4\x48\x89\x85\x00\x00\x00\x00",
-			"xxxxxxx????xxx????xxx????xxxxxx????"
-		};
-
-		inline std::pair<const char*, const char*> RequestExitWithStatus_UE5{
-			"\x48\x8B\xC4\x48\x89\x58\x18\x88\x50\x10\x88\x48\x08\x57\x48\x83\xEC\x30",
-			"xxxxxxxxxxxxxxxxxx"
-		};
 	}
 
-	//16.60
+	//16.00 - 16.60
 	namespace New
 	{
-		constexpr const char* FNameToString =
-			"\x48\x89\x5C\x24\x00\x48\x89\x74\x24\x00\x55\x57\x41\x56\x48\x8D\xAC\x24\x00\x00\x00\x00\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4\x48\x89\x85\x00\x00\x00\x00\x45\x33\xF6\x48\x8B\xF2\x44\x39\x71\x04\x0F\x85\x00\x00\x00\x00\x8B\x19\x0F\xB7\xFB\xE8\x00\x00\x00\x00\x8B\xCB\x48\x8D\x54\x24\x00\x48\xC1\xE9\x10\x8D\x1C\x3F\x48\x03\x5C\xC8\x00\x48\x8B\xCB\xF6\x03\x01\x0F\x85\x00\x00\x00\x00\xE8\x00\x00\x00\x00";
+		constexpr const char* GEngine = "\x48\x89\x05\x00\x00\x00\x00\x48\x85\xF6\x74\x08\x48\x8B\xCE\xE8";
+		constexpr const char* GONI = "\xE8\x00\x00\x00\x00\x8B\x4D\xB8\x48\x8B\x5D\xB0\x85\xC9";
+		constexpr const char* FNameToString = "\x75\x28\x48\x8B\xD3\xE8\x00\x00\x00\x00";
+		constexpr const char* ProcessEvent = "\x75\x00\x4c\x8b\xc5\x48\x8b\xd7\x48\x8b\xcb\xe8\x00\x00\x00\x00\x48\x8b\x5c\x24";
 	}
 
 	//Works on 10.40^
 	namespace bGlobal
 	{
-
-		//Dead
 		constexpr const char* GEngine = "\x48\x8B\x0D\x00\x00\x00\x00\x48\x8B\xD3\xE8\x00\x00\x00\x00\x84\xC0";
-
-		constexpr const char* CurrentMovementStyleCheckAddress = "\x88\x00\x7F\x05\x00\x00\x48\x00\x00";
 
 		constexpr const char* GObjects = "\x48\x8B\x05\x00\x00\x00\x00\x48\x8B\x0C\xC8\x48\x8D\x04\xD1\xEB\x06";
 
 		constexpr const char* SCOI =
-			"\x4C\x89\x44\x24\x18\x55\x53\x56\x57\x41\x54\x41\x55\x41\x56\x41\x57\x48\x8D\xAC\x24\x00\x00\x00\x00\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4";
+		"\x4C\x89\x44\x24\x18\x55\x53\x56\x57\x41\x54\x41\x55\x41\x56\x41\x57\x48\x8D\xAC\x24\x00\x00\x00\x00\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4";
 
-		constexpr const char* SLOI =
-			"\x48\x8B\xC4\x4C\x89\x48\x20\x48\x89\x50\x10\x48\x89\x48\x08\x55\x53\x56\x57\x41\x54\x41\x55\x41\x56\x41\x57\x48\x8D\x68\xB9\x48\x81\xEC\x00\x00\x00\x00";
+		constexpr const char* SLOI = "\x4c\x89\x4c\x24\x00\x48\x89\x54\x24\x00\x48\x89\x4c\x24\x00\x55\x53\x56\x57\x41\x54\x41\x55\x41\x56\x41\x57\x48\x8b\xec";
 
 		constexpr const char* SpawnActorInternal =
 			"\x48\x8b\xc4\x55\x53\x56\x57\x41\x54\x41\x55\x41\x56\x41\x57\x48\x8d\xa8\x00\x00\x00\x00\x48\x81\xec\x00\x00\x00\x00\x0f\x29\x70\x00\x0f\x29\x78\x00\x44\x0f\x29\x40\x00\x44\x0f\x29\x88\x00\x00\x00\x00\x44\x0f\x29\x90\x00\x00\x00\x00\x44\x0f\x29\x98\x00\x00\x00\x00\x44\x0f\x29\xa0\x00\x00\x00\x00\x44\x0f\x29\xa8\x00\x00\x00\x00\x44\x0f\x29\xb0\x00\x00\x00\x00\x44\x0f\x29\xb8\x00\x00\x00\x00\x48\x8b\x05\x00\x00\x00\x00\x48\x33\xc4\x48\x89\x45\x00\x45\x33\xed";
 
-		//Dead
 		constexpr const char* ProcessEvent =
-			"\x40\x55\x56\x57\x41\x54\x41\x55\x41\x56\x41\x57\x48\x81\xEC\x00\x00\x00\x00\x48\x8D\x6C\x24\x00\x48\x89\x9D\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC5\x48\x89\x85\x00\x00\x00\x00\x8B\x41\x0C\x45\x33\xF6\x3B\x05\x00\x00\x00\x00\x4D\x8B\xF8\x48\x8B\xF2\x4C\x8B\xE1\x41\xB8\x00\x00\x00\x00\x7D\x2A";
+		"\x40\x55\x56\x57\x41\x54\x41\x55\x41\x56\x41\x57\x48\x81\xEC\x00\x00\x00\x00\x48\x8D\x6C\x24\x00\x48\x89\x9D\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC5\x48\x89\x85\x00\x00\x00\x00\x8B\x41\x0C\x45\x33\xF6\x3B\x05\x00\x00\x00\x00\x4D\x8B\xF8\x48\x8B\xF2\x4C\x8B\xE1\x41\xB8\x00\x00\x00\x00\x7D\x2A";
 
-		//Dead
 		constexpr const char* GONI =
-			"\x40\x53\x48\x83\xEC\x20\x48\x8B\xD9\x48\x85\xD2\x75\x45\x33\xC0\x48\x89\x01\x48\x89\x41\x08\x8D\x50\x05\xE8\x00\x00\x00\x00\x8B\x53\x08\x8D\x42\x05\x89\x43\x08\x3B\x43\x0C\x7E\x08\x48\x8B\xCB\xE8\x00\x00\x00\x00\x48\x8B\x0B\x48\x8D\x15\x00\x00\x00\x00\x41\xB8\x00\x00\x00\x00\xE8\x00\x00\x00\x00\x48\x8B\xC3\x48\x83\xC4\x20\x5B\xC3\x48\x8B\x42\x18";
+		"\x40\x53\x48\x83\xEC\x20\x48\x8B\xD9\x48\x85\xD2\x75\x45\x33\xC0\x48\x89\x01\x48\x89\x41\x08\x8D\x50\x05\xE8\x00\x00\x00\x00\x8B\x53\x08\x8D\x42\x05\x89\x43\x08\x3B\x43\x0C\x7E\x08\x48\x8B\xCB\xE8\x00\x00\x00\x00\x48\x8B\x0B\x48\x8D\x15\x00\x00\x00\x00\x41\xB8\x00\x00\x00\x00\xE8\x00\x00\x00\x00\x48\x8B\xC3\x48\x83\xC4\x20\x5B\xC3\x48\x8B\x42\x18";
 
-		//Dead
 		constexpr const char* GetObjectFullName =
-			"\x40\x53\x55\x56\x57\x41\x56\x48\x81\xec\x00\x00\x00\x00\x48\x8b\x05\x00\x00\x00\x00\x48\x33\xc4\x48\x89\x84\x24\x00\x00\x00\x00\x48\x8b\xda\x45\x33\xf6";
+		"\x40\x53\x55\x56\x57\x41\x56\x48\x81\xec\x00\x00\x00\x00\x48\x8b\x05\x00\x00\x00\x00\x48\x33\xc4\x48\x89\x84\x24\x00\x00\x00\x00\x48\x8b\xda\x45\x33\xf6";
 
-		constexpr const char* GetFullName =
-			"\x48\x89\x5c\x24\x00\x57\x48\x83\xec\x00\x48\x8b\xd9\x48\x8b\xfa\x48\x8b\x49\x00\xe8\x00\x00\x00\x00\x41\xb8";
+		constexpr const char* GetFullName = "\x48\x89\x5c\x24\x00\x57\x48\x83\xec\x00\x48\x8b\xd9\x48\x8b\xfa\x48\x8b\x49\x00\xe8\x00\x00\x00\x00\x41\xb8";
 
-		//Dead
 		constexpr const char* GetViewPoint =
-			"\x48\x89\x5C\x24\x00\x48\x89\x74\x24\x00\x57\x48\x83\xEC\x20\x48\x8B\xD9\x41\x8B\xF0\x48\x8B\x49\x30\x48\x8B\xFA\xE8\x00\x00\x00\x00\xBA\x00\x00\x00\x00\x48\x8B\xC8";
+		"\x48\x89\x5C\x24\x00\x48\x89\x74\x24\x00\x57\x48\x83\xEC\x20\x48\x8B\xD9\x41\x8B\xF0\x48\x8B\x49\x30\x48\x8B\xFA\xE8\x00\x00\x00\x00\xBA\x00\x00\x00\x00\x48\x8B\xC8";
 
-		//Dead
 		constexpr const char* AbilityPatch = "\xC0\x0F\x84\x00\x02\x00\x00\x0F\x2F\xF7\x0F\x86\x00\x00\x00\x00";
 
-		//Dead
-		constexpr const char* FreeInternal =
-			"\x48\x85\xC9\x74\x2E\x53\x48\x83\xEC\x20\x48\x8B\xD9\x48\x8B\x0D\x00\x00\x00\x00\x48\x85\xC9\x75\x0C";
+		constexpr const char* FreeInternal = "\x48\x85\xC9\x74\x2E\x53\x48\x83\xEC\x20\x48\x8B\xD9\x48\x8B\x0D\x00\x00\x00\x00\x48\x85\xC9\x75\x0C";
+
+		const char* FreeMemory = crypt("48 85 C9 0F 84 ? ? ? ? 53 48 83 EC 20 48 89 7C 24 30 48 8B D9 48 8B 3D ? ? ? ? 48 85 FF 0F 84 ? ? ? ? 48 8B 07 4C 8B 40 30 48 8D 05 ? ? ? ? 4C 3B C0");
 	}
 
 
@@ -209,55 +194,34 @@ namespace Patterns
 		namespace bGlobal
 		{
 			constexpr const char* GetObjectFullName =
-				"\x48\x89\x5C\x24\x10\x48\x89\x6C\x24\x18\x56\x57\x41\x56\x48\x83\xEC\x30\x48\x8B\xDA\x45\x33\xF6\x4C\x89\x32\x48\x8B\xF1\x4C\x89\x72\x08\x48\x8B\xCB\xBA\x80\x00\x00\x00";
+			"\x48\x89\x5C\x24\x10\x48\x89\x6C\x24\x18\x56\x57\x41\x56\x48\x83\xEC\x30\x48\x8B\xDA\x45\x33\xF6\x4C\x89\x32\x48\x8B\xF1\x4C\x89\x72\x08\x48\x8B\xCB\xBA\x80\x00\x00\x00";
 		}
 
 		//Tested on 7.30
-		namespace bMarshmallow
+		namespace bChapone
 		{
-			constexpr const char* GEngine =
-				"\x48\x8B\xD3\x00\x00\x00\x00\x00\x48\x8B\x4C\x24\x40\x48\x89\x05\x00\x00\x00\x00\x48\x85\xC9";
+			constexpr const char* GEngine = "\x48\x8B\xD3\x00\x00\x00\x00\x00\x48\x8B\x4C\x24\x40\x48\x89\x05\x00\x00\x00\x00\x48\x85\xC9";
 
 			constexpr const char* GObjects = "\x48\x8B\x05\x00\x00\x00\x00\x48\x8B\x0C\xC8\x48\x8D\x04\xD1\xEB\x06";
 
 			constexpr const char* GetObjectFullName =
-				"\x40\x53\x48\x83\xEC\x20\x48\x8B\xD9\x48\x85\xD2\x75\x30\x33\xC0\x48\x89\x01\x48\xC7\x41\x00\x00\x00\x00\x00\xE8\x00\x00\x00\x00\x48\x8B\x0B\x48\x8D\x15\x00\x00\x00\x00\x41\xB8\x00\x00\x00\x00\xE8\x00\x00\x00\x00\x48\x8B\xC3\x48\x83\xC4\x20\x5B\xC3\x48\x8B\x42\x18";
+			"\x40\x53\x48\x83\xEC\x20\x48\x8B\xD9\x48\x85\xD2\x75\x30\x33\xC0\x48\x89\x01\x48\xC7\x41\x00\x00\x00\x00\x00\xE8\x00\x00\x00\x00\x48\x8B\x0B\x48\x8D\x15\x00\x00\x00\x00\x41\xB8\x00\x00\x00\x00\xE8\x00\x00\x00\x00\x48\x8B\xC3\x48\x83\xC4\x20\x5B\xC3\x48\x8B\x42\x18";
 		}
 	}
 }
 
 namespace Masks
 {
-	namespace Curl
-	{
-		namespace Oldies
-		{
-			constexpr const char* CurlEasySetOpt = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-			constexpr const char* CurlSetOpt = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-		}
-
-		constexpr const char* CurlSetOpt = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-	}
-
-	namespace New
-	{
-		constexpr const char* FNameToString =
-			"xxxx?xxxx?xxxxxxxx????xxx????xxx????xxxxxx????xxxxxxxxxxxx????xxxxxx????xxxxxx?xxxxxxxxxxx?xxxxxxxx????x????";
-	}
-
 	namespace bGlobal
 	{
 		constexpr const char* GEngine = "xxx????xxxx????xx";
 		constexpr const char* GObjects = "xxx????xxxx";
-		constexpr const char* CurrentMovementStyleCheckAddress = "88 ? 7F 05 ? ? 48 ? ?";
 		constexpr const char* SCOI = "xxxxxxxxxxxxxxxxxxxxx????xxx????xxx????xxx";
-		constexpr const char* SLOI = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx????";
+		constexpr const char* SLOI = "xxxx?xxxx?xxxx?xxxxxxxxxxxxxxx";
 		constexpr const char* SpawnActorInternal =
 			"xxxxxxxxxxxxxxxxxx????xxx????xxx?xxx?xxxx?xxxx????xxxx????xxxx????xxxx????xxxx????xxxx????xxxx????xxx????xxxxxx?xxx";
-		constexpr const char* ProcessEvent =
-			"xxxxxxxxxxxxxxx????xxxx?xxx????xxx????xxxxxx????xxxxxxxx????xxxxxxxxxxx????xx";
-		constexpr const char* GONI =
-			"xxxxxxxxxxxxxxxxxxxxxxxxxxx????xxxxxxxxxxxxxxxxxx????xxxxxx????xx????x????xxxxxxxxxxxxx";
+		constexpr const char* ProcessEvent = "xxxxxxxxxxxxxxx????xxxx?xxx????xxx????xxxxxx????xxxxxxxx????xxxxxxxxxxx????xx";
+		constexpr const char* GONI = "xxxxxxxxxxxxxxxxxxxxxxxxxxx????xxxxxxxxxxxxxxxxxx????xxxxxx????xx????x????xxxxxxxxxxxxx";
 		constexpr const char* GetObjectFullName = "xxxxxxxxxx????xxx????xxxxxxx????xxxxxx";
 		constexpr const char* GetFullName = "xxxx?xxxx?xxxxxxxxx?x????xx";
 		constexpr const char* GetViewPoint = "xxxx?xxxx?xxxxxxxxxxxxxxxxxxx????x????xxx";
@@ -272,15 +236,19 @@ namespace Masks
 			constexpr const char* GetObjectFullName = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 		}
 
-		namespace bMarshmallow
+		namespace bChapone
 		{
 			constexpr const char* GEngine = "xxx?????xxxxxxxx????xxx";
 
 			constexpr const char* GObjects = "xxx????xxxxxxxxxx";
 
-			constexpr const char* GetObjectFullName =
-				"xxxxxxxxxxxxxxxxxxxxxx?????x????xxxxxx????xx????x????xxxxxxxxxxxxx";
+			constexpr const char* GetObjectFullName = "xxxxxxxxxxxxxxxxxxxxxx?????x????xxxxxx????xx????x????xxxxxxxxxxxxx";
 		}
+	}
+	namespace New
+	{
+		constexpr const char* GEngine = "xxx????xxxxxxxxx";
+		constexpr const char* GONI = "x????xxxxxxxxx";
 	}
 }
 
@@ -333,16 +301,6 @@ enum EInternalObjectFlags
 	AllFlags = ReachableInCluster | ClusterRoot | Native | Async | AsyncLoading | Unreachable | PendingKill | RootSet,
 };
 
-enum class ESpawnActorCollisionHandlingMethod : uint8_t
-{
-	Undefined,
-	AlwaysSpawn,
-	AdjustIfPossibleButAlwaysSpawn,
-	AdjustIfPossibleButDontSpawnIfColliding,
-	DontSpawnIfColliding,
-	ESpawnActorCollisionHandlingMethod_MAX,
-};
-
 enum class EAthenaGamePhaseStep
 {
 	None,
@@ -359,14 +317,6 @@ enum class EAthenaGamePhaseStep
 	EndGame,
 	Count,
 	EAthenaGamePhaseStep_MAX,
-};
-
-enum class EFortQuickBars : uint8_t
-{
-	Primary = 0,
-	Secondary = 1,
-	Max_None = 2,
-	EFortQuickBars_MAX = 3
 };
 
 enum class ECameraProjectionMode : uint8_t
@@ -509,6 +459,16 @@ enum class EWindowMode : uint8_t
 	EWindowMode_MAX = 3
 };
 
+enum class ESpawnActorCollisionHandlingMethod : uint8_t
+{
+	Undefined,
+	AlwaysSpawn,
+	AdjustIfPossibleButAlwaysSpawn,
+	AdjustIfPossibleButDontSpawnIfColliding,
+	DontSpawnIfColliding,
+	ESpawnActorCollisionHandlingMethod_MAX,
+};
+
 enum EPropertyFlags : uint64_t
 {
 	CPF_None = 0,
@@ -620,19 +580,6 @@ enum EPropertyFlags : uint64_t
 	///< Property shouldn't be serialized, can still be exported to text
 };
 
-enum ASM : DWORD
-{
-	JMP_REL8 = 0xEB,
-	CALL = 0xE8,
-	LEA = 0x8D,
-	CDQ = 0x99,
-	CMOVL = 0x4C,
-	CMOVS = 0x48,
-	INT3 = 0xCC,
-	RETN = 0xC3,
-	SKIP
-};
-
 enum ELifetimeCondition
 {
 	COND_None = 0,
@@ -672,6 +619,19 @@ enum class EFortCustomGender : uint8_t
 	Female = 2,
 	Both = 3,
 	EFortCustomGender_MAX = 4
+};
+
+enum ASM : DWORD
+{
+	JMP_REL8 = 0xEB,
+	CALL = 0xE8,
+	LEA = 0x8D,
+	CDQ = 0x99,
+	CMOVL = 0x4C,
+	CMOVS = 0x48,
+	INT3 = 0xCC,
+	RETN = 0xC3,
+	SKIP
 };
 
 enum class EMovementMode : uint8_t

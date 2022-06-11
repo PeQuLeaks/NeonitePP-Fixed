@@ -1,22 +1,25 @@
-/**
- * Copyright (c) 2020-2021 Kareem Olim (Kemo)
- * All Rights Reserved. Licensed under the Neo License
- * https://neonite.dev/LICENSE.html
- */
-
 #pragma once
 
 namespace KismetFunctions
 {
+	void CreateConsole()
+	{
+		FILE* fDummy;
+		AllocConsole();
+		freopen_s(&fDummy, "CONIN$", "r", stdin);
+		freopen_s(&fDummy, "CONOUT$", "w", stderr);
+		freopen_s(&fDummy, "CONOUT$", "w", stdout);
+		printf(XOR("\n\n[=] Cranium made by Kemo, Sizzy, PeQu and Timmy \n\n"));
+	}
 
 	inline auto ImportPngAsTexture2D(const wchar_t* FileFullPath)
 	{
 		if (!KismetRenderingLibrary || Util::IsBadReadPtr(KismetRenderingLibrary))
 		{
-			KismetRenderingLibrary = UE4::FindObject<UObject*>(XOR(L"KismetRenderingLibrary /Script/Engine.Default__KismetRenderingLibrary"));
+			KismetRenderingLibrary = FindObject<UObject*>(XOR(L"KismetRenderingLibrary /Script/Engine.Default__KismetRenderingLibrary"));
 		}
 
-		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.KismetRenderingLibrary.ImportFileAsTexture2D"));
+		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.KismetRenderingLibrary:ImportFileAsTexture2D"));
 
 		ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
 		ObjectFinder GameViewPortClientFinder = EngineFinder.Find(XOR(L"GameViewport"));
@@ -35,10 +38,10 @@ namespace KismetFunctions
 	{
 		if (!KismetStringLibrary || Util::IsBadReadPtr(KismetStringLibrary))
 		{
-			KismetStringLibrary = UE4::FindObject<UObject*>(XOR(L"KismetStringLibrary /Script/Engine.Default__KismetStringLibrary"));
+			KismetStringLibrary = FindObject<UObject*>(XOR(L"KismetStringLibrary /Script/Engine.Default__KismetStringLibrary"));
 		}
 
-		auto fn = UE4::FindObject<UFunction*>(XOR(L"Function /Script/Engine.KismetStringLibrary.Conv_StringToName"));
+		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.KismetStringLibrary:Conv_StringToName"));
 
 		UKismetStringLibrary_Conv_StringToName_Params params;
 		params.inString = String;

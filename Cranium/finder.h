@@ -55,37 +55,74 @@ class ObjectFinder
 
 	static GameObject* InternalFindChildInObject(GameObject* inObject, std::wstring_view childName)
 	{
-		GameObject* propertyObject = nullptr;
-		GameObject* next = inObject->GetNext();
-		if (next == nullptr) return nullptr;
-
-		auto firstPropertyName = reinterpret_cast<FField*>(inObject)->GetName();
-
-		//printf("\n firstPropertyName: %ls \n", firstPropertyName.c_str());
-
-		if (firstPropertyName == childName)
+		if (gVersion > 16.00f)
 		{
-			return inObject;
-		}
+			GameObject* propertyObject = nullptr;
+			GameObject* next = inObject->GetNext();
+			if (next == nullptr) return nullptr;
 
-		while (next)
+			auto firstPropertyName = reinterpret_cast<FField*>(inObject)->GetName();
+
+			//printf("\n firstPropertyName: %ls \n", firstPropertyName.c_str());
+
+			if (firstPropertyName == childName)
+			{
+				return inObject;
+			}
+
+			while (next)
+			{
+				std::wstring nextName = reinterpret_cast<FField*>(next)->GetName();
+
+				//printf("\n nextName: %ls \n", nextName.c_str());
+
+				if (childName == nextName)
+				{
+					propertyObject = next;
+					break;
+				}
+				else
+				{
+					next = next->GetNext();
+				}
+			}
+
+			return propertyObject;
+		}
+		else
 		{
-			std::wstring nextName = reinterpret_cast<FField*>(next)->GetName();
+			GameObject* propertyObject = nullptr;
+			GameObject* next = inObject->GetNext();
+			if (next == nullptr) return nullptr;
 
-			//printf("\n nextName: %ls \n", nextName.c_str());
+			auto firstPropertyName = GetFirstName(reinterpret_cast<FField*>(inObject));
 
-			if (childName == nextName)
+			//printf("\n firstPropertyName: %ls \n", firstPropertyName.c_str());
+
+			if (firstPropertyName == childName)
 			{
-				propertyObject = next;
-				break;
+				return inObject;
 			}
-			else
+
+			while (next)
 			{
-				next = next->GetNext();
+				std::wstring nextName = GetFirstName(reinterpret_cast<FField*>(next));
+
+				//printf("\n nextName: %ls \n", nextName.c_str());
+
+				if (childName == nextName)
+				{
+					propertyObject = next;
+					break;
+				}
+				else
+				{
+					next = next->GetNext();
+				}
 			}
+
+			return propertyObject;
 		}
-
-		return propertyObject;
 	}
 
 	GameObject*& resolveValuePointer(GameObject* bastePtr, GameObject* prop) const
@@ -100,8 +137,7 @@ class ObjectFinder
 	}
 
 public:
-	ObjectFinder(const std::wstring& currentObject, const std::wstring objectType, GameObject* object,
-		GameObject*& objectRef) :
+	ObjectFinder(const std::wstring& currentObject, const std::wstring objectType, GameObject* object, GameObject*& objectRef) :
 		m_currentObject(currentObject), m_objectType(objectType), m_object(object), m_objectRef(objectRef)
 	{
 	};
@@ -113,10 +149,7 @@ public:
 
 	static ObjectFinder EntryPoint(uintptr_t EntryPointAddress)
 	{
-		return ObjectFinder{
-			L"EntryPoint", L"None", reinterpret_cast<GameObject*>(EntryPointAddress),
-			reinterpret_cast<GameObject*&>(EntryPointAddress)
-		};
+		return ObjectFinder{L"EntryPoint", L"None", reinterpret_cast<GameObject*>(EntryPointAddress), reinterpret_cast<GameObject*&>(EntryPointAddress)};
 	}
 
 	ObjectFinder Find(const std::wstring& objectToFind) const
@@ -143,50 +176,95 @@ public:
 
 	ObjectFinder FindChildObject(const std::wstring& objectToFind) const
 	{
-		GameClass* classPrivate = m_object->GetClass();
-		GameObject* childProperties = classPrivate->GetChildProperties();
-		GameObject* propertyFound = nullptr;
-
-		if (childProperties)
+		if (gVersion > 16.40f)
 		{
-			propertyFound = InternalFindChildInObject(childProperties, objectToFind);
-		}
-
-		GameClass* superStruct = classPrivate->GetSuperStruct();
-
-		while (superStruct && !propertyFound)
-		{
-			childProperties = superStruct->GetChildProperties();
+			GameClass* classPrivate = m_object->GetClass();
+			GameObject* childProperties = classPrivate->GetChildProperties();
+			GameObject* propertyFound = nullptr;
 
 			if (childProperties)
 			{
 				propertyFound = InternalFindChildInObject(childProperties, objectToFind);
-				if (propertyFound) break;
 			}
 
-			superStruct = superStruct->GetSuperStruct();
+			GameClass* superStruct = classPrivate->GetSuperStruct();
 
+			while (superStruct && !propertyFound)
+			{
+				childProperties = superStruct->GetChildProperties();
+
+				if (childProperties)
+				{
+					propertyFound = InternalFindChildInObject(childProperties, objectToFind);
+					if (propertyFound) break;
+				}
+
+				superStruct = superStruct->GetSuperStruct();
+
+			}
+			GameObject* valuePtr = resolveValuePointer(m_object, propertyFound);
+
+			const std::wstring type = reinterpret_cast<FField*>(propertyFound)->GetTypeName();
+
+			//printf("\ntype: %ls\n", type.c_str());
+
+			if (type == XOR(L"ArrayProperty"))
+				//if (type == XOR(L"LocalPlayers"))
+			{
+				//this will return the first element in the array
+				//TODO: recode this part
+				valuePtr = *reinterpret_cast<GameObject**>(valuePtr);
+
+				GameObject*& valuePtrRef = resolveArrayValuePointer(m_object, propertyFound);
+				return ObjectFinder(objectToFind, type, valuePtr, valuePtrRef);
+			}
+			else
+			{
+				GameObject*& valuePtrRef = resolveValuePointer(m_object, propertyFound);
+				return ObjectFinder(objectToFind, type, valuePtr, valuePtrRef);
+			}
 		}
-		GameObject* valuePtr = resolveValuePointer(m_object, propertyFound);
+		else {
+			GameClass* classPrivate = m_object->GetClass();
+			GameObject* childProperties = classPrivate->GetChildProperties();
+			GameObject* propertyFound = nullptr;
 
-		const std::wstring type = reinterpret_cast<FField*>(propertyFound)->GetTypeName();
+			if (childProperties)
+			{
+				propertyFound = InternalFindChildInObject(childProperties, objectToFind);
+			}
 
-		//printf("\ntype: %ls\n", type.c_str());
+			GameClass* superStruct = classPrivate->GetSuperStruct();
 
-		if (type == XOR(L"ArrayProperty"))
-			//if (type == XOR(L"LocalPlayers"))
-		{
-			//this will return the first element in the array
-			//TODO: recode this part
-			valuePtr = *reinterpret_cast<GameObject**>(valuePtr);
+			while (superStruct && !propertyFound)
+			{
+				childProperties = superStruct->GetChildProperties();
+				if (childProperties)
+				{
+					propertyFound = InternalFindChildInObject(childProperties, objectToFind);
+					if (propertyFound) break;
+				}
+				superStruct = superStruct->GetSuperStruct();
+			}
 
-			GameObject*& valuePtrRef = resolveArrayValuePointer(m_object, propertyFound);
-			return ObjectFinder(objectToFind, type, valuePtr, valuePtrRef);
-		}
-		else
-		{
-			GameObject*& valuePtrRef = resolveValuePointer(m_object, propertyFound);
-			return ObjectFinder(objectToFind, type, valuePtr, valuePtrRef);
+			GameObject* valuePtr = resolveValuePointer(m_object, propertyFound);
+
+			const std::wstring type = GetFieldClassName(reinterpret_cast<FField*>(propertyFound));
+
+			if (type == XOR(L"ArrayProperty"))
+			{
+				//this will return the first element in the array
+				//TODO: recode this part
+				valuePtr = *reinterpret_cast<GameObject**>(valuePtr);
+
+				GameObject*& valuePtrRef = resolveArrayValuePointer(m_object, propertyFound);
+				return ObjectFinder(objectToFind, type, valuePtr, valuePtrRef);
+			}
+			else
+			{
+				GameObject*& valuePtrRef = resolveValuePointer(m_object, propertyFound);
+				return ObjectFinder(objectToFind, type, valuePtr, valuePtrRef);
+			}
 		}
 	}
 
