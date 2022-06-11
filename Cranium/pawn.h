@@ -44,13 +44,11 @@ public:
 
 	void Authorize()
 	{
-		const auto LocalRole = reinterpret_cast<TEnumAsByte<ENetRole>*>(reinterpret_cast<uintptr_t>(this->Pawn) + ObjectFinder::FindOffset(
-			XOR(L"Class /Script/Engine.Actor"), XOR(L"Role")));
+		const auto LocalRole = reinterpret_cast<TEnumAsByte<ENetRole>*>(reinterpret_cast<uintptr_t>(this->Pawn) + ObjectFinder::FindOffset(XOR(L"Class /Script/Engine.Actor"), XOR(L"Role")));
 
 		*LocalRole = ENetRole::ROLE_Authority;
 
-		const auto RemoteRole = reinterpret_cast<TEnumAsByte<ENetRole>*>(reinterpret_cast<uintptr_t>(this->Pawn) + ObjectFinder::FindOffset(
-			XOR(L"Class /Script/Engine.Actor"), XOR(L"RemoteRole")));
+		const auto RemoteRole = reinterpret_cast<TEnumAsByte<ENetRole>*>(reinterpret_cast<uintptr_t>(this->Pawn) + ObjectFinder::FindOffset(XOR(L"Class /Script/Engine.Actor"), XOR(L"RemoteRole")));
 
 		*RemoteRole = ENetRole::ROLE_Authority;
 	}
@@ -66,7 +64,6 @@ public:
 			{
 				this->Possess();
 				this->ShowSkin();
-				this->ShowPickaxe();
 				this->UpdateAnimInstance();
 			}
 		}
@@ -94,7 +91,7 @@ public:
 
 		ObjectFinder CheatManagerFinder = PlayerControllerFinder.Find(XOR(L"CheatManager"));
 
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.CheatManager:Summon"));
+		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.CheatManager.Summon"));
 
 		const FString ClassName = ClassToSummon;
 
@@ -112,7 +109,7 @@ public:
 			UpdatePlayerController();
 		}
 
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Controller:Possess"));
+		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Controller.Possess"));
 
 		AController_Possess_Params params;
 		params.InPawn = this->Pawn;
@@ -278,7 +275,7 @@ public:
 		ObjectFinder PlayerStateFinder = PawnFinder.Find(XOR(L"PlayerState"));
 
 		auto KismetLib = FindObject<UObject*>(XOR(L"FortKismetLibrary /Script/FortniteGame.Default__FortKismetLibrary"));
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortKismetLibrary:UpdatePlayerCustomCharacterPartsVisualization"));
+		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortKismetLibrary.UpdatePlayerCustomCharacterPartsVisualization"));
 
 		UFortKismetLibrary_UpdatePlayerCustomCharacterPartsVisualization_Params params;
 		params.PlayerState = PlayerStateFinder.GetObj();
@@ -429,7 +426,7 @@ public:
 
 	auto SetMovementSpeed(float SetMovementSpeedInput)
 	{
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn:SetMovementSpeed"));
+		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn.SetMovementSpeed"));
 
 		AFortPawn_SetMovementSpeedMultiplier_Params params;
 
@@ -464,7 +461,7 @@ public:
 		ObjectFinder WorldFinder = GameViewPortClientFinder.Find(XOR(L"World"));
 
 		auto KismetSysLib = FindObject<UObject*>(XOR(L"KismetSystemLibrary /Script/Engine.Default__KismetSystemLibrary"));
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.KismetSystemLibrary:ExecuteConsoleCommand"));
+		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.KismetSystemLibrary.ExecuteConsoleCommand"));
 
 		UKismetSystemLibrary_ExecuteConsoleCommand_Params params;
 		params.WorldContextObject = WorldFinder.GetObj();

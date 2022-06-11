@@ -62,14 +62,13 @@ namespace Hooks
 		{
 			RequestExitWithStatusAddressUE5 = Util::FindPatternAV(Patterns::Exit::RequestExitWithStatusUE5.first, Patterns::Exit::RequestExitWithStatusUE5.second);
 		}
-		if (gVersion > 15.90f)
-		{
+
 			DetoursEasy(UnsafeEnvironmentPopupAddressUE4, UnsafeEnvironmentPopupHook);
 			DetoursEasy(UnsafeEnvironmentPopupAddressUE5, UnsafeEnvironmentPopupHook);
 
 			DetoursEasy(RequestExitWithStatusAddressUE4, RequestExitWithStatusHook);
 			DetoursEasy(RequestExitWithStatusAddressUE5, RequestExitWithStatusHook);
-		}
+		
 		return true;
 	}
 

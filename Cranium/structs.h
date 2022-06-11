@@ -168,9 +168,18 @@ struct UObject
 
 	void ProcessEvent(void* fn, void* parms)
 	{
-		auto vtable = *reinterpret_cast<void***>(this);
-		auto processEventFn = static_cast<void(*)(void*, void*, void*)>(vtable[0x44]);
-		processEventFn(this, fn, parms);
+		if(gVersion > 19.00f)
+		{
+			auto vtable = *reinterpret_cast<void***>(this);
+			auto processEventFn = static_cast<void(*)(void*, void*, void*)>(vtable[0x4B]);
+			processEventFn(this, fn, parms);
+		}
+		else if (gVersion > 16.00f)
+		{
+			auto vtable = *reinterpret_cast<void***>(this);
+			auto processEventFn = static_cast<void(*)(void*, void*, void*)>(vtable[0x44]);
+			processEventFn(this, fn, parms);
+		}
 	}
 
 	bool IsA(UClass* cmp) const

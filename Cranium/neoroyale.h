@@ -177,23 +177,19 @@ namespace NeoRoyale
 
 			NeoPlayer.ShowSkin();
 
-			NeoPlayer.ShowPickaxe();
+			//NeoPlayer.ShowPickaxe();
 
 			NeoPlayer.ToggleInfiniteAmmo();
 
-			NeoPlayer.ApplyOverride();
+			//NeoPlayer.ApplyOverride();
 
 			//LOL
 			NeoPlayer.ExecuteConsoleCommand(XOR(L"god"));
 			NeoPlayer.SetMovementSpeed(1.1);
 
-			auto PlaylistName = GetObjectFirstName(gPlaylist);
+			//auto PlaylistName = GetObjectFirstName(gPlaylist);
 
-			if (!wcsstr(PlaylistName.c_str(), XOR(L"Playlist_Papaya")) &&
-				!wcsstr(PlaylistName.c_str(), XOR(L"Playlist_BattleLab")))
-			{
-				UFunctions::TeleportToSpawn();
-			}
+
 
 			if(gVersion > 14.60f)
 			{
@@ -215,13 +211,13 @@ namespace NeoRoyale
 				UFunctions::LoadAndStreamInLevel(DEVICE_EVENT_MAP);
 			}
 
-			InitCombos();
+			//InitCombos();
 
 			UFunctions::StartMatch();
 
 			UFunctions::ServerReadyToStartMatch();
 
-			CreateThread(nullptr, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Thread), nullptr, NULL, nullptr);
+			//CreateThread(nullptr, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Thread), nullptr, NULL, nullptr);
 
 			UFunctions::ConsoleLog(XOR(L"\n\nWelcome to Neonite++\nMade with ♥ By Kemo (@xkem0x on twitter)."));
 

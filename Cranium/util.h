@@ -3,6 +3,8 @@
 #include <winscard.h>
 #include "enums.h"
 
+#define ReadPointer(base, offset) (*(PVOID *)(((PBYTE)base + offset)))
+
 #define VALIDATE_ADDRESS(address, error) \
     if (!address) { \
         MessageBoxA(0, error, "Cranium", MB_OK); \
