@@ -1,10 +1,4 @@
-﻿/**
- * Copyright (c) 2020-2021 Kareem Olim (Kemo)
- * All Rights Reserved. Licensed under the Neo License
- * https://neonite.dev/LICENSE.html
- */
-
-#pragma once
+﻿#pragma once
 #include "pch.h"
 #include "structs.h"
 
@@ -102,13 +96,12 @@ class ObjectFinder
 
 	GameObject*& resolveArrayValuePointer(GameObject* bastePtr, GameObject* prop) const
 	{
-		return *reinterpret_cast<GameObject**>(*reinterpret_cast<GameObject**>(reinterpret_cast<uintptr_t>(m_object) +
-			prop->GetOffsetInternal()));
+		return *reinterpret_cast<GameObject**>(*reinterpret_cast<GameObject**>(reinterpret_cast<uintptr_t>(m_object) + prop->GetOffsetInternal()));
 	}
 
 public:
 	ObjectFinder(const std::wstring& currentObject, const std::wstring objectType, GameObject* object,
-	             GameObject*& objectRef) :
+		GameObject*& objectRef) :
 		m_currentObject(currentObject), m_objectType(objectType), m_object(object), m_objectRef(objectRef)
 	{
 	};
@@ -133,12 +126,11 @@ public:
 
 	static auto FindOffset(const std::wstring& classToFind, const std::wstring& objectToFind)
 	{
-		auto Class = UE4::FindObject<UClass*>(classToFind.c_str(), true);
+		auto Class = FindObject<UClass*>(classToFind.c_str(), true);
 
 		if (Class)
 		{
-			GameObject* property = InternalFindChildInObject(reinterpret_cast<GameObject*>(Class->ChildProperties),
-			                                                 objectToFind);
+			GameObject* property = InternalFindChildInObject(reinterpret_cast<GameObject*>(Class->ChildProperties), objectToFind);
 			if (property)
 			{
 				//printf("[ObjectFinder] Found %ls at 0x%x", objectToFind.c_str(), property->GetOffsetInternal());
@@ -165,14 +157,16 @@ public:
 		while (superStruct && !propertyFound)
 		{
 			childProperties = superStruct->GetChildProperties();
+
 			if (childProperties)
 			{
 				propertyFound = InternalFindChildInObject(childProperties, objectToFind);
 				if (propertyFound) break;
 			}
-			superStruct = superStruct->GetSuperStruct();
-		}
 
+			superStruct = superStruct->GetSuperStruct();
+
+		}
 		GameObject* valuePtr = resolveValuePointer(m_object, propertyFound);
 
 		const std::wstring type = reinterpret_cast<FField*>(propertyFound)->GetTypeName();
@@ -213,9 +207,9 @@ public:
 
 			if (pActor != nullptr)
 			{
-				//printf("\n[Actor %i] %ls\n", i, pActor->GetFullName().c_str());
+				//printf("\n[Actor %i] %ls, Class : %ls\n", i, GetObjectFullName(pActor).c_str(), GetObjectFullName(pActor->Class).c_str());
 
-				if (pActor->GetFullName().starts_with(name))
+				if (GetObjectFullName(pActor).starts_with(name))
 				{
 					if (toSkip > 0)
 					{
@@ -232,27 +226,35 @@ public:
 
 		return nullptr;
 	}
-};
 
-
-namespace UE4
-{
-	inline auto SpawnActorEasy(UClass* Class, FVector Location = FVector(), FQuat Rotation = FQuat())
+	static void DestroyActor(std::wstring name)
 	{
-		FTransform Transform;
-		Transform.Scale3D = FVector(1, 1, 1);
-		Transform.Translation = Location;
-		Transform.Rotation = Rotation;
-
-		ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
+		ObjectFinder EngineFinder = EntryPoint(uintptr_t(GEngine));
 		ObjectFinder GameViewPortClientFinder = EngineFinder.Find(XOR(L"GameViewport"));
 		ObjectFinder WorldFinder = GameViewPortClientFinder.Find(XOR(L"World"));
+		ObjectFinder PersistentLevelFinder = WorldFinder.Find(XOR(L"PersistentLevel"));
 
-		return SpawnActor(
-			WorldFinder.GetObj(),
-			Class,
-			&Transform,
-			FActorSpawnParameters()
-		);
+		const DWORD AActors = 0x98;
+
+		for (auto i = 0x00; i < READ_DWORD(PersistentLevelFinder.GetObj(), AActors + sizeof(void*)); i++)
+		{
+			auto Actors = READ_POINTER(PersistentLevelFinder.GetObj(), AActors);
+
+			auto pActor = static_cast<UObject*>(READ_POINTER(Actors, i * sizeof(void*)));
+
+
+			if (pActor != nullptr)
+			{
+				//printf("\n[Actor %i] %ls, Class : %ls\n", i, GetObjectFullName(pActor).c_str(), GetObjectFullName(pActor->Class).c_str());
+
+				if (GetObjectFullName(pActor).starts_with(name))
+				{
+					auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Actor:K2_DestroyActor"));
+
+					ProcessEvent(pActor, fn, nullptr);
+					printf("\n[NeoRoyale] %ls was destroyed!.\n", name.c_str());
+				}
+			}
+		}
 	}
-}
+};
