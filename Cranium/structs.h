@@ -56,6 +56,11 @@ struct FString : private TArray<wchar_t>
 		}
 	}
 
+	const wchar_t* c_str() const
+	{
+		return Data;
+	}
+
 	bool IsValid() const
 	{
 		return Data != nullptr;
@@ -118,6 +123,7 @@ private:
 struct FName;
 
 void (*FNameToString)(FName* pThis, FString& out);
+void (*FreeMemory)(__int64);
 
 struct FName
 {
@@ -145,7 +151,7 @@ struct FName
 
 struct FText
 {
-	char UnknownData[0x18];
+	char UnknownData[0x40];
 };
 
 struct UKismetStringLibrary_Conv_StringToName_Params
@@ -168,18 +174,11 @@ struct UObject
 
 	void ProcessEvent(void* fn, void* parms)
 	{
-		if(gVersion > 19.00f)
-		{
+	
 			auto vtable = *reinterpret_cast<void***>(this);
 			auto processEventFn = static_cast<void(*)(void*, void*, void*)>(vtable[0x4B]);
 			processEventFn(this, fn, parms);
-		}
-		else if (gVersion > 16.00f)
-		{
-			auto vtable = *reinterpret_cast<void***>(this);
-			auto processEventFn = static_cast<void(*)(void*, void*, void*)>(vtable[0x44]);
-			processEventFn(this, fn, parms);
-		}
+
 	}
 
 	bool IsA(UClass* cmp) const

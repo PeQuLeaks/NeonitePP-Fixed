@@ -189,7 +189,12 @@ namespace NeoRoyale
 
 			//auto PlaylistName = GetObjectFirstName(gPlaylist);
 
-
+			if (gVersion > 17.10f)
+			{
+				NeoPlayer.Respawn();
+				NeoPlayer.Respawn();
+				NeoPlayer.Respawn();
+			}
 
 			if(gVersion > 14.60f)
 			{
@@ -217,7 +222,7 @@ namespace NeoRoyale
 
 			UFunctions::ServerReadyToStartMatch();
 
-			//CreateThread(nullptr, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Thread), nullptr, NULL, nullptr);
+			CreateThread(nullptr, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Thread), nullptr, NULL, nullptr);
 
 			UFunctions::ConsoleLog(XOR(L"\n\nWelcome to Neonite++\nMade with ♥ By Kemo (@xkem0x on twitter)."));
 

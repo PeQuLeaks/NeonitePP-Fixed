@@ -190,14 +190,8 @@
     <ClInclude Include="neonitelogo.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="old.h">
-      <Filter>Hooks</Filter>
-    </ClInclude>
     <ClInclude Include="skCryptor.h">
       <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="almost.h">
-      <Filter>Hooks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

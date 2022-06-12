@@ -221,7 +221,14 @@ namespace UFunctions
 		ObjectFinder GameViewPortClientFinder = EngineFinder.Find(XOR(L"GameViewport"));
 		ObjectFinder WorldFinder = GameViewPortClientFinder.Find(L"World");
 		ObjectFinder GameModeFinder = WorldFinder.Find(L"AuthorityGameMode");
-		const auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.GameMode.StartMatch"));
+		UFunction* fn;
+		if (gVersion > 16.00f)
+		{
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.GameMode.StartMatch"));
+		}
+		else {
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.GameMode:StartMatch"));
+		}
 		Empty_Params params;
 		ProcessEvent(GameModeFinder.GetObj(), fn, &params);
 		printf("\n[Neoroyale] Match started!.\n");
@@ -235,8 +242,14 @@ namespace UFunctions
 
 		ObjectFinder PlayerControllerFinder = LocalPlayer.Find(XOR(L"PlayerController"));
 
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController.ServerReadyToStartMatch"));
-
+		UFunction* fn;
+		if (gVersion > 16.00f)
+		{
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController.ServerReadyToStartMatch"));
+		}
+		else {
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController:ServerReadyToStartMatch"));
+		}
 		Empty_Params params;
 
 		ProcessEvent(PlayerControllerFinder.GetObj(), fn, &params);
@@ -257,7 +270,15 @@ namespace UFunctions
 		CurrentPlaylistInfo->BasePlaylist = gPlaylist;
 		CurrentPlaylistInfo->OverridePlaylist = gPlaylist;
 
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortGameStateAthena.OnRep_CurrentPlaylistInfo"));
+		UFunction* fn;
+		if (gVersion > 16.00f)
+		{
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortGameStateAthena.OnRep_CurrentPlaylistInfo"));
+		}
+		else {
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortGameStateAthena:OnRep_CurrentPlaylistInfo"));
+
+		}
 
 		Empty_Params params;
 
@@ -279,7 +300,15 @@ namespace UFunctions
 
 		*GamePhase = EAthenaGamePhase::None;
 
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortGameStateAthena.OnRep_GamePhase"));
+		UFunction* fn;
+		if (gVersion > 16.00f)
+		{
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortGameStateAthena.OnRep_GamePhase"));
+		}
+		else {
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortGameStateAthena:OnRep_GamePhase"));
+
+		}
 
 		AFortGameStateAthena_OnRep_GamePhase_Params params;
 		params.OldGamePhase = EAthenaGamePhase::Setup;
@@ -365,7 +394,14 @@ namespace UFunctions
 		ObjectFinder PersistentLevelFinder = WorldFinder.Find(XOR(L"PersistentLevel"));
 
 		//Loading the level instance in memory
-		auto LoadLevelInstance = FindObject<UFunction*>(XOR(L"Function /Script/Engine.LevelStreamingDynamic.LoadLevelInstance"));
+		UFunction* LoadLevelInstance;
+		if (gVersion > 16.00f)
+		{
+			LoadLevelInstance = FindObject<UFunction*>(XOR(L"Function /Script/Engine.LevelStreamingDynamic.LoadLevelInstance"));
+		}
+		else {
+			LoadLevelInstance = FindObject<UFunction*>(XOR(L"Function /Script/Engine.LevelStreamingDynamic:LoadLevelInstance"));
+		}
 		auto LevelStreamingDynamic = FindObject<UObject*>(XOR(L"LevelStreamingDynamic /Script/Engine.Default__LevelStreamingDynamic"));
 
 		FRotator WorldRotation;
@@ -385,7 +421,15 @@ namespace UFunctions
 		ObjectFinder PlayerControllerFinder = LocalPlayer.Find(XOR(L"PlayerController"));
 
 		auto KismetSysLib = FindObject<UObject*>(XOR(L"KismetSystemLibrary /Script/Engine.Default__KismetSystemLibrary"));
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.KismetSystemLibrary.ExecuteConsoleCommand"));
+		UFunction* fn;
+		if (gVersion > 16.00f)
+		{
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.KismetSystemLibrary.ExecuteConsoleCommand"));
+		}
+		else {
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.KismetSystemLibrary:ExecuteConsoleCommand"));
+
+		}
 
 		std::wstring command = L"streamlevelin " + std::wstring(EventSequenceMap);
 
@@ -399,7 +443,15 @@ namespace UFunctions
 
 	inline void Play(const wchar_t* AnimationPlayerFullName)
 	{
-		auto Play = FindObject<UFunction*>(XOR(L"Function /Script/MovieScene.MovieSceneSequencePlayer:Play"));
+		UFunction* Play;
+		if (gVersion > 16.00f)
+		{
+			Play = FindObject<UFunction*>(XOR(L"Function /Script/MovieScene.MovieSceneSequencePlayer.Play"));
+		}
+		else {
+			Play = FindObject<UFunction*>(XOR(L"Function /Script/MovieScene.MovieSceneSequencePlayer:Play"));
+
+		}
 
 		auto Sequence = FindObject<void*>(AnimationPlayerFullName);
 
@@ -413,8 +465,15 @@ namespace UFunctions
 		ObjectFinder WorldFinder = GameViewPortClientFinder.Find(XOR(L"World"));
 		ObjectFinder GameModeFinder = WorldFinder.Find(XOR(L"AuthorityGameMode"));
 
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.GameMode.Say"));
+		UFunction* fn;
+		if (gVersion > 16.00f)
+		{
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.GameMode.Say"));
+		}
+		else {
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.GameMode:Say"));
 
+		}
 		const FString Msg = message.c_str();
 		AGameMode_Say_Params params;
 		params.Msg = Msg;
@@ -561,15 +620,44 @@ namespace Console
 	//constructs and assigns CheatManager to the main console.
 	inline bool CheatManager()
 	{
-		if (gVersion > 16.00f)
+		if (gVersion > 19.00f)
 		{
 			ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
 			ObjectFinder LocalPlayer = EngineFinder.Find(XOR(L"GameInstance")).Find(XOR(L"LocalPlayers"));
+			if (!LocalPlayer.GetObj()) return false;
 			ObjectFinder ControllerFinder = LocalPlayer.Find(XOR(L"PlayerController"));
+
+			auto fn = FindObject<UFunction*>(L"Function /Script/Engine.GameplayStatics.SpawnObject");
+			auto statics = FindObject<UObject*>(L"GameplayStatics /Script/Engine.Default__GameplayStatics");
+			auto ConsoleClass = FindObject<UClass*>(L"Class /Script/Engine.CheatManager");
+			auto CheatManager = reinterpret_cast<UObject**>(__int64(ControllerFinder.GetObj()) + __int64(ObjectFinder::FindOffset(L"PlayerController", L"CheatManager")));
+
+			struct
+			{
+				UObject* ObjectClass;
+				UObject* Outer;
+				UObject* ReturnValue;
+			} params;
+			params.ObjectClass = ConsoleClass;
+			params.Outer = ControllerFinder.GetObj();
+
+			ProcessEvent(statics, fn, &params);
+
+			*CheatManager = params.ReturnValue;
+			printf(XOR("[NeoRoyale] Player now has cheatmanager!\n"));
+			return true;
+		}
+		else if (gVersion > 16.00f)
+		{
+			ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
+			ObjectFinder LocalPlayer = EngineFinder.Find(XOR(L"GameInstance")).Find(XOR(L"LocalPlayers"));
+			if (!LocalPlayer.GetObj()) return false;
+			ObjectFinder ControllerFinder = LocalPlayer.Find(XOR(L"PlayerController"));
+			ObjectFinder CheatManagerFinder = ControllerFinder.Find(L"CheatManager");
+
 			auto GameplayStatics = FindObject<UObject*>(L"GameplayStatics /Script/Engine.Default__GameplayStatics");
 			auto SpawnObject = FindObject<UFunction*>(L"Function /Script/Engine.GameplayStatics.SpawnObject");
 			auto CheatClass = FindObject<UClass*>(L"Class /Script/Engine.CheatManager");
-			ObjectFinder CheatManagerFinder = ControllerFinder.Find(L"CheatManager");
 			struct {
 				UClass* CheatClass;
 				UObject* Outer;
@@ -583,17 +671,13 @@ namespace Console
 			CheatManagerFinder.GetObj() = params.ReturnValue;
 			printf(XOR("[NeoRoyale] Player now has cheatmanager!\n"));
 			return true;
-
 		}
 		else
 		{
 			ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
 			ObjectFinder LocalPlayer = EngineFinder.Find(XOR(L"GameInstance")).Find(XOR(L"LocalPlayers"));
-
 			if (!LocalPlayer.GetObj()) return false;
-
 			ObjectFinder PlayerControllerFinder = LocalPlayer.Find(XOR(L"PlayerController"));
-
 			ObjectFinder CheatManagerFinder = PlayerControllerFinder.Find(XOR(L"CheatManager"));
 
 			UObject*& pcCheatManager = reinterpret_cast<UObject*&>(CheatManagerFinder.GetObj());
@@ -625,28 +709,53 @@ namespace Console
 	//unlocks ue4 console with cheat manager
 	inline bool Unlock()
 	{
-		ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
-		ObjectFinder ConsoleClassFinder = EngineFinder.Find(XOR(L"ConsoleClass"));
-		ObjectFinder GameViewPortClientFinder = EngineFinder.Find(XOR(L"GameViewport"));
-		ObjectFinder ViewportConsoleFinder = GameViewPortClientFinder.Find(XOR(L"ViewportConsole"));
+		if (gVersion > 19.00f)
+			return false;//temporaraly disabled console, use other function to call it once loading in game on chapter 3, will fix this like tmrw or something
+		else if (gVersion > 16.00f)
+		{
+			ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
+			auto GameplayStatics = FindObject<UObject*>(L"GameplayStatics /Script/Engine.Default__GameplayStatics");
+			auto SpawnObject = FindObject<UFunction*>(L"Function /Script/Engine.GameplayStatics.SpawnObject");
+			auto ConsoleClass = FindObject<UClass*>(L"Class /Script/Engine.Console");
+			ObjectFinder GameViewPortClientFinder = EngineFinder.Find(L"GameViewport");
+			struct {
+				UClass* ConsoleClass;
+				UObject* GameViewPortClient;
+				UObject* ReturnValue;
+			} params;
+			params.ConsoleClass = ConsoleClass;
+			params.GameViewPortClient = GameViewPortClientFinder.GetObj();
+			int ViewportConsoleOff = ObjectFinder::FindOffset(L"Class /Script/Engine.GameViewportClient", L"ViewportConsole");
+			UObject** ViewportConsole = reinterpret_cast<UObject**>(__int64(GameViewPortClientFinder.GetObj()) + __int64(ViewportConsoleOff));
+			ProcessEvent(GameplayStatics, SpawnObject, &params);
 
-		UObject*& ViewportConsole = reinterpret_cast<UObject*&>(ViewportConsoleFinder.GetObj());
+			*ViewportConsole = params.ReturnValue;
+		}
+		else
+		{
+			ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
+			ObjectFinder ConsoleClassFinder = EngineFinder.Find(XOR(L"ConsoleClass"));
+			ObjectFinder GameViewPortClientFinder = EngineFinder.Find(XOR(L"GameViewport"));
+			ObjectFinder ViewportConsoleFinder = GameViewPortClientFinder.Find(XOR(L"ViewportConsole"));
 
-		auto Console = StaticConstructObject(
-			static_cast<UClass*>(ConsoleClassFinder.GetObj()),
-			reinterpret_cast<UObject*>(GameViewPortClientFinder.GetObj()),
-			nullptr,
-			RF_NoFlags,
-			None,
-			nullptr,
-			false,
-			nullptr,
-			false
-		);
+			UObject*& ViewportConsole = reinterpret_cast<UObject*&>(ViewportConsoleFinder.GetObj());
 
-		ViewportConsole = Console;
+			auto Console = StaticConstructObject(
+				static_cast<UClass*>(ConsoleClassFinder.GetObj()),
+				reinterpret_cast<UObject*>(GameViewPortClientFinder.GetObj()),
+				nullptr,
+				RF_NoFlags,
+				None,
+				nullptr,
+				false,
+				nullptr,
+				false
+			);
 
-		CheatManager();
+			ViewportConsole = Console;
+
+			CheatManager();
+		}
 		return true;
 	}
 }

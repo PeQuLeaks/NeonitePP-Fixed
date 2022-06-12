@@ -33,8 +33,15 @@ public:
 			this->UpdateMesh();
 		}
 
-		auto FUNC_GetAnimInstance = FindObject<UFunction*>(XOR(L"Function /Script/Engine.SkeletalMeshComponent:GetAnimInstance"));
+		UFunction* FUNC_GetAnimInstance;
+		if (gVersion > 16.00f)
+		{
+			FUNC_GetAnimInstance = FindObject<UFunction*>(XOR(L"Function /Script/Engine.SkeletalMeshComponent.GetAnimInstance"));
+		}
+		else {
+			FUNC_GetAnimInstance = FindObject<UFunction*>(XOR(L"Function /Script/Engine.SkeletalMeshComponent:GetAnimInstance"));
 
+		}
 		USkeletalMeshComponent_GetAnimInstance_Params GetAnimInstance_Params;
 
 		ProcessEvent(this->Mesh, FUNC_GetAnimInstance, &GetAnimInstance_Params);
@@ -91,8 +98,14 @@ public:
 
 		ObjectFinder CheatManagerFinder = PlayerControllerFinder.Find(XOR(L"CheatManager"));
 
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.CheatManager.Summon"));
-
+		UFunction* fn;
+		if (gVersion > 16.00f)
+		{
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.CheatManager.Summon"));
+		}
+		else {
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.CheatManager:Summon"));
+		}
 		const FString ClassName = ClassToSummon;
 
 		UCheatManager_Summon_Params params;
@@ -109,8 +122,14 @@ public:
 			UpdatePlayerController();
 		}
 
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Controller.Possess"));
-
+		UFunction* fn;
+		if (gVersion > 16.00f)
+		{
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Controller.Possess"));
+		}
+		else {
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Controller:Possess"));
+		}
 		AController_Possess_Params params;
 		params.InPawn = this->Pawn;
 
@@ -147,7 +166,14 @@ public:
 
 	auto IsSkydiving()
 	{
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn:IsSkydiving"));
+		UFunction* fn;
+		if (gVersion > 16.00f)
+		{
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.IsSkydiving"));
+		}
+		else {
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn:IsSkydiving"));
+		}
 
 		ACharacter_IsSkydiving_Params params;
 
@@ -158,8 +184,14 @@ public:
 
 	auto IsParachuteOpen()
 	{
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn:IsParachuteOpen"));
-
+		UFunction* fn;
+		if (gVersion > 16.00f)
+		{
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.IsParachuteOpen"));
+		}
+		else {
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn:IsParachuteOpen"));
+		}
 		ACharacter_IsParachuteOpen_Params params;
 
 		ProcessEvent(this->Pawn, fn, &params);
@@ -169,8 +201,14 @@ public:
 
 	auto IsParachuteForcedOpen()
 	{
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn:IsParachuteForcedOpen"));
-
+		UFunction* fn;
+		if (gVersion > 16.00f)
+		{
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.IsParachuteForcedOpen"));
+		}
+		else {
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn:IsParachuteForcedOpen"));
+		}
 		ACharacter_IsParachuteForcedOpen_Params params;
 
 		ProcessEvent(this->Pawn, fn, &params);
@@ -180,7 +218,14 @@ public:
 
 	auto Jump()
 	{
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Character:Jump"));
+		UFunction* fn;
+		if (gVersion > 16.00f)
+		{
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Character.Jump"));
+		}
+		else {
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Character:Jump"));
+		}
 
 		Empty_Params params;
 
@@ -275,7 +320,15 @@ public:
 		ObjectFinder PlayerStateFinder = PawnFinder.Find(XOR(L"PlayerState"));
 
 		auto KismetLib = FindObject<UObject*>(XOR(L"FortKismetLibrary /Script/FortniteGame.Default__FortKismetLibrary"));
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortKismetLibrary.UpdatePlayerCustomCharacterPartsVisualization"));
+
+		UFunction* fn;
+		if (gVersion > 16.00f)
+		{
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortKismetLibrary.UpdatePlayerCustomCharacterPartsVisualization"));
+		}
+		else {
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortKismetLibrary:UpdatePlayerCustomCharacterPartsVisualization"));
+		}
 
 		UFortKismetLibrary_UpdatePlayerCustomCharacterPartsVisualization_Params params;
 		params.PlayerState = PlayerStateFinder.GetObj();
@@ -347,7 +400,14 @@ public:
 
 		ObjectFinder CharMovementFinder = PawnFinder.Find(XOR(L"CharacterMovement"));
 
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.CharacterMovementComponent:SetMovementMode"));
+		UFunction* fn;
+		if (gVersion > 16.00f)
+		{
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.CharacterMovementComponent.SetMovementMode"));
+		}
+		else {
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.CharacterMovementComponent:SetMovementMode"));
+		}
 
 		UCharacterMovementComponent_SetMovementMode_Params params;
 
@@ -426,8 +486,14 @@ public:
 
 	auto SetMovementSpeed(float SetMovementSpeedInput)
 	{
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn.SetMovementSpeed"));
-
+		UFunction* fn;
+		if (gVersion > 16.00f)
+		{
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn.SetMovementSpeed"));
+		}
+		else {
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn:SetMovementSpeed"));
+		}
 		AFortPawn_SetMovementSpeedMultiplier_Params params;
 
 		params.NewMovementSpeedVal = SetMovementSpeedInput;
@@ -461,7 +527,14 @@ public:
 		ObjectFinder WorldFinder = GameViewPortClientFinder.Find(XOR(L"World"));
 
 		auto KismetSysLib = FindObject<UObject*>(XOR(L"KismetSystemLibrary /Script/Engine.Default__KismetSystemLibrary"));
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.KismetSystemLibrary.ExecuteConsoleCommand"));
+		UFunction* fn;
+		if (gVersion > 16.00f)
+		{
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.KismetSystemLibrary.ExecuteConsoleCommand"));
+		}
+		else {
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.KismetSystemLibrary:ExecuteConsoleCommand"));
+		}
 
 		UKismetSystemLibrary_ExecuteConsoleCommand_Params params;
 		params.WorldContextObject = WorldFinder.GetObj();

@@ -52,23 +52,25 @@ namespace Hooks
 
 	inline bool exithook()
 	{
-		UnsafeEnvironmentPopupAddressUE4 = Util::FindPatternAV(Patterns::Exit::UnsafeEnvironmentPopupUE4.first, Patterns::Exit::UnsafeEnvironmentPopupUE4.second);
-		if (!UnsafeEnvironmentPopupAddressUE4)//We need the if statements to prevent the searching for the UE5 patterns, this causes it to lockup if we let it do that
+		if (Util::FindPatternAV(Patterns::Misc::PushWidget.first, Patterns::Misc::PushWidget.second))
 		{
-			UnsafeEnvironmentPopupAddressUE5 = Util::FindPatternAV(Patterns::Exit::UnsafeEnvironmentPopupUE5.first, Patterns::Exit::UnsafeEnvironmentPopupUE5.second);
-		}
-		RequestExitWithStatusAddressUE4 = Util::FindPatternAV(Patterns::Exit::RequestExitWithStatusUE4.first, Patterns::Exit::RequestExitWithStatusUE4.second);
-		if (!RequestExitWithStatusAddressUE4)
-		{
-			RequestExitWithStatusAddressUE5 = Util::FindPatternAV(Patterns::Exit::RequestExitWithStatusUE5.first, Patterns::Exit::RequestExitWithStatusUE5.second);
-		}
+			UnsafeEnvironmentPopupAddressUE4 = Util::FindPatternAV(Patterns::Exit::UnsafeEnvironmentPopupUE4.first, Patterns::Exit::UnsafeEnvironmentPopupUE4.second);
+			if (!UnsafeEnvironmentPopupAddressUE4)//We need the if statements to prevent the searching for the UE5 patterns, this causes it to lockup if we let it do that
+			{
+				UnsafeEnvironmentPopupAddressUE5 = Util::FindPatternAV(Patterns::Exit::UnsafeEnvironmentPopupUE5.first, Patterns::Exit::UnsafeEnvironmentPopupUE5.second);
+			}
+			RequestExitWithStatusAddressUE4 = Util::FindPatternAV(Patterns::Exit::RequestExitWithStatusUE4.first, Patterns::Exit::RequestExitWithStatusUE4.second);
+			if (!RequestExitWithStatusAddressUE4)
+			{
+				RequestExitWithStatusAddressUE5 = Util::FindPatternAV(Patterns::Exit::RequestExitWithStatusUE5.first, Patterns::Exit::RequestExitWithStatusUE5.second);
+			}
 
 			DetoursEasy(UnsafeEnvironmentPopupAddressUE4, UnsafeEnvironmentPopupHook);
 			DetoursEasy(UnsafeEnvironmentPopupAddressUE5, UnsafeEnvironmentPopupHook);
 
 			DetoursEasy(RequestExitWithStatusAddressUE4, RequestExitWithStatusHook);
 			DetoursEasy(RequestExitWithStatusAddressUE5, RequestExitWithStatusHook);
-		
+		}
 		return true;
 	}
 
@@ -241,11 +243,12 @@ namespace Hooks
 		StaticLoadObject = decltype(StaticLoadObject)(SLOIAdd);
 		printf("\n\n[CARBON] Found StaticLoadObject! \n\n");
 
-		
 		//Process Event Hooking.
-		MH_CreateHook(reinterpret_cast<void*>(ProcessEventAdd), ProcessEventDetour, reinterpret_cast<void**>(&ProcessEvent));
-		MH_EnableHook(reinterpret_cast<void*>(ProcessEventAdd));
-
+		if (gVersion < 19.30f)
+		{
+			MH_CreateHook(reinterpret_cast<void*>(ProcessEventAdd), ProcessEventDetour, reinterpret_cast<void**>(&ProcessEvent));
+			MH_EnableHook(reinterpret_cast<void*>(ProcessEventAdd));
+		}
 		/*
 		//GetViewPoint Hooking.
 		if(gVersion < 16.00f)

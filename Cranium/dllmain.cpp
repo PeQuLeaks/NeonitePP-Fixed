@@ -28,7 +28,7 @@ void dllMain()
 	{
 		if (isReady)
 		{													   //Deprecated
-			if (Hooks::Misc(gVersion))// && Console::Unlock()) //&& ForceSettings())
+			if (Hooks::Misc(gVersion) && Console::Unlock()) //&& ForceSettings())
 			{
 				//ImguiThread();
 				break;

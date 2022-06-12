@@ -66,6 +66,7 @@ enum ECommands
 	SET_MAX_SHIELD,
 	DUMP,
 	DUMPBPS,
+	START_GAME,
 	TEST,
 	LOADBPC,
 	NONE
@@ -84,6 +85,7 @@ auto str2enum(const std::wstring& str)
 	else if (str.starts_with(L"setspeed") || str.starts_with(L"speed")) return SET_SPEED;
 	else if (str.starts_with(L"setplaylist")) return SET_PLAYLIST;
 	else if (str.starts_with(L"respawn")) return RESPAWN;
+	else if (str.starts_with(L"start")) return START_GAME;
 	else if (str.starts_with(L"sethealth")) return SET_HEALTH;
 	else if (str.starts_with(L"setshield")) return SET_SHIELD;
 	else if (str.starts_with(L"setmaxhealth")) return SET_MAX_HEALTH;

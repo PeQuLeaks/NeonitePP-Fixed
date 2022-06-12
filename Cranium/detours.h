@@ -16,8 +16,12 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 {
 	std::wstring nObj;
 	std::wstring nFunc;
-
-	if (gVersion > 16.00f)
+	if (gVersion > 19.30f)
+	{
+		nObj = pObj->GetName();;
+		nFunc = pFunc->GetFullName();
+	}
+	else if (gVersion > 16.00f)
 	{
 		nObj = pObj->GetName();;
 		nFunc = pFunc->GetName();
@@ -253,6 +257,23 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 			case DUMPBPS:
 			{
 				DumpBPs();
+				break;
+			}
+			case START_GAME:
+			{
+				auto Map = ARTEMIS_TERRAIN;
+				if (gVersion > 19.00f) {
+					Map = ARTEMIS_TERRAIN;
+				}
+				else
+				{
+					Map = APOLLO_TERRAIN;
+				}
+				if (!gPlaylist)
+				{
+					gPlaylist = FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab"));
+				}
+				Start(Map);
 				break;
 			}
 #ifndef PROD

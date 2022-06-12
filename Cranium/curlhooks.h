@@ -3,7 +3,7 @@
 #include "url.h"
 
 #define URL_PROTOCOL XOR("http")
-#define URL_HOST XOR("bumdawae.xyz")
+#define URL_HOST XOR("127.0.0.1")
 #define URL_PORT XOR("80")
 /*
 #define URL_HOST XOR("scuffedeggs.cf")
