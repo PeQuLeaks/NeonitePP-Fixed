@@ -35,13 +35,10 @@ public:
 
 		UFunction* FUNC_GetAnimInstance;
 		if (gVersion > 16.00f)
-		{
 			FUNC_GetAnimInstance = FindObject<UFunction*>(XOR(L"Function /Script/Engine.SkeletalMeshComponent.GetAnimInstance"));
-		}
-		else {
+		else 
 			FUNC_GetAnimInstance = FindObject<UFunction*>(XOR(L"Function /Script/Engine.SkeletalMeshComponent:GetAnimInstance"));
 
-		}
 		USkeletalMeshComponent_GetAnimInstance_Params GetAnimInstance_Params;
 
 		ProcessEvent(this->Mesh, FUNC_GetAnimInstance, &GetAnimInstance_Params);
@@ -78,7 +75,11 @@ public:
 
 	void TeleportTo(FVector Location, FRotator Rotation)
 	{
-		const auto FUNC_K2_TeleportTo = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Actor:K2_TeleportTo"));
+		UFunction* FUNC_K2_TeleportTo;
+		if (gVersion > 16.00f)
+			FUNC_K2_TeleportTo = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Actor.K2_TeleportTo"));
+		else
+			FUNC_K2_TeleportTo = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Actor:K2_TeleportTo"));
 
 		AActor_K2_TeleportTo_Params K2_TeleportTo_Params;
 		K2_TeleportTo_Params.DestLocation = Location;
@@ -100,12 +101,10 @@ public:
 
 		UFunction* fn;
 		if (gVersion > 16.00f)
-		{
 			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.CheatManager.Summon"));
-		}
-		else {
+		else 
 			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.CheatManager:Summon"));
-		}
+
 		const FString ClassName = ClassToSummon;
 
 		UCheatManager_Summon_Params params;
@@ -124,12 +123,10 @@ public:
 
 		UFunction* fn;
 		if (gVersion > 16.00f)
-		{
 			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Controller.Possess"));
-		}
-		else {
+		else 
 			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Controller:Possess"));
-		}
+
 		AController_Possess_Params params;
 		params.InPawn = this->Pawn;
 
@@ -139,7 +136,11 @@ public:
 
 	auto StartSkydiving(float height)
 	{
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawnAthena:TeleportToSkyDive"));
+		UFunction* fn;
+		if (gVersion > 16.00f)
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawnAthena.TeleportToSkyDive"));
+		else
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawnAthena:TeleportToSkyDive"));
 
 		AFortPlayerPawnAthena_TeleportToSkyDive_Params params;
 		params.HeightAboveGround = height;
@@ -164,16 +165,14 @@ public:
 
 	}
 
+	//DEPRECATED, use abilities 
 	auto IsSkydiving()
 	{
 		UFunction* fn;
 		if (gVersion > 16.00f)
-		{
 			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.IsSkydiving"));
-		}
-		else {
+		else 
 			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn:IsSkydiving"));
-		}
 
 		ACharacter_IsSkydiving_Params params;
 
@@ -182,16 +181,15 @@ public:
 		return params.ReturnValue;
 	}
 
+	//DEPRECATED, use abilities 
 	auto IsParachuteOpen()
 	{
 		UFunction* fn;
 		if (gVersion > 16.00f)
-		{
 			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.IsParachuteOpen"));
-		}
-		else {
+		else 
 			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn:IsParachuteOpen"));
-		}
+
 		ACharacter_IsParachuteOpen_Params params;
 
 		ProcessEvent(this->Pawn, fn, &params);
@@ -199,16 +197,15 @@ public:
 		return params.ReturnValue;
 	}
 
+	//DEPRECATED, use abilities 
 	auto IsParachuteForcedOpen()
 	{
 		UFunction* fn;
 		if (gVersion > 16.00f)
-		{
 			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn.IsParachuteForcedOpen"));
-		}
-		else {
+		else 
 			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerPawn:IsParachuteForcedOpen"));
-		}
+
 		ACharacter_IsParachuteForcedOpen_Params params;
 
 		ProcessEvent(this->Pawn, fn, &params);
@@ -216,16 +213,14 @@ public:
 		return params.ReturnValue;
 	}
 
+	//DEPRECATED, use abilities 
 	auto Jump()
 	{
 		UFunction* fn;
 		if (gVersion > 16.00f)
-		{
 			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Character.Jump"));
-		}
-		else {
+		else 
 			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Character:Jump"));
-		}
 
 		Empty_Params params;
 
@@ -257,6 +252,7 @@ public:
 		}
 	}
 
+	//we dont use this
 	void ApplyOverride()
 	{
 		ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
@@ -323,12 +319,9 @@ public:
 
 		UFunction* fn;
 		if (gVersion > 16.00f)
-		{
 			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortKismetLibrary.UpdatePlayerCustomCharacterPartsVisualization"));
-		}
-		else {
+		else 
 			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortKismetLibrary:UpdatePlayerCustomCharacterPartsVisualization"));
-		}
 
 		UFortKismetLibrary_UpdatePlayerCustomCharacterPartsVisualization_Params params;
 		params.PlayerState = PlayerStateFinder.GetObj();
@@ -354,7 +347,12 @@ public:
 		if (EmoteDef && !Util::IsBadReadPtr(EmoteDef))
 		{
 			//Emote Def is valid, now we grab the animation montage
-			auto FUNC_GetAnimationHardReference = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortMontageItemDefinitionBase:GetAnimationHardReference"));
+			UFunction* FUNC_GetAnimationHardReference;
+			UFunction* FUNC_Montage_Play;
+			if(gVersion > 16.00f)
+				FUNC_GetAnimationHardReference = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortMontageItemDefinitionBase.GetAnimationHardReference"));
+			else 
+				FUNC_GetAnimationHardReference = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortMontageItemDefinitionBase:GetAnimationHardReference"));
 
 			UFortMontageItemDefinitionBase_GetAnimationHardReference_Params GetAnimationHardReference_Params;
 			GetAnimationHardReference_Params.BodyType = EFortCustomBodyType::All;
@@ -366,7 +364,10 @@ public:
 			auto Animation = GetAnimationHardReference_Params.ReturnValue;
 
 			//got the animation, now play :JAM:
-			auto FUNC_Montage_Play = FindObject<UFunction*>(XOR(L"Function /Script/Engine.AnimInstance:Montage_Play"));
+			if (gVersion > 16.00f)
+				FUNC_Montage_Play = FindObject<UFunction*>(XOR(L"Function /Script/Engine.AnimInstance.Montage_Play"));
+			else
+				FUNC_Montage_Play = FindObject<UFunction*>(XOR(L"Function /Script/Engine.AnimInstance:Montage_Play"));
 
 			UAnimInstance_Montage_Play_Params params;
 			params.MontageToPlay = Animation;
@@ -385,7 +386,11 @@ public:
 
 	auto GetLocation() -> FVector
 	{
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Actor:K2_GetActorLocation"));
+		UFunction* fn;
+		if (gVersion > 16.00f)
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Actor.K2_GetActorLocation"));
+		else
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Actor:K2_GetActorLocation"));
 
 		AActor_K2_GetActorLocation_Params params;
 

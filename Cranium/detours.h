@@ -112,33 +112,6 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		UFunctions::TeleportToCoords(currentLocation.X, currentLocation.Y, currentLocation.Z);
 	}
 
-	if (bIsInit)
-	{
-		if (bWantsToJump)
-		{
-			NeoPlayer.Jump();
-			bWantsToJump = false;
-		}
-
-		else if (bWantsToOpenGlider)
-		{
-			NeoPlayer.ForceOpenParachute();
-			bWantsToOpenGlider = false;
-		}
-
-		else if (bWantsToSkydive)
-		{
-			NeoPlayer.Skydive();
-			bWantsToSkydive = false;
-		}
-
-		else if (bWantsToShowPickaxe)
-		{
-			NeoPlayer.ShowPickaxe();
-			bWantsToShowPickaxe = false;
-		}
-	}
-
 	if (wcsstr(nFunc.c_str(), XOR(L"EnableCheats")))
 	{
 		Console::CheatManager();
