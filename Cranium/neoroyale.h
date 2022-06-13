@@ -196,18 +196,11 @@ namespace NeoRoyale
 				NeoPlayer.Respawn();
 			}
 
-			if(gVersion > 14.60f)
-			{
 				UFunctions::SetPlaylist();
 
 				UFunctions::SetGamePhase();
-			}
-
-			if (gVersion == 14.60f)
-			{
-				UFunctions::LoadAndStreamInLevel(GALACTUS_EVENT_MAP);
-			}
-			else if (gVersion == 12.41f)
+			
+			if (gVersion == 12.41f)
 			{
 				UFunctions::LoadAndStreamInLevel(JERKY_EVENT_MAP);
 			}

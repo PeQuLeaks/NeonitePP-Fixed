@@ -453,7 +453,8 @@ namespace UFunctions
 
 		}
 
-		auto Sequence = FindObject<void*>(AnimationPlayerFullName);
+		auto Sequence = FindObject<UObject*>(AnimationPlayerFullName);
+
 
 		ProcessEvent(Sequence, Play, nullptr);
 	}

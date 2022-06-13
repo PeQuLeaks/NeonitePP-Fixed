@@ -419,7 +419,7 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 			{
 				if (!arg.empty())
 				{
-					auto Playlist = FindObject<UObject*>(ScriptNameW.c_str());
+					auto Playlist = FindObject<UObject*>(arg.c_str());
 					if (Playlist)
 					{
 						gPlaylist = Playlist;
