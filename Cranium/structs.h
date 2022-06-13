@@ -34,6 +34,13 @@ public:
 		return i < Num();
 	}
 
+	inline void Add(T InputData)
+	{
+		Data = (T*)realloc(Data, sizeof(T) * (Count + 1));
+		Data[Count++] = InputData;
+		Max = Count;
+	};
+
 private:
 	T* Data;
 	int32_t Count;
@@ -701,6 +708,21 @@ enum class EGameplayEffectDurationType : uint8_t
 	Infinite,
 	HasDuration,
 	EGameplayEffectDurationType_MAX
+};
+
+struct InventoryPointer
+{
+	UObject* Inventory;
+};
+
+struct QuickBarPointer
+{
+	UObject* QuickBar;
+};
+
+struct FFortItemEntry
+{
+	unsigned char Unk00[0x1A0];
 };
 
 struct FLinearColor

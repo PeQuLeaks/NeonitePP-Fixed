@@ -6,6 +6,8 @@ public:
 	UObject* Controller;
 	UObject* Pawn;
 	UObject* Mesh;
+	UObject* QuickBar;
+	UObject* FortInventory;
 	UObject* AnimInstance;;
 	std::wstring SkinOverride;
 
@@ -671,6 +673,7 @@ public:
 		BP_ApplyGameplayEffectToSelf(*AbilitySystemComponent, GameplayEffectClass);
 	}
 
+	//Give the player all the abilities
 	void SetupAbilities()
 	{
 		GrantAbility(FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Sprint"));
@@ -687,6 +690,135 @@ public:
 		GrantAbility(FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Sliding/GA_Athena_Player_Slide.GA_Athena_Player_Slide_C"));
 		GrantAbility(FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Generic/Traits/DefaultPlayer/GA_DefaultPlayer_InteractUse.GA_DefaultPlayer_InteractUse_C"));
 		GrantAbility(FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Generic/Traits/DefaultPlayer/GA_DefaultPlayer_InteractSearch.GA_DefaultPlayer_InteractSearch_C"));
+	}
 
+	UObject* GetPickaxeDef()
+	{
+		auto CosmeticLoadoutPC = reinterpret_cast<FFortAthenaLoadout*>((uintptr_t)Controller + __int64(ObjectFinder::FindOffset(L"FortPlayerController", L"CosmeticLoadoutPC")));
+		auto Pickaxe = CosmeticLoadoutPC->Pickaxe;
+		auto PickaxeDef = *reinterpret_cast<UObject**>((uintptr_t)Pickaxe + __int64(ObjectFinder::FindOffset(L"AthenaPickaxeItemDefinition", L"WeaponDefinition")));
+		return PickaxeDef;
+	}
+
+	void UpdateInventory()
+	{
+		UFunction* HandleWorldInventoryLocalUpdate;
+		UFunction* HandleInventoryLocalUpdate;
+		UFunction* ClientForceUpdateQuickbar;
+
+		if (gVersion > 16.00f)
+		{
+			HandleWorldInventoryLocalUpdate = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController.HandleWorldInventoryLocalUpdate"));
+			HandleInventoryLocalUpdate = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortInventory.HandleInventoryLocalUpdate"));
+			ClientForceUpdateQuickbar = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController.ClientForceUpdateQuickbar"));
+		}
+		else
+		{
+			HandleWorldInventoryLocalUpdate = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController:HandleWorldInventoryLocalUpdate"));
+			HandleInventoryLocalUpdate = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortInventory:HandleInventoryLocalUpdate"));
+			ClientForceUpdateQuickbar = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController:ClientForceUpdateQuickbar"));
+		}
+
+
+
+
+		ProcessEvent(Controller, HandleWorldInventoryLocalUpdate, nullptr);
+		ProcessEvent(FortInventory, HandleInventoryLocalUpdate, nullptr);
+
+		auto PrimaryQuickbar = EFortQuickBars::Primary;
+		auto SecondaryQuickbar = EFortQuickBars::Secondary;
+
+		ProcessEvent(Controller, ClientForceUpdateQuickbar, &PrimaryQuickbar);
+		ProcessEvent(Controller, ClientForceUpdateQuickbar, &SecondaryQuickbar);
+	}
+
+	void AddItemToInventory(UObject* WeaponID, int Count, bool bAddToQuickBars = false, EFortQuickBars QuickBarType = EFortQuickBars::Max_None, int32_t slot = 0)
+	{
+		if (WeaponID)
+		{
+			UObject* ItemInstance = CreateItem(WeaponID, Count);
+
+			if (ItemInstance)
+			{
+				auto ItemEntry = reinterpret_cast<FFortItemEntry*>(reinterpret_cast<uintptr_t>(ItemInstance) + __int64(ObjectFinder::FindOffset(L"FortWorldItem", L"ItemEntry")));
+				reinterpret_cast<TArray<FFortItemEntry>*>(__int64(FortInventory) + static_cast<__int64>(__int64(ObjectFinder::FindOffset(L"FortInventory", L"Inventory"))) + static_cast<__int64>(ObjectFinder::FindOffset(L"FortItemList", L"ReplicatedEntries")))->Add(*ItemEntry);
+			}
+			UpdateInventory();
+			OnRep_QuickbarEquippedItems();
+		}
+	}
+
+	UObject* CreateTemporaryItemInstanceBP(UObject* ItemDefinition, int Count, int Level)
+	{
+		UFunction* fn;
+		if (gVersion > 16.00f)
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortItemDefinition.CreateTemporaryItemInstanceBP"));
+		else
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortItemDefinition:CreateTemporaryItemInstanceBP"));
+
+		struct
+		{
+			int Count;
+			int Level;
+			UObject* ReturnValue;
+		} Params;
+
+		Params.Count = Count;
+		Params.Level = Level;
+
+		ProcessEvent(ItemDefinition, fn, &Params);
+
+		return Params.ReturnValue;
+	}
+
+	UObject* CreateItem(UObject* ItemDefinition, int Count)
+	{
+		UObject* TemporaryItemInstance = CreateTemporaryItemInstanceBP(ItemDefinition, Count, 1);
+
+		if (TemporaryItemInstance)
+		{
+			SetOwningControllerForTemporaryItem(TemporaryItemInstance, Controller);
+		}
+
+		int* CurrentCount = reinterpret_cast<int*>(__int64(TemporaryItemInstance) + static_cast<__int64>(ObjectFinder::FindOffset(L"FortWorldItem", L"ItemEntry")) + static_cast<__int64>(ObjectFinder::FindOffset(L"FortItemEntry", L"Count")));
+		*CurrentCount = Count;
+
+		return TemporaryItemInstance;
+	}
+
+	void SetOwningControllerForTemporaryItem(UObject* Item, UObject* Controller)
+	{
+		UFunction* fn;
+		if (gVersion > 16.00f)
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortItem.SetOwningControllerForTemporaryItem"));
+		else
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortItem:SetOwningControllerForTemporaryItem"));
+
+		ProcessEvent(Item, fn, &Controller);
+	}
+
+	void OnRep_QuickbarEquippedItems()
+	{
+		auto PlayerState = *reinterpret_cast<UObject**>((uintptr_t)Pawn + __int64(ObjectFinder::FindOffset(L"Pawn", L"PlayerState")));
+		UFunction* fn;
+		if (gVersion > 16.00f)
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerStateZone.OnRep_QuickbarEquippedItems"));
+		else
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerStateZone:OnRep_QuickbarEquippedItems"));
+
+		ProcessEvent(PlayerState, fn, nullptr);
+	}
+
+	//give player items, yes very cool
+	void SetupInventory()
+	{
+		if (!this->Controller || Util::IsBadReadPtr(this->Controller))
+		{
+			UpdatePlayerController();
+		}
+		FortInventory = reinterpret_cast<InventoryPointer*>((uintptr_t)this->Controller + __int64(ObjectFinder::FindOffset(L"FortPlayerController", L"WorldInventory")))->Inventory;
+		QuickBar = reinterpret_cast<QuickBarPointer*>((uintptr_t)this->Controller + __int64(ObjectFinder::FindOffset(L"FortPlayerController", L"ClientQuickBars")))->QuickBar;
+
+		AddItemToInventory(GetPickaxeDef(), 1, true, EFortQuickBars::Primary, 0);
 	}
 };

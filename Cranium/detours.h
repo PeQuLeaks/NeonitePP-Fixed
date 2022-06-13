@@ -94,6 +94,7 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerLoadingScreenDropped")) && bIsInit && bIsStarted)
 	{
 		NeoPlayer.SetupAbilities();
+		NeoPlayer.SetupInventory();
 	}
 
 	//Toggle our fly function on "fly" command.

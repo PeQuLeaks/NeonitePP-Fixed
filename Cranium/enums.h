@@ -362,6 +362,14 @@ enum class EMontagePlayReturnType : uint8_t
 	EMontagePlayReturnType_MAX = 2
 };
 
+enum class EFortQuickBars : uint8_t
+{
+	Primary = 0,
+	Secondary = 1,
+	Max_None = 2,
+	EFortQuickBars_MAX = 3
+};
+
 enum class EFortCustomBodyType : uint8_t
 {
 	NONE = 0,
