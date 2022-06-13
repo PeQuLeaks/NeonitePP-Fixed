@@ -821,4 +821,9 @@ public:
 
 		AddItemToInventory(GetPickaxeDef(), 1, true, EFortQuickBars::Primary, 0);
 	}
+
+	bool IsMatchingGuid(FGuid A, FGuid B)
+	{
+		return A.A == B.A && A.B == B.B && A.C == B.C && A.D == B.D;
+	}
 };

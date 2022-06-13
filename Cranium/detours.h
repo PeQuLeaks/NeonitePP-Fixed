@@ -95,6 +95,43 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 	{
 		NeoPlayer.SetupAbilities();
 		NeoPlayer.SetupInventory();
+		NeoPlayer.ExecuteConsoleCommand(XOR(L"destroyall lodactor"));
+		NeoPlayer.ExecuteConsoleCommand(XOR(L"destroyall fortlodactor"));
+		NeoPlayer.ExecuteConsoleCommand(XOR(L"destroyall fortlodsmactor"));
+
+	}
+	if (wcsstr(nFunc.c_str(), XOR(L"ServerExecuteInventoryItem")))
+	{
+		FGuid* guid = reinterpret_cast<FGuid*>(pParams);
+
+		auto entries = reinterpret_cast<TArray<FFortItemEntry>*>(__int64(NeoPlayer.FortInventory) + __int64(ObjectFinder::FindOffset(L"FortInventory", L"Inventory")) + __int64(ObjectFinder::FindOffset(L"FortItemList", L"ReplicatedEntries")));
+
+		for (int i = 0; i < entries->Num(); i++)
+		{
+			auto entry = entries->operator[](i);
+			auto entryGuid = reinterpret_cast<FGuid*>((uintptr_t)&entry + __int64(ObjectFinder::FindOffset(L"FortItemEntry", L"ItemGuid")));
+
+			if (NeoPlayer.IsMatchingGuid(*entryGuid, *guid))
+			{
+				struct
+				{
+					UObject* WeaponData;
+					FGuid ItemEntryGuid;
+					UObject* ReturnValue;
+				} EquipWeaponDefinitionParams;
+
+				EquipWeaponDefinitionParams.WeaponData = *reinterpret_cast<UObject**>((uintptr_t)&entry + __int64(ObjectFinder::FindOffset(L"FortItemEntry", L"ItemDefinition")));
+				EquipWeaponDefinitionParams.ItemEntryGuid = *guid;
+
+				UFunction* fn;
+				if (gVersion > 16.00f)
+					fn = FindObject<UFunction*>(L"Function /Script/FortniteGame.FortPawn.EquipWeaponDefinition");
+				else
+					fn = FindObject<UFunction*>(L"Function /Script/FortniteGame.FortPawn:EquipWeaponDefinition");
+
+				ProcessEvent((UObject*)NeoPlayer.Pawn, fn, &EquipWeaponDefinitionParams);
+			}
+		}
 	}
 
 	//Toggle our fly function on "fly" command.
