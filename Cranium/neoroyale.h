@@ -105,6 +105,7 @@ namespace NeoRoyale
 		//NOTE (kemo): i know this isn't the best practice but it does the job on another thread so it's not a frezzing call
 		while (true)
 		{
+			/*
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_SPACE))
 			{
 				if (!bHasJumped)
@@ -134,7 +135,7 @@ namespace NeoRoyale
 			else bHasJumped = false;
 
 
-			if (NeoPlayer.Pawn && GetAsyncKeyState(0x31) /* 1 key */)
+			if (NeoPlayer.Pawn && GetAsyncKeyState(0x31) // 1 key )
 			{
 				if (!NeoPlayer.IsInAircraft())
 				{
@@ -147,7 +148,7 @@ namespace NeoRoyale
 				}
 			}
 			else bHasShowedPickaxe = false;
-
+			*/
 
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F3))
 			{
@@ -196,10 +197,11 @@ namespace NeoRoyale
 				NeoPlayer.Respawn();
 			}
 
-				UFunctions::SetPlaylist();
+			UFunctions::SetPlaylist();
 
-				UFunctions::SetGamePhase();
+			UFunctions::SetGamePhase();
 			
+			/*
 			if (gVersion == 12.41f)
 			{
 				UFunctions::LoadAndStreamInLevel(JERKY_EVENT_MAP);
@@ -208,14 +210,14 @@ namespace NeoRoyale
 			{
 				UFunctions::LoadAndStreamInLevel(DEVICE_EVENT_MAP);
 			}
-
+			*/
 			//InitCombos();
 
 			UFunctions::StartMatch();
 
 			UFunctions::ServerReadyToStartMatch();
 
-			CreateThread(nullptr, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Thread), nullptr, NULL, nullptr);
+			//CreateThread(nullptr, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(&Thread), nullptr, NULL, nullptr);
 
 			UFunctions::ConsoleLog(XOR(L"\n\nWelcome to Neonite++\nMade with ♥ By Kemo (@xkem0x on twitter)."));
 

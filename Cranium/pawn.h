@@ -616,4 +616,72 @@ public:
 			printf(XOR("\n[NeoRoyale] Equipped the pickaxe!\n"));
 		}
 	}
+
+	void BP_ApplyGameplayEffectToSelf(UObject* AbilitySystemComponent, UObject* GameplayEffectClass)
+	{
+		UObject* BP_ApplyGameplayEffectToSelf;
+		if (gVersion > 16.00f)
+			BP_ApplyGameplayEffectToSelf = FindObject<UFunction*>(L"Function /Script/GameplayAbilities.AbilitySystemComponent.BP_ApplyGameplayEffectToSelf");
+		else
+			BP_ApplyGameplayEffectToSelf = FindObject<UFunction*>(L"Function /Script/GameplayAbilities.AbilitySystemComponent:BP_ApplyGameplayEffectToSelf");
+
+		struct
+		{
+			UObject* GameplayEffectClass;
+			float Level;
+			FGameplayEffectContextHandle EffectContext;
+			FActiveGameplayEffectHandle ret;
+		} Params;
+
+		Params.EffectContext = FGameplayEffectContextHandle();
+		Params.GameplayEffectClass = GameplayEffectClass;
+		Params.Level = 1.0;
+
+		ProcessEvent(AbilitySystemComponent, BP_ApplyGameplayEffectToSelf, &Params);
+	}
+
+	void GrantAbility(UObject* GameplayAbilityClass)
+	{
+		if (!GameplayAbilityClass) //Not all abilities will exist on all versions, this will check if the abilities actually exist and prevent crashes
+			return; 
+
+		UObject** AbilitySystemComponent = reinterpret_cast<UObject**>(__int64(this->Pawn) + __int64(ObjectFinder::FindOffset(L"FortPawn", L"AbilitySystemComponent")));
+		static UObject* DefaultGameplayEffect = FindObject<UObject*>(L"GE_Athena_PurpleStuff_C /Game/Athena/Items/Consumables/PurpleStuff/GE_Athena_PurpleStuff.Default__GE_Athena_PurpleStuff_C");
+		if (!DefaultGameplayEffect)
+		{
+			DefaultGameplayEffect = FindObject<UObject*>(L"GE_Athena_PurpleStuff_Health_C /Game/Athena/Items/Consumables/PurpleStuff/GE_Athena_PurpleStuff_Health.Default__GE_Athena_PurpleStuff_Health_C");
+		}
+
+		TArray<struct FGameplayAbilitySpecDef>* GrantedAbilities = reinterpret_cast<TArray<struct FGameplayAbilitySpecDef>*>(__int64(DefaultGameplayEffect) + __int64(ObjectFinder::FindOffset(L"GameplayEffect", L"GrantedAbilities")));
+
+		GrantedAbilities->operator[](0).Ability = GameplayAbilityClass;
+
+		*reinterpret_cast<EGameplayEffectDurationType*>(__int64(DefaultGameplayEffect) + __int64(ObjectFinder::FindOffset(L"GameplayEffect", L"DurationPolicy"))) = EGameplayEffectDurationType::Infinite;
+
+		static auto GameplayEffectClass = FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/Items/Consumables/PurpleStuff/GE_Athena_PurpleStuff.GE_Athena_PurpleStuff_C"));
+		if (!GameplayEffectClass)
+		{
+			GameplayEffectClass = FindObject<UClass*>(XOR(L"BlueprintGeneratedClass /Game/Athena/Items/Consumables/PurpleStuff/GE_Athena_PurpleStuff_Health.GE_Athena_PurpleStuff_Health_C"));
+		}
+		BP_ApplyGameplayEffectToSelf(*AbilitySystemComponent, GameplayEffectClass);
+	}
+
+	void SetupAbilities()
+	{
+		GrantAbility(FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Sprint"));
+		GrantAbility(FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Sprint"));
+		GrantAbility(FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_ZiplineSmashBase"));
+		GrantAbility(FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_Crouch"));
+		GrantAbility(FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Athena/DrivableVehicles/GA_AthenaEnterVehicle.GA_AthenaEnterVehicle_C"));
+		GrantAbility(FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Athena/Items/EnvironmentalItems/HidingProps/GA_Athena_HidingProp_JumpOut.GA_Athena_HidingProp_JumpOut_C"));
+		GrantAbility(FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Athena/DrivableVehicles/GA_AthenaExitVehicle.GA_AthenaExitVehicle_C"));
+		GrantAbility(FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Athena/Items/EnvironmentalItems/HidingProps/GA_Athena_HidingProp_Hide.GA_Athena_HidingProp_Hide_C"));
+		GrantAbility(FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_CarryPlayer"));
+		GrantAbility(FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_ZiplineSmashBase"));
+		GrantAbility(FindObject<UObject*>(L"Class /Script/FortniteGame.FortGameplayAbility_OstrichJump"));
+		GrantAbility(FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Sliding/GA_Athena_Player_Slide.GA_Athena_Player_Slide_C"));
+		GrantAbility(FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Generic/Traits/DefaultPlayer/GA_DefaultPlayer_InteractUse.GA_DefaultPlayer_InteractUse_C"));
+		GrantAbility(FindObject<UObject*>(L"BlueprintGeneratedClass /Game/Abilities/Player/Generic/Traits/DefaultPlayer/GA_DefaultPlayer_InteractSearch.GA_DefaultPlayer_InteractSearch_C"));
+
+	}
 };
