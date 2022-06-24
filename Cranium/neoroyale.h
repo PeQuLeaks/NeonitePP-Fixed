@@ -105,36 +105,15 @@ namespace NeoRoyale
 		//NOTE (kemo): i know this isn't the best practice but it does the job on another thread so it's not a frezzing call
 		while (true)
 		{
-			/*
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_SPACE))
 			{
-				if (!bHasJumped)
+				if (!NeoPlayer.IsInAircraft())
 				{
-					bHasJumped = !bHasJumped;
-					if (!NeoPlayer.IsInAircraft())
-					{
-						if (NeoPlayer.IsSkydiving() && !NeoPlayer.IsParachuteOpen() && !NeoPlayer.IsParachuteForcedOpen())
-						{
-							bWantsToOpenGlider = true;
-						}
-
-
-						else if (NeoPlayer.IsSkydiving() && NeoPlayer.IsParachuteOpen() && !NeoPlayer.IsParachuteForcedOpen())
-						{
-							bWantsToSkydive = true;
-						}
-
-
-						else if (!NeoPlayer.IsJumpProvidingForce())
-						{
-							bWantsToJump = true;
-						}
-					}
+					NeoPlayer.StopMontageIfEmote();
 				}
 			}
-			else bHasJumped = false;
 
-
+			/*
 			if (NeoPlayer.Pawn && GetAsyncKeyState(0x31) // 1 key )
 			{
 				if (!NeoPlayer.IsInAircraft())
@@ -149,6 +128,11 @@ namespace NeoRoyale
 			}
 			else bHasShowedPickaxe = false;
 			*/
+			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F6))
+			{
+				auto emote = FindObject<UObject*>(L"EID_Banana");
+				NeoPlayer.Emote(emote);
+			}
 
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F3))
 			{
@@ -199,7 +183,7 @@ namespace NeoRoyale
 
 			UFunctions::SetGamePhase();
 			
-			/*
+			
 			if (gVersion == 12.41f)
 			{
 				UFunctions::LoadAndStreamInLevel(JERKY_EVENT_MAP);
@@ -208,7 +192,15 @@ namespace NeoRoyale
 			{
 				UFunctions::LoadAndStreamInLevel(DEVICE_EVENT_MAP);
 			}
-			*/
+			else if (gVersion == 17.30f)
+			{
+				UFunctions::LoadAndStreamInLevel(RIFT_TOUR_EVENT_MAP);
+			}
+			if (gVersion == 17.60f)
+			{
+				UFunctions::LoadAndStreamInLevel(RIFT_TOUR_EVENT_MAP);
+			}
+			
 			//InitCombos();
 
 			UFunctions::StartMatch();

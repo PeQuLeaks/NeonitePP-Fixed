@@ -25,10 +25,8 @@ namespace Hooks
 		CurlEasyAddress = Util::FindPatternAV(Patterns::Curl::CurlEasySetOpt.first, Patterns::Curl::CurlEasySetOpt.second);
 		if (!CurlEasyAddress)
 		{
-			CurlEasyAddress = Util::FindPatternAV(Patterns::Curl::CurlEasySetOpt.first, Patterns::Curl::CurlEasySetOpt.second);
+			CurlEasyAddress = Util::FindPatternCh1(Patterns::Curl::CurlEasySetOpt.first, Patterns::Curl::CurlEasySetOpt.second);
 			printf("\n[CARBON] GAME VERSION NOT SUPPORTED.... FALLING BACK TO SAFE STATE!\n");
-			printf("\n[CARBON] GAME VERSION NOT SUPPORTED.... FALLING BACK TO SAFE STATE!\n");
-			printf("\n[CARBON] GAME VERSION NOT SUPPORTED.... FALLING BACK TO SAFE STATE!\n\n");
 			VALIDATE_ADDRESS(CurlEasyAddress, "Curl Pattern Failed.");
 		}
 
@@ -92,7 +90,7 @@ namespace Hooks
 		printf("\n\n[CARBON] Found GObjs! \n\n");
 
 		//FNameToString
-		if (gVersion > 16.60f)
+		if (gVersion > 17.60f)
 		{
 			auto FNameToStringAdd = Util::FindByString(FNAMETOSTRING_STRINGREF, { CALL }, true, 1);
 			if (!FNameToStringAdd)
@@ -102,6 +100,12 @@ namespace Hooks
 			}
 			FNameToString = decltype(FNameToString)(FNameToStringAdd);
 			printf("\n\n[CARBON] Found FNameToString! \n\n");
+		}
+		else if (gVersion > 16.60f)
+		{
+			auto FNameToStringAdd = Util::FindPattern(Patterns::New::FNameToString, Masks::New::FNameToString);
+			VALIDATE_ADDRESS(FNameToStringAdd, XOR("Failed to find FNameToString Address."));
+			FNameToString = decltype(FNameToString)(FNameToStringAdd);
 		}
 
 		//GEngine Hook
@@ -160,27 +164,7 @@ namespace Hooks
 		}
 
 		//Used for getting UObjects names.
-		//Tested from 12.41 to latest
-		if (gVersion >= 16.00f)
-		{
-			auto GONIAdd = Util::FindPattern(Patterns::New::GONI, Masks::New::GONI);
-			VALIDATE_ADDRESS(GONIAdd, XOR("Failed to find GetObjectName Address."));
 
-			int32_t offset = *(int32_t*)(GONIAdd + 1);
-			auto fnAddress = GONIAdd + 5 + offset;
-
-			GetObjectNameInternal = decltype(GetObjectNameInternal)(fnAddress);
-			printf("\n\n[CARBON] Found GetObjectNameInternal! \n\n");
-
-		}
-		else
-		{
-			auto GONIAdd = Util::FindPattern(Patterns::bGlobal::GONI, Masks::bGlobal::GONI);
-			VALIDATE_ADDRESS(GONIAdd, XOR("Failed to find GetObjectName Address."));
-
-			GetObjectNameInternal = decltype(GetObjectNameInternal)(GONIAdd);
-			printf("\n\n[CARBON] Found GetObjectNameInternal! \n\n");
-		}
 
 		//Used for getting UObjects full names.
 		if (gVersion < 16.00f)
@@ -210,6 +194,15 @@ namespace Hooks
 		GetFullName = decltype(GetFullName)(GetFullNameAdd);
 		printf("\n\n[CARBON] Found GetFullName! \n\n");
 
+		//Tested from 12.41 to latest
+		if(gVersion < 16.00f)
+		{
+			auto GONIAdd = Util::FindPattern(Patterns::bGlobal::GONI, Masks::bGlobal::GONI);
+			VALIDATE_ADDRESS(GONIAdd, XOR("Failed to find GetObjectName Address."));
+
+			GetObjectNameInternal = decltype(GetObjectNameInternal)(GONIAdd);
+			printf("\n\n[CARBON] Found GetObjectNameInternal! \n\n");
+		}
 		//Used to free the memory for names.
 		if (gVersion > 16.30f)
 		{

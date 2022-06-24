@@ -37,8 +37,6 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 	if (gUrl.find(XOR("matchmakingservice")) != std::string::npos)
 	{
 		printf(XOR("\n\n[NeoRoyale] Start!"));
-		gPlaylist = nullptr;
-
 		//TODO: clean this mess;
 		std::string url = gUrl;
 		gUrl.clear();
@@ -96,9 +94,12 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		NeoPlayer.SetupAbilities();
 		NeoPlayer.SetupInventory();
 		NeoPlayer.ExecuteConsoleCommand(XOR(L"destroyall lodactor"));
+		NeoPlayer.ExecuteConsoleCommand(XOR(L"destroyall volume"));
 		NeoPlayer.ExecuteConsoleCommand(XOR(L"destroyall fortlodactor"));
 		NeoPlayer.ExecuteConsoleCommand(XOR(L"destroyall fortlodsmactor"));
-
+		NeoPlayer.ServerSetClientHasFinishedLoading();
+		if(gVersion > 17.90f)
+			NeoPlayer.StartSkydiving(500.0f);
 	}
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerExecuteInventoryItem")))
 	{
@@ -166,6 +167,14 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 			UFunctions::DestoryActor(OldWeapon);
 			OldWeapon = nullptr;
 		}
+	}
+
+	if (wcsstr(nFunc.c_str(), XOR(L"ServerReturnToMainMenu")))
+	{
+		auto CheatManager = reinterpret_cast<UObject**>((uintptr_t)NeoPlayer.Controller + __int64(ObjectFinder::FindOffset(L"PlayerController", L"CheatManager")));
+		*CheatManager = nullptr;
+		Sleep(500);
+		UFunctions::Travel(L"Frontend?Game=/Script/FortniteGame.FortGameModeFrontEnd");
 	}
 
 	if (wcsstr(nFunc.c_str(), XOR(L"BP_OnDeactivated")) && wcsstr(nObj.c_str(), XOR(L"PickerOverlay_EmoteWheel")))
@@ -316,6 +325,18 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 				{
 					UFunctions::Play(DEVICE_EVENT_PLAYER);
 				}
+				else if (gVersion == 17.30f)
+				{
+					UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
+				}
+				else if (gVersion == 17.60f)
+				{
+					UFunctions::Play(KIWI_EVENT_PLAYER);
+				}
+				else if (gVersion == 18.40f)
+				{
+					UFunctions::Play(GUAVA_EVENT_PLAYER);
+				}
 				else
 				{
 					UFunctions::ConsoleLog(XOR(L"Sorry the version you are using doesn't have any event we support."));
@@ -329,11 +350,56 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 				break;
 			}
 
+			/*
+				if (!arg.empty())
+	{
+		NeoPlayer.EquipWeapon(arg.c_str());
+	}
+	else
+	{
+		UFunctions::ConsoleLog(XOR(L"This command requires an argument"));
+	}
+	break;*/
 			case EQUIP:
 			{
+				if (gVersion < 18.00f)
+				{
+					if (!arg.empty())
+					{
+						NeoPlayer.EquipWeapon(arg.c_str());
+					}
+					else
+					{
+						UFunctions::ConsoleLog(XOR(L"This command requires an argument"));
+					}
+				}
+				else {
+					if (!arg.empty())
+					{
+						if (arg.starts_with(XOR(L"WID_")) || arg.starts_with(XOR(L"AGID_")))
+						{
+							std::wstring name = arg + L"." + arg;
+							auto WeaponData = FindObject<UObject*>(name.c_str(), true);
+
+							NeoPlayer.AddItemToInventory(WeaponData, 1);
+						}
+						else
+						{
+							UFunctions::ConsoleLog(XOR(L"This command only works with WIDs and AGIDs."));
+						}
+					}
+					else
+					{
+						UFunctions::ConsoleLog(XOR(L"This command requires an argument"));
+					}
+				}
 				if (!arg.empty())
 				{
-					NeoPlayer.EquipWeapon(arg.c_str());
+					std::wstring name = arg + L"." + arg;
+					std::wcout << name;
+
+					auto WeaponData = FindObject<UObject*>(name.c_str(), true);
+					NeoPlayer.AddItemToInventory(WeaponData, 1);
 				}
 				else
 				{
@@ -502,7 +568,7 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		!wcsstr(nFunc.c_str(), L"GetAbilityTargetingLevel") &&
 		!wcsstr(nFunc.c_str(), L"ReadyToEndMatch"))
 	{
-		printf(XOR("[Object]: %ws [Function]: %ws [Class]: %ws\n"), nObj.c_str(), nFunc.c_str(), GetObjectFullName(static_cast<UObject*>(pObj)->Class).c_str());
+		printf(XOR("[Object]: %ws [Function]: %ws\n"), nObj.c_str(), nFunc.c_str());
 	}
 #endif
 

@@ -12,13 +12,18 @@
 #define GALACTUS_EVENT_MAP XOR(L"Junior_Map")
 #define JERKY_EVENT_MAP XOR(L"JerkySequenceMap")
 #define DEVICE_EVENT_MAP XOR(L"FritterSequenceLevel")
+#define RIFT_TOUR_EVENT_MAP XOR(L"Buffet_P")
 
 #define GALACTUS_EVENT_PLAYER XOR(L"LevelSequencePlayer /Junior/Levels/Junior_Map.Junior_Map:PersistentLevel.Junior_Master_Rep_2.AnimationPlayer")
 #define JERKY_EVENT_PLAYER XOR(L"LevelSequencePlayer /CycloneJerky/Levels/JerkySequenceMap_LevelInstance_1.JerkySequenceMap:PersistentLevel.Jerky.AnimationPlayer")
 #define DEVICE_EVENT_PLAYER XOR(L"LevelSequencePlayer /Fritter/Level/FritterSequenceLevel_LevelInstance_1.FritterSequenceLevel:PersistentLevel.Fritter_2.AnimationPlayer")
+#define RIFT_TOUR_EVENT_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_P.Buffet_P.PersistentLevel.Buffet_Master_3.AnimationPlayer")
+#define KIWI_EVENT_PLAYER XOR(L"LevelSequencePlayer /Kiwi/Levels/Kiwi_P.Kiwi_P.PersistentLevel.Kiwi_Master.AnimationPlayer")
+#define GUAVA_EVENT_PLAYER XOR(L"LevelSequencePlayer /Guava/Levels/Guava_Persistent.Guava_Persistent.PersistentLevel.Guava_Rep_Master_2.AnimationPlayer")
 
 
 constexpr auto FNAMETOSTRING_STRINGREF = L"%s %s SetTimer passed a negative or zero time. The associated timer may fail to be created/fire! If using InitialStartDelayVariance, be sure it is smaller than (Time + InitialStartDelay).";
+constexpr auto PROCESSEVENT_STRINGREF = L"UMeshNetworkComponent::ProcessEvent: Invalid mesh network node type: %s";
 
 #define GObjects_G "49 63 C8 48 8D 14 40 48 8B 05 ? ? ? ? 48 8B 0C C8 48 8D 04 D1" //10
 #define FNTS_C1 "48 89 5C 24 ? 57 48 83 EC 30 83 79 04 00 48 8B DA 48 8B F9"
@@ -36,10 +41,11 @@ cheatscript skydive | skydiving - Puts you in a skydive with deploy at 500m abov
 cheatscript equip <WID | AGID> - Equips a weapon / pickaxe.
 cheatscript setgravity <NewGravityScaleFloat> - Changes the gravity scale.
 cheatscript speed | setspeed <NewCharacterSpeedMultiplier> - Changes the movement speed multiplier.
-cheatscript setplaylist <Playlist> - Overrides the current playlist.
+cheatscript setplaylist <Playlist> - Overrides the current playlist, you can use this in the lobby to use a custom playlist.
 cheatscript respawn - Respawns the player (duh)
 cheatscript sethealth <NewHealthFloat> - Changes your health value.
 cheatscript setshield <NewShieldFloat> - Changes your shield value.
+cheatscript start - Starts a new game on Battle Royale map with Battlelab gamemode.
 cheatscript setmaxhealth <NewMaxHealthFloat> - Changes your max health value.
 cheatscript setmaxshield <newMaxShieldFloat> - Changes your max shield value.
 cheatscript dump - Dumps a list of all GObjects.
@@ -149,7 +155,7 @@ namespace Patterns
 	{
 		constexpr const char* GEngine = "\x48\x89\x05\x00\x00\x00\x00\x48\x85\xF6\x74\x08\x48\x8B\xCE\xE8";
 		constexpr const char* GONI = "\xE8\x00\x00\x00\x00\x8B\x4D\xB8\x48\x8B\x5D\xB0\x85\xC9";
-		constexpr const char* FNameToString = "\x75\x28\x48\x8B\xD3\xE8\x00\x00\x00\x00";
+		constexpr const char* FNameToString = "\x48\x89\x5C\x24\x00\x48\x89\x74\x24\x00\x55\x57\x41\x56\x48\x8D\xAC\x24\x00\x00\x00\x00\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4\x48\x89\x85\x00\x00\x00\x00\x45\x33\xF6\x48\x8B\xF2\x44\x39\x71\x04\x0F\x85\x00\x00\x00\x00\x8B\x19\x0F\xB7\xFB\xE8\x00\x00\x00\x00\x8B\xCB\x48\x8D\x54\x24\x00\x48\xC1\xE9\x10\x8D\x1C\x3F\x48\x03\x5C\xC8\x00\x48\x8B\xCB\xF6\x03\x01\x0F\x85\x00\x00\x00\x00\xE8\x00\x00\x00\x00";
 		constexpr const char* ProcessEvent = "\x75\x00\x4c\x8b\xc5\x48\x8b\xd7\x48\x8b\xcb\xe8\x00\x00\x00\x00\x48\x8b\x5c\x24";
 	}
 
@@ -251,6 +257,7 @@ namespace Masks
 	{
 		constexpr const char* GEngine = "xxx????xxxxxxxxx";
 		constexpr const char* GONI = "x????xxxxxxxxx";
+		constexpr const char* FNameToString = "xxxx?xxxx?xxxxxxxx????xxx????xxx????xxxxxx????xxxxxxxxxxxx????xxxxxx????xxxxxx?xxxxxxxxxxx?xxxxxxxx????x????";
 	}
 }
 

@@ -445,13 +445,9 @@ namespace UFunctions
 	{
 		UFunction* Play;
 		if (gVersion > 16.00f)
-		{
 			Play = FindObject<UFunction*>(XOR(L"Function /Script/MovieScene.MovieSceneSequencePlayer.Play"));
-		}
-		else {
+		else 
 			Play = FindObject<UFunction*>(XOR(L"Function /Script/MovieScene.MovieSceneSequencePlayer:Play"));
-
-		}
 
 		auto Sequence = FindObject<UObject*>(AnimationPlayerFullName);
 
@@ -484,8 +480,11 @@ namespace UFunctions
 
 	inline void DestoryActor(UObject* actor)
 	{
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Actor:K2_DestroyActor"));
-
+		UFunction* fn;
+		if(gVersion > 16.00f)
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Actor.K2_DestroyActor"));
+		else 
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.Actor:K2_DestroyActor"));
 		ProcessEvent(actor, fn, nullptr);
 	}
 

@@ -71,6 +71,7 @@ public:
 				this->Possess();
 				this->ShowSkin();
 				this->UpdateAnimInstance();
+				this->UpdatePlayerController();
 			}
 		}
 	}
@@ -164,6 +165,56 @@ public:
 
 	auto StopMontageIfEmote()
 	{
+		{
+			if (!this->Mesh || !this->AnimInstance || !Util::IsBadReadPtr(this->Mesh) || !Util::IsBadReadPtr(this->AnimInstance))
+			{
+				this->UpdateMesh();
+				this->UpdateAnimInstance();
+			}
+
+			UFunction* FUNC_GetCurrentActiveMontage;
+			if (gVersion > 16.00f)
+				FUNC_GetCurrentActiveMontage = FindObject<UFunction*>(XOR(L"Function /Script/Engine.AnimInstance.GetCurrentActiveMontage"));
+			else
+				FUNC_GetCurrentActiveMontage = FindObject<UFunction*>(XOR(L"Function /Script/Engine.AnimInstance:GetCurrentActiveMontage"));
+
+			UAnimInstance_GetCurrentActiveMontage_Params GetCurrentActiveMontage_Params;
+
+			ProcessEvent(this->AnimInstance, FUNC_GetCurrentActiveMontage, &GetCurrentActiveMontage_Params);
+
+			auto CurrentPlayingMontage = GetCurrentActiveMontage_Params.ReturnValue;
+
+			if (CurrentPlayingMontage && CurrentPlayingMontage->GetName().starts_with(XOR(L"Emote_")))
+			{
+				UFunction* FUNC_Montage_Stop;
+				if (gVersion > 16.00f)
+					FUNC_Montage_Stop = FindObject<UFunction*>(XOR(L"Function /Script/Engine.AnimInstance.Montage_Stop"));
+				else
+					FUNC_Montage_Stop = FindObject<UFunction*>(XOR(L"Function /Script/Engine.AnimInstance:Montage_Stop"));
+
+				UAnimInstance_Montage_Stop_Params Montage_Stop_Params;
+				Montage_Stop_Params.InBlendOutTime = 0;
+				Montage_Stop_Params.Montage = CurrentPlayingMontage;
+
+				ProcessEvent(this->AnimInstance, FUNC_Montage_Stop, &Montage_Stop_Params);
+			}
+		}
+	}
+
+	auto ServerSetClientHasFinishedLoading()
+	{
+		UFunction* ServerSetClientHasFinishedLoading;
+		if (gVersion > 16.00f)
+			ServerSetClientHasFinishedLoading = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController.ServerSetClientHasFinishedLoading"));
+		else
+			ServerSetClientHasFinishedLoading = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController:ServerSetClientHasFinishedLoading"));
+
+		bool HasFinishedLoading = true;
+
+		ProcessEvent(this->Controller, ServerSetClientHasFinishedLoading, &HasFinishedLoading);
+
+		auto bHasServerFinishedLoading = reinterpret_cast<bool*>(reinterpret_cast<uintptr_t>(this->Controller) + __int64(ObjectFinder::FindOffset(L"FortPlayerController", L"bHasServerFinishedLoading")));
+		*bHasServerFinishedLoading = true;
 
 	}
 
@@ -591,7 +642,12 @@ public:
 			UpdatePlayerController();
 		}
 
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController:IsInAircraft"));
+		UFunction* fn;
+		if (gVersion > 16.00f)
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController.IsInAircraft"));
+		else
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController:IsInAircraft"));
+
 		ACharacter_IsInAircraft_Params params;
 
 		ProcessEvent(this->Controller, fn, &params);
@@ -719,9 +775,6 @@ public:
 			ClientForceUpdateQuickbar = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController:ClientForceUpdateQuickbar"));
 		}
 
-
-
-
 		ProcessEvent(Controller, HandleWorldInventoryLocalUpdate, nullptr);
 		ProcessEvent(FortInventory, HandleInventoryLocalUpdate, nullptr);
 
@@ -820,6 +873,23 @@ public:
 		QuickBar = reinterpret_cast<QuickBarPointer*>((uintptr_t)this->Controller + __int64(ObjectFinder::FindOffset(L"FortPlayerController", L"ClientQuickBars")))->QuickBar;
 
 		AddItemToInventory(GetPickaxeDef(), 1, true, EFortQuickBars::Primary, 0);
+		if (gVersion > 17.70f) //crashes on sub 18, dk why
+		{
+			AddItemToInventory(FindObject<UObject*>(L"FortBuildingItemDefinition /Game/Items/Weapons/BuildingTools/BuildingItemData_Wall.BuildingItemData_Wall"), 1);
+			AddItemToInventory(FindObject<UObject*>(L"FortBuildingItemDefinition /Game/Items/Weapons/BuildingTools/BuildingItemData_Floor.BuildingItemData_Floor"), 1);
+			AddItemToInventory(FindObject<UObject*>(L"FortBuildingItemDefinition /Game/Items/Weapons/BuildingTools/BuildingItemData_Stair_W.BuildingItemData_Stair_W"), 1);
+			AddItemToInventory(FindObject<UObject*>(L"FortBuildingItemDefinition /Game/Items/Weapons/BuildingTools/BuildingItemData_RoofS.BuildingItemData_RoofS"), 1);
+			AddItemToInventory(FindObject<UObject*>(L"FortResourceItemDefinition /Game/Items/ResourcePickups/WoodItemData.WoodItemData"), 999);
+			AddItemToInventory(FindObject<UObject*>(L"FortResourceItemDefinition /Game/Items/ResourcePickups/StoneItemData.StoneItemData"), 999);
+			AddItemToInventory(FindObject<UObject*>(L"FortResourceItemDefinition /Game/Items/ResourcePickups/MetalItemData.MetalItemData"), 999);
+			AddItemToInventory(FindObject<UObject*>(L"FortAmmoItemDefinition /Game/Items/Ammo/AmmoDataEnergyCell.AmmoDataEnergyCell"), 999);
+			AddItemToInventory(FindObject<UObject*>(L"FortAmmoItemDefinition /Game/Items/Ammo/AmmoDataExplosive.AmmoDataExplosive"), 999);
+			AddItemToInventory(FindObject<UObject*>(L"FortAmmoItemDefinition /Game/Items/Ammo/AmmoDataShells.AmmoDataShells"), 999);
+			AddItemToInventory(FindObject<UObject*>(L"FortAmmoItemDefinition /Game/Items/Ammo/AmmoDataBulletsMedium.AmmoDataBulletsMedium"), 999);
+			AddItemToInventory(FindObject<UObject*>(L"FortAmmoItemDefinition /Game/Items/Ammo/AmmoDataBulletsLight.AmmoDataBulletsLight"), 999);
+			AddItemToInventory(FindObject<UObject*>(L"FortAmmoItemDefinition /Game/Items/Ammo/AmmoDataBulletsHeavy.AmmoDataBulletsHeavy"), 999);
+			AddItemToInventory(FindObject<UObject*>(L"FortAmmoItemDefinition /Game/Athena/Items/Ammo/AmmoInfinite_NoIcon.AmmoInfinite_NoIcon"), 999);
+		}
 	}
 
 	bool IsMatchingGuid(FGuid A, FGuid B)
