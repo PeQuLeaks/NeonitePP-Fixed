@@ -329,7 +329,7 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 				{
 					UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
 				}
-				else if (gVersion == 17.60f)
+				else if (gVersion == 17.50f)
 				{
 					UFunctions::Play(KIWI_EVENT_PLAYER);
 				}
