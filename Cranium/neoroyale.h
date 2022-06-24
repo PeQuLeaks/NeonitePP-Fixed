@@ -130,8 +130,7 @@ namespace NeoRoyale
 			*/
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F6))
 			{
-				auto emote = FindObject<UObject*>(L"EID_Banana");
-				NeoPlayer.Emote(emote);
+
 			}
 
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F3))
