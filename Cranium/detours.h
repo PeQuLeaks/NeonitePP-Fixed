@@ -131,6 +131,7 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 					fn = FindObject<UFunction*>(L"Function /Script/FortniteGame.FortPawn:EquipWeaponDefinition");
 
 				ProcessEvent((UObject*)NeoPlayer.Pawn, fn, &EquipWeaponDefinitionParams);
+				NeoPlayer.StopMontageIfEmote();
 			}
 		}
 	}
@@ -366,7 +367,14 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 				{
 					if (!arg.empty())
 					{
-						NeoPlayer.EquipWeapon(arg.c_str());
+						if (arg.starts_with(XOR(L"WID_")) || arg.starts_with(XOR(L"AGID_")))
+						{
+							NeoPlayer.EquipWeapon(arg.c_str());
+						}
+						else
+						{
+							UFunctions::ConsoleLog(XOR(L"This command only works with WIDs and AGIDs."));
+						}
 					}
 					else
 					{

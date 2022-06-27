@@ -209,41 +209,84 @@ static T FindObject(wchar_t const* name, bool ends_with = false, bool to_lower =
 
 inline void DumpGObjects()
 {
-	std::wofstream log("GObjects.log");
-
-	for (auto i = 0x0; i < GObjs->NumElements; ++i)
+	if (gVersion > 16.00f)
 	{
-		auto object = GObjs->GetByIndex(i);
-		if (object == nullptr)
+		std::wofstream log("GObjects.log");
+
+		for (auto i = 0x0; i < GObjs->NumElements; ++i)
 		{
-			continue;
+			auto object = GObjs->GetByIndex(i);
+			if (object == nullptr)
+			{
+				continue;
+			}
+			std::wstring className = object->Class->GetFullName();
+			std::wstring objectName = object->GetFullName();
+			std::wstring item = L"\n[" + std::to_wstring(i) + L"] Object:[" + objectName + L"] Class:[" + className +
+				L"]\n";
+			log << item;
 		}
-		std::wstring className = GetObjectName(static_cast<UObject*>(object->Class)).c_str();
-		std::wstring objectName = GetObjectFullName(object).c_str();
-		std::wstring item = L"\n[" + std::to_wstring(i) + L"] Object:[" + objectName + L"] Class:[" + className + L"]\n";
-		log << item;
 	}
-	log.flush();
+	else {
+		std::wofstream log("GObjects.log");
+
+		for (auto i = 0x0; i < GObjs->NumElements; ++i)
+		{
+			auto object = GObjs->GetByIndex(i);
+			if (object == nullptr)
+			{
+				continue;
+			}
+			std::wstring className = GetObjectName(static_cast<UObject*>(object->Class)).c_str();
+			std::wstring objectName = GetObjectFullName(object).c_str();
+			std::wstring item = L"\n[" + std::to_wstring(i) + L"] Object:[" + objectName + L"] Class:[" + className + L"]\n";
+			log << item;
+		}
+		log.flush();
+	}
 }
 
 inline void DumpBPs()
 {
-	std::wofstream log("Blueprints.log");
-	for (auto i = 0x0; i < GObjs->NumElements; ++i)
+	if (gVersion > 16.00f)
 	{
-		auto object = GObjs->GetByIndex(i);
-		if (object == nullptr)
+		std::wofstream log("Blueprints.log");
+		for (auto i = 0x0; i < GObjs->NumElements; ++i)
 		{
-			continue;
-		}
+			auto object = GObjs->GetByIndex(i);
+			if (object == nullptr)
+			{
+				continue;
+			}
 
-		auto ClassName = GetObjectFirstName(object->Class);
+			auto ClassName = object->Class->GetName();
 
-		if (ClassName == XOR(L"BlueprintGeneratedClass"))
-		{
-			auto objectNameW = GetObjectFirstName(object);
-			log << objectNameW + L"\n";
+			if (ClassName == XOR(L"BlueprintGeneratedClass"))
+			{
+				auto objectNameW = object->GetName();
+				log << objectNameW + L"\n";
+			}
 		}
+		log.flush();
 	}
-	log.flush();
+	else {
+		std::wofstream log("Blueprints.log");
+		for (auto i = 0x0; i < GObjs->NumElements; ++i)
+		{
+			auto object = GObjs->GetByIndex(i);
+			if (object == nullptr)
+			{
+				continue;
+			}
+
+			auto ClassName = GetObjectFirstName(object->Class);
+
+			if (ClassName == XOR(L"BlueprintGeneratedClass"))
+			{
+				auto objectNameW = GetObjectFirstName(object);
+				log << objectNameW + L"\n";
+			}
+		}
+		log.flush();
+	}
 }

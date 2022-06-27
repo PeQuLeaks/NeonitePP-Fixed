@@ -454,7 +454,14 @@ struct AFortPawn_EquipWeaponDefinition_Params
 {
 	UObject* WeaponData;
 	FGuid ItemEntryGuid;
+	float Durability;
 	UObject* ReturnValue;
+};
+
+struct PickupActor_Params
+{
+	UObject* PickupTarget;
+	UObject* PlacementDecoItemDefinition;
 };
 
 struct AFortPawn_OnWeaponEquipped_Params

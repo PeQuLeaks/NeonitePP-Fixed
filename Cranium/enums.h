@@ -11,6 +11,8 @@
 
 #define GALACTUS_EVENT_MAP XOR(L"Junior_Map")
 #define JERKY_EVENT_MAP XOR(L"JerkySequenceMap")
+#define JERKY_LOADER_MAP XOR(L"JerkyLoaderLevel")
+
 #define DEVICE_EVENT_MAP XOR(L"FritterSequenceLevel")
 #define RIFT_TOUR_EVENT_MAP XOR(L"Buffet_P")
 

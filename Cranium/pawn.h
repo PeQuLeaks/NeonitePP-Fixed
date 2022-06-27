@@ -383,9 +383,74 @@ public:
 		printf(XOR("\n[NeoRoyale] Character Parts should be visible now!.\n"));
 	}
 
+	auto PickupActor(UObject* PlacementDecoItemDefinition, UObject* PickupTarget = nullptr)
+	{
+		UFunction* fn;
+		if (gVersion > 16.00f)
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn.PickUpActor"));
+		else
+			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn:PickUpActor"));
+
+		PickupActor_Params params;
+		params.PickupTarget = PickupTarget;
+		params.PlacementDecoItemDefinition = PlacementDecoItemDefinition;
+
+		ProcessEvent(this->Pawn, fn, &params);
+	}
+
 	auto EquipWeapon(const wchar_t* weaponname, int guid = rand())
 	{
+		FGuid GUID;
+		GUID.A = guid;
+		GUID.B = guid;
+		GUID.C = guid;
+		GUID.D = guid;
 
+		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPawn.EquipWeaponDefinition"));
+
+		std::wstring WeaponName = weaponname;
+
+		std::wstring name = WeaponName + L"." + WeaponName;
+
+		auto WeaponData = FindObject<UObject*>(name.c_str(), true);
+
+		if (WeaponData && !Util::IsBadReadPtr(WeaponData))
+		{
+			std::wstring objectName = WeaponData->GetFullName();
+
+			if (objectName.starts_with(L"FortWeapon") || objectName.starts_with(L"AthenaGadget") || objectName.starts_with(L"FortPlayset"))
+			{
+				if (objectName.starts_with(L"AthenaGadget"))
+				{
+					auto FUN_weapondef = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortGadgetItemDefinition.GetWeaponItemDefinition"));
+
+					UFortGadgetItemDefinition_GetWeaponItemDefinition_Params prm_ReturnValue;
+
+					ProcessEvent(WeaponData, FUN_weapondef, &prm_ReturnValue);
+
+					if (prm_ReturnValue.ReturnValue && !Util::IsBadReadPtr(prm_ReturnValue.ReturnValue))
+					{
+						WeaponData = prm_ReturnValue.ReturnValue;
+					}
+				}
+
+				//weapon found equip it
+				AFortPawn_EquipWeaponDefinition_Params params;
+				params.WeaponData = WeaponData;
+				params.ItemEntryGuid = GUID;
+				params.Durability = 3232.0000;
+
+				//ProcessEvent(this->Pawn, fn, &params);
+			}
+			else if (objectName.starts_with(L"FortTrap"))
+			{
+				this->PickupActor(WeaponData);
+			}
+		}
+		else
+		{
+			MessageBoxA(nullptr, XOR("This item doesn't exist!"), XOR("Carbon"), MB_OK);
+		}
 	}
 
 	auto Emote(UObject* EmoteDef)

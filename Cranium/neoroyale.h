@@ -105,14 +105,6 @@ namespace NeoRoyale
 		//NOTE (kemo): i know this isn't the best practice but it does the job on another thread so it's not a frezzing call
 		while (true)
 		{
-			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_SPACE))
-			{
-				if (!NeoPlayer.IsInAircraft())
-				{
-					NeoPlayer.StopMontageIfEmote();
-				}
-			}
-
 			/*
 			if (NeoPlayer.Pawn && GetAsyncKeyState(0x31) // 1 key )
 			{
@@ -190,14 +182,6 @@ namespace NeoRoyale
 			else if (gVersion == 12.61f)
 			{
 				UFunctions::LoadAndStreamInLevel(DEVICE_EVENT_MAP);
-			}
-			else if (gVersion == 17.30f)
-			{
-				UFunctions::LoadAndStreamInLevel(RIFT_TOUR_EVENT_MAP);
-			}
-			if (gVersion == 17.60f)
-			{
-				UFunctions::LoadAndStreamInLevel(RIFT_TOUR_EVENT_MAP);
 			}
 			
 			//InitCombos();
