@@ -91,7 +91,7 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		if (bIsDebugCamera) bIsDebugCamera = !bIsDebugCamera;
 	}
 
-	if (wcsstr(nFunc.c_str(), XOR(L"RecieveBeginPlay")) && wcsstr(nObj.c_str(), XOR(L"BP_Buffet_Memories_BigPlayer_C")) && !bSpecialEvent1)
+	if (wcsstr(nFunc.c_str(), XOR(L"ReceiveBeginPlay")) && wcsstr(nObj.c_str(), XOR(L"BP_Buffet_Memories_BigPlayer_C")) && !bSpecialEvent1)
 	{
 		MessageBoxA(nullptr, XOR("Called a special function!"), XOR("Carbon"), MB_OK);
 	}
@@ -589,6 +589,8 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 	if (!wcsstr(nFunc.c_str(), L"EvaluateGraphExposedInputs") &&
 		!wcsstr(nFunc.c_str(), L"Tick") &&
 		!wcsstr(nFunc.c_str(), L"SetCurrentFocalLength") &&
+		!wcsstr(nFunc.c_str(), L"On Quantization Event") &&
+		!wcsstr(nFunc.c_str(), L"OnClockQuantizationEvent") &&
 		!wcsstr(nFunc.c_str(), L"ClientMessage") &&
 		!wcsstr(nFunc.c_str(), L"ClientPlayForceFeedback_Internal") &&
 		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_1") &&
