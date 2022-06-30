@@ -149,11 +149,11 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 
 			if (BeginTabBar(XOR("Neonite")), ImGuiTabBarFlags_AutoSelectNewTabs)
 			{
-				if (NeoPlayer.Pawn)
+				//if (!NeoPlayer.Pawn)
 				{
 					if (BeginTabItem("World"))
 					{
-
+						static char Travel[1024];
 						static int timeOfDay = 1;
 						static int currentTimeOfDay = 1;
 
@@ -166,23 +166,40 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 
 						NewLine();
 
-						if (Button(XOR("Teleport to Spawn Island")))
-						{
-							UFunctions::TeleportToSpawn();
-						}
-
 						SameLine(0.0f, 20.0f);
-						if (Button(XOR("Teleport to Main Island")))
+
+
+						NewLine();
+
+						//Puts you back to the lobby, get destroyed kid
+						if (Button(XOR("Lobby")))
 						{
-							UFunctions::TeleportToMain();
+							UFunctions::Travel(FRONTEND);
+							bIsStarted = false;
+							bIsInit = false;
+							NeoPlayer.Controller = nullptr;
+							NeoPlayer.Pawn = nullptr;
+							NeoPlayer.Mesh = nullptr;
+							NeoPlayer.AnimInstance = nullptr;
+							Bots.clear();
+							gPlaylist = nullptr;
+							gNeoniteLogoTexture = nullptr;
 						}
 
-						if (Button(XOR("Pulse Zeropoint")))
+						/*
+						NewLine();
+						InputText(XOR("Map"), Travel, sizeof Travel);
+						SameLine();
+						if (Button("Travel"))
 						{
-							const auto zp = FindObject<UObject*>(XOR(L"BP_ZeroPoint_Destabalize_RWs_C /Game/Athena/Apollo/Maps/Apollo_FX.Apollo_FX:PersistentLevel.BP_ZeroPoint_Destabalize_RWs_2"));
-							const auto fn = FindObject<UFunction*>(XOR(L"Function /Game/Athena/Environments/Nexus/Blueprints/BP_ZeroPoint_Destabalize_RWs.BP_ZeroPoint_Destabalize_RWs_C:Pulse"));
-							ProcessEvent(zp, fn, nullptr);
+							std::string TravelS(Travel);
+							std::wstring TravelW(TravelS.begin(), TravelS.end());
+							//Console::ExecuteConsoleCommand(coammndW.c_str());
+							Start(TravelW.c_str());
 						}
+						*/
+
+
 
 						static float X = 1.0f;
 						static float Y = 1.0f;
@@ -205,24 +222,21 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 
 						SameLine(0.0f, 18.0f);
 
-						if (Button(XOR("Teleport")))
+						/*if (Button(XOR("Teleport")))
 						{
-							UFunctions::TeleportToCoords(X, Y, Z);
-						}
+							NeoPlayer.TeleportTo(FVector(X, Y, Z);
+						}*/
 
-						NewLine();
-
+						/*NewLine();
 						if (Button("Fill level with water"))
 						{
-							NeoPlayer.Summon(XOR(L"Apollo_Waterbody_Ocean_Parent_C"));
+							//NeoPlayer.Summon(XOR(L"Apollo_Waterbody_Ocean_Parent_C"));
 						}
-
 						SameLine();
-
 						if (Button("Remove water"))
 						{
-							NeoPlayer.ExecuteConsoleCommand(XOR(L"destroyall Apollo_Waterbody_Ocean_Parent_C"));
-						}
+							Console::ExecuteConsoleCommand(XOR(L"destroyall Apollo_Waterbody_Ocean_Parent_C"));
+						}*/
 
 						EndChild();
 
@@ -256,6 +270,11 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 							NeoPlayer.Respawn();
 						}
 
+						if (Button("Possess"))
+						{
+							NeoPlayer.Possess();
+						}
+
 						if (Button("Pick Custom Body Texture"))
 						{
 							fileDialog.Open();
@@ -266,6 +285,22 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						Checkbox(XOR("Head"), &bIsHead);
 
 						NewLine();
+
+						/*if (Button(XOR("First Person Camera")))
+						{
+							NeoPlayer.SetCameraMode(L"FirstPerson");
+							NeoPlayer.HideHead(true);
+						}
+
+						SameLine();
+
+						if (Button(XOR("Third Person Camera")))
+						{
+							NeoPlayer.SetCameraMode(L"FreeCam");
+							NeoPlayer.HideHead(false);
+						}
+
+						NewLine();*/
 
 						static int currentHealth = 100;
 						static int currentShield = 100;
@@ -353,6 +388,7 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						static std::wstring currentItem;
 						static std::wstring currentBlueprint;
 						static std::wstring currentMesh;
+						static char command[1024];
 
 						Text(XOR("Any item selected from the combos below will be copied to your clipboard, everything is generated at runtime."));
 
@@ -367,7 +403,8 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 								if (Selectable(wid.c_str(), is_selected))
 								{
 									currentItem = gWeapons[n];
-									Util::CopyToClipboard(wid);
+									std::string commandS = "cheatscript equip " + wid;
+									strcpy(command, commandS.c_str());
 								}
 								if (is_selected)
 								{
@@ -386,7 +423,8 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 								if (Selectable(blueprint.c_str(), is_selected))
 								{
 									currentBlueprint = gBlueprints[n];
-									Util::CopyToClipboard(blueprint);
+									std::string commandS = "cheatscript summon " + blueprint;
+									strcpy(command, commandS.c_str());
 								}
 								if (is_selected)
 								{
@@ -422,24 +460,27 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 
 						NewLine();
 
-						if (Button("Bots Grenade"))
+						InputText(XOR("NeoCommand"), command, sizeof command);
+
+						SameLine();
+
+						if (Button("Execute"))
 						{
-							Util::CopyToClipboard("WID_Athena_FrenchYedoc_JWFriendly");
+							std::string commandS(command);
+							std::wstring coammndW(commandS.begin(), commandS.end());
+							NeoPlayer.ExecuteConsoleCommand(coammndW.c_str());
 						}
 
 						EndTabItem();
 					}
-				}
 
-				if (!NeoPlayer.Pawn)
-				{
 					if (BeginTabItem(XOR("Override Skin")))
 					{
 						SetCursorPosY(GetCursorPosY() + 5);
 
 						Text(XOR("NOTE: Doesn't work after jumping from bus\n(Recommendation: use battlelab)"));
 
-						const char* overrides[] = {"None", "Thanos", "Chituari"};
+						const char* overrides[] = { "None", "Thanos", "Chituari" };
 						static int Item = 0;
 						static int currentItem = 0;
 						Combo("Skin", &Item, overrides, IM_ARRAYSIZE(overrides));
@@ -451,9 +492,125 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 							currentItem = Item;
 						}
 
+						NewLine();
+
+						if (Button("Pick Custom Body Texture"))
+						{
+							fileDialog.Open();
+						}
+
+						SameLine();
+
+						Checkbox(XOR("Head"), &bIsHead);
+
 						EndTabItem();
 					}
 				}
+				if (gVersion == 17.30f) {
+					if (BeginTabItem("Rift Tour"))
+					{
+						Text("To teleport to the Event maps type this in the console:");
+
+						Text("Main Rift Tour Map - streammap Buffet_P");
+						Text("Rift Tour Cuddle Map - streammap Buffet_Part5");
+						Text("Rift Tour Storm King Map - streammap Buffet_Part_6");
+						Text("Rift Tour Stairs Map - streammap Buffet_Escher");
+						Text("Rift Tour Positions Map - streammap Buffet_Shard");
+						Text("Rift Tour Clouds Map - streammap Buffet_Clouds");
+
+						NewLine();
+						Text("Start event sequences");
+						if (Button(XOR("Start Rift Tour Event")))
+						{
+							UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
+						}
+						Text("This Sequence can only be started from the Main Sky Fire Map");
+						if (Button(XOR("Start Rift Tour Cuddle")))
+						{
+							UFunctions::Play(RIFT_TOUR_CUDDLE_PLAYER);
+						}
+						if (Button(XOR("Start Rift Tour Storm King")))
+						{
+							UFunctions::Play(RIFT_TOUR_STORMKING_PLAYER);
+						}
+						if (Button(XOR("Start Rift Tour Clouds")))
+						{
+							UFunctions::Play(RIFT_TOUR_CLOUDS_PLAYER);
+						}
+						if (Button(XOR("Start Rift Tour Stairs")))
+						{
+							UFunctions::Play(RIFT_TOUR_STAIRS_PLAYER);
+						}
+						if (Button(XOR("Start Rift Tour Positions")))
+						{
+							UFunctions::Play(RIFT_TOUR_POSITIONS_PLAYER);
+						}
+						/*if (Button(XOR("Map Streaming")))
+						{
+							UFunctions::StartBuffet();
+						}*/
+						EndTabItem();
+
+					}
+				}
+				else if (gVersion == 17.50f) {
+					if (BeginTabItem("SkyFire"))
+					{
+						Text("To teleport to the Event maps type this in the console:");
+
+						Text("Main SkyFire Map - streammap Kiwi_P");
+						Text("SkyFire Space Map - streammap Kiwi_Space");
+						Text("SkyFire Observation Hallway map - streammap Kiwi_ObservationHallway");
+						Text("SkyFire Prison Junction Map - streammap Kiwi_PrisonJunction");
+						Text("SkyFire Prison Blocks Map - streammap Kiwi_PrisonBlocks");
+						Text("SkyFire Hangar Map - streammap Kiwi_Hangar");
+						Text("SkyFire Kevin Room Map - streammap Kiwi_KevinRoom");
+
+						NewLine();
+						Text("Start event sequences");
+						if (Button(XOR("Start Sky Fire Event")))
+						{
+							UFunctions::Play(KIWI_EVENT_PLAYER);
+						}
+						Text("This Sequence can only be started from the Main Sky Fire Map");
+						EndTabItem();
+
+					}
+				}
+				else if (gVersion == 18.40f) {
+
+
+					if (BeginTabItem("The End"))
+					{
+						Text("To teleport to the Event maps type this in the console:");
+
+						Text("Main The End Map - streammap Guava_Persistent");
+						Text("The End Bridge Map - streammap Guava_Bridge");
+						Text("The End Swim Map - streammap Guava_Breach");
+
+						NewLine();
+						Text("Start event sequences:");
+						if (Button(XOR("Start The End Event")))
+						{
+							UFunctions::Play(GUAVA_EVENT_PLAYER);
+						}
+						Text("This Sequence can only be started from the Main The End Map");
+
+						if (Button(XOR("Start The End Cutscene")))
+						{
+							UFunctions::Play(GUAVA_PRESHOW_PLAYER);
+						}
+
+						NewLine();
+						if (Button(XOR("Teleport to The Bridge Location")))
+						{
+							NeoPlayer.ExecuteConsoleCommand(XOR(L"bugitgo -2500 12000 550"));
+						}
+						EndTabItem();
+
+					}
+				}
+
 
 				if (BeginTabItem("Help"))
 				{
@@ -463,20 +620,20 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						R"(
 Commands
 ---------------------------
-cheatscript event - Triggers the event for your version (e.g. Junior, Jerky, Flatter).
-cheatscript debugcamera - Toggles a custom version of the debug camera.
-cheatscript skydive | skydiving - Puts you in a skydive with deploy at 1500m above the ground.
-cheatscript equip <WID | AGID> - Equips a weapon / pickaxe. (You can get them from the modifers tap)
-cheatscript setgravity <NewGravityScaleFloat> - Changes the gravity scale.
-cheatscript speed | setspeed <NewCharacterSpeedMultiplier> - Changes the movement speed multiplier.
-cheatscript setplaylist <Playlist> - Overrides the current playlist.
-cheatscript respawn - Respawns the player (duh)
-cheatscript sethealth <NewHealthFloat> - Changes your health value.
-cheatscript setshield <NewShieldFloat> - Changes your shield value.
-cheatscript setmaxhealth <NewMaxHealthFloat> - Changes your max health value.
-cheatscript setmaxshield <newMaxShieldFloat> - Changes your max shield value.
-cheatscript dump - Dumps a list of all GObjects. (output at win64 folder)
-cheatscript dumpbps - Dumps a list all blueprints. (output at win64 folder)
+event - Triggers the event for your version (e.g. Junior, Jerky, Flatter).
+debugcamera - Toggles a custom version of the debug camera.
+skydive | skydiving - Puts you in a skydive with deploy at 1500m above the ground.
+equip <WID | AGID> - Equips a weapon / pickaxe. (You can get them from the modifers tap)
+setgravity <NewGravityScaleFloat> - Changes the gravity scale.
+speed | setspeed <NewCharacterSpeedMultiplier> - Changes the movement speed multiplier.
+setplaylist <Playlist> - Overrides the current playlist.
+respawn - Respawns the player (duh)
+sethealth <NewHealthFloat> - Changes your health value.
+setshield <NewShieldFloat> - Changes your shield value.
+setmaxhealth <NewMaxHealthFloat> - Changes your max health value.
+setmaxshield <newMaxShieldFloat> - Changes your max shield value.
+dump - Dumps a list of all GObjects. (output at win64 folder)
+dumpbps - Dumps a list all blueprints. (output at win64 folder)
 fly - Toggles flying.
 enablecheats - Enables cheatmanager.
 summon <BlueprintClass> - Summons a blueprint class. (You can get them from the helpers tap)
@@ -486,7 +643,7 @@ F3 - Back to lobby.
 <> - Argument (e.g: <NewHealthFloat> is replaced with 1.0).
 | - Or.
 )");
-
+					NewLine();
 
 					EndTabItem();
 				}
@@ -497,29 +654,22 @@ F3 - Back to lobby.
 					SetCursorPosX(GetCursorPosX() + 50);
 					SetCursorPosY(GetCursorPosY() + 5);
 
-					Text(XOR("Kemo (@xkem0x): Developer and mantainer of Neonite++"));
+					Text(XOR("Kemo (@xkem0x): Creator of Neonite++."));
 
 					SetCursorPosX(GetCursorPosX() + 50);
 					SetCursorPosY(GetCursorPosY() + 5);
 
-					Text(XOR("Sammy (@madSammy): Frontend, Internal, General."));
+					Text(XOR("Sizzy (@sizzyxx): Reviving NPP."));
 
 					SetCursorPosX(GetCursorPosX() + 50);
 					SetCursorPosY(GetCursorPosY() + 5);
 
-					Text(XOR("Taj (@AthenaBigBoi): Internal, General."));
+					Text(XOR("PeQU (@ImPeQu): General, Event related stuff, bug fixes"));
 
 					SetCursorPosX(GetCursorPosX() + 50);
 					SetCursorPosY(GetCursorPosY() + 5);
 
-					Text(XOR("Nyamimi (@nyameows): Internal, General."));
-
-					SetCursorPosX(GetCursorPosX() + 50);
-					SetCursorPosY(GetCursorPosY() + 5);
-
-					Text(XOR("Irma (@omairma): Frontend, Internal."));
-
-					EndTabItem();
+					Text(XOR("Timmy (@mawmet): General, Creator of Carbon, bug fixes"));
 				}
 			}
 			End();
@@ -528,7 +678,7 @@ F3 - Back to lobby.
 
 			if (fileDialog.HasSelected())
 			{
-				UFunctions::SetBodyCustomTextureFromPng(fileDialog.GetSelected().wstring().c_str(), bIsHead);
+
 				fileDialog.ClearSelected();
 				fileDialog.Close();
 			}

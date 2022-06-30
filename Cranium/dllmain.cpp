@@ -30,7 +30,7 @@ void dllMain()
 		{													//Deprecated
 			if (Hooks::Misc(gVersion) && Console::Unlock()) //&& ForceSettings())
 			{
-				//ImguiThread();
+				ImguiThread();
 				break;
 			}
 		}

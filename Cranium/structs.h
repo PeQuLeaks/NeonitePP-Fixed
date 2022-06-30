@@ -302,6 +302,14 @@ struct SpawnObjectParams
 	UObject* ReturnValue;
 };
 
+struct FLoadNextBuffetLevel
+{
+	int PhaseIndex; 
+	char unreflected_4; 
+	FString CallFuncConvIntToStringReturnValue;
+	FString CallFuncConcatStrStrReturnValue; 
+};
+
 struct UFunction : UStruct
 {
 	int32_t FunctionFlags;

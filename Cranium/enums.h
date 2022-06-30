@@ -15,6 +15,8 @@
 
 #define DEVICE_EVENT_MAP XOR(L"FritterSequenceLevel")
 #define RIFT_TOUR_EVENT_MAP XOR(L"Buffet_P")
+#define KIWI_EVENT_MAP XOR(L"Kiwi_P")
+#define GUAVA_EVENT_MAP XOR(L"Guava_P")
 
 #define GALACTUS_EVENT_PLAYER XOR(L"LevelSequencePlayer /Junior/Levels/Junior_Map.Junior_Map:PersistentLevel.Junior_Master_Rep_2.AnimationPlayer")
 #define JERKY_EVENT_PLAYER XOR(L"LevelSequencePlayer /CycloneJerky/Levels/JerkySequenceMap_LevelInstance_1.JerkySequenceMap:PersistentLevel.Jerky.AnimationPlayer")
@@ -22,6 +24,12 @@
 #define RIFT_TOUR_EVENT_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_P.Buffet_P.PersistentLevel.Buffet_Master_3.AnimationPlayer")
 #define KIWI_EVENT_PLAYER XOR(L"LevelSequencePlayer /Kiwi/Levels/Kiwi_P.Kiwi_P.PersistentLevel.Kiwi_Master.AnimationPlayer")
 #define GUAVA_EVENT_PLAYER XOR(L"LevelSequencePlayer /Guava/Levels/Guava_Persistent.Guava_Persistent.PersistentLevel.Guava_Rep_Master_2.AnimationPlayer")
+#define GUAVA_PRESHOW_PLAYER XOR(L"LevelSequencePlayer /GuavaPlaylist/Sequences/Guava_Preshow.Default__Guava_Preshow_C.AnimationPlayer")
+#define RIFT_TOUR_CUDDLE_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_Part5.Buffet_Part5.PersistentLevel.Buffet_Master_2.AnimationPlayer")
+#define RIFT_TOUR_STORMKING_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_Part_6.Buffet_Part_6.PersistentLevel.BeatSync_Phase5Test_2.AnimationPlayer")
+#define RIFT_TOUR_STAIRS_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_Escher.Buffet_Escher.PersistentLevel.Buffet_Animation_Escher_2.AnimationPlayer")
+#define RIFT_TOUR_POSITIONS_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_Shard.Buffet_Shard.PersistentLevel.Buffet_Animation_Shards_2.AnimationPlayer")
+#define RIFT_TOUR_CLOUDS_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_Cloud.Buffet_Cloud.PersistentLevel.Buffet_Master.AnimationPlayer")
 
 
 constexpr auto FNAMETOSTRING_STRINGREF = L"%s %s SetTimer passed a negative or zero time. The associated timer may fail to be created/fire! If using InitialStartDelayVariance, be sure it is smaller than (Time + InitialStartDelay).";

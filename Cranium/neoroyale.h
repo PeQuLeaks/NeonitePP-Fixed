@@ -135,6 +135,14 @@ namespace NeoRoyale
 		}
 	}
 
+	/*inline void StartBuffet()
+	{
+		auto BP_Buffet_Master_Scripting_C = FindObject<UObject*>(XOR(L"BP_Buffet_Master_Scripting_C /Buffet/Levels/Buffet_P.Buffet_P.PersistentLevel.BP_Event_Master_Scripting_2"));
+		auto startevent = FindObject<UFunction*>(XOR(L"Function /Buffet/Gameplay/Blueprints/BP_Buffet_Master_Scripting.BP_Buffet_Master_Scripting_C.startevent"));
+
+		ProcessEvent(BP_Buffet_Master_Scripting_C, startevent, nullptr);
+	}*/
+
 	inline void Init()
 	{
 		Console::CheatManager();

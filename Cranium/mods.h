@@ -256,6 +256,19 @@ namespace UFunctions
 		printf(XOR("\n[NeoRoyale] Server is now ready to start match!\n"));
 	}
 
+	inline void StartBuffet()
+	{
+		auto BP_Buffet_Master_Scripting_C = FindObject<UObject*>(XOR(L"BP_Buffet_Master_Scripting_C /Buffet/Levels/Buffet_P.Buffet_P.PersistentLevel.BP_Event_Master_Scripting_2"));
+		auto LoadNextBuffetLevel = FindObject<UFunction*>(XOR(L"Function /Buffet/Gameplay/Blueprints/BP_Buffet_Master_Scripting.BP_Buffet_Master_Scripting_C.LoadNextBuffetLevel"));
+
+		FLoadNextBuffetLevel Params;
+		/*Params.CallFuncConcatStrStrReturnValue = false;
+		Params.CallFuncConvIntToStringReturnValue = false;
+		Params.PhaseIndex = false;*/
+
+		ProcessEvent(BP_Buffet_Master_Scripting_C, LoadNextBuffetLevel, &Params);
+	}
+
 	inline void SetPlaylist()
 	{
 		ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));

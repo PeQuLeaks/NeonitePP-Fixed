@@ -11,6 +11,8 @@ using namespace NeoRoyale;
 
 inline bool bIsDebugCamera;
 inline bool bIsFlying;
+inline bool bSpecialEvent1 = false;
+inline bool bSpecialEvent2 = false;
 
 inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 {
@@ -65,6 +67,18 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		{
 			Map = APOLLO_TERRAIN_YOGURT;
 		}
+		if (PlaylistNameW.find(XOR(L"kiwi")) != std::string::npos && !gPlaylist)
+		{
+			Map = KIWI_EVENT_MAP;
+		}
+		if (PlaylistNameW.find(XOR(L"buffet")) != std::string::npos && !gPlaylist)
+		{
+			Map = RIFT_TOUR_EVENT_MAP;
+		}
+		if (PlaylistNameW.find(XOR(L"guava")) != std::string::npos && !gPlaylist)
+		{
+			Map = GUAVA_EVENT_MAP;
+		}
 		if (Playlist && !gPlaylist)
 		{
 			gPlaylist = Playlist;
@@ -100,6 +114,29 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		NeoPlayer.ServerSetClientHasFinishedLoading();
 		if(gVersion > 17.90f)
 			NeoPlayer.StartSkydiving(500.0f);
+	}
+	if (gVersion == 17.30f)
+	{
+		if (wcsstr(nFunc.c_str(), XOR(L"CameraFade")) && wcsstr(nObj.c_str(), XOR(L"GA_Buffet_Door_Pull_Real_C")) && !bSpecialEvent1)
+		{
+			MessageBoxA(nullptr, XOR("Teleporting to Buffet_Part_3"), XOR("Carbon"), MB_OK);
+			NeoPlayer.ExecuteConsoleCommand(XOR(L"bugitgo -5000 0 360000"));
+		}
+
+		if (wcsstr(nFunc.c_str(), XOR(L"OnCreated")) && wcsstr(nObj.c_str(), XOR(L"SequenceDirector_C")))
+		{
+			MessageBoxA(nullptr, XOR("Event Start Detected - Setting demospeed to 1"), XOR("Carbon"), MB_OK);
+			NeoPlayer.ExecuteConsoleCommand(XOR(L"demospeed 1"));
+		}
+
+		if (wcsstr(nFunc.c_str(), XOR(L"OnQuantizationEvent")) && wcsstr(nObj.c_str(), XOR(L"BP_BeatSync_Brain_2")) && !bSpecialEvent2)
+		{
+			MessageBoxA(nullptr, XOR("Teleporting to Slide, fixing camera"), XOR("Carbon"), MB_OK);
+			NeoPlayer.ExecuteConsoleCommand(XOR(L"camera freecam"));
+			NeoPlayer.Possess();
+			NeoPlayer.ExecuteConsoleCommand(XOR(L"bugitgo -15000 -200000 85000"));
+
+		}
 	}
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerExecuteInventoryItem")))
 	{
@@ -142,6 +179,7 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		NeoPlayer.Fly(bIsFlying);
 		bIsFlying = !bIsFlying;
 	}
+
 
 	// NOTE: (irma) This is better.
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerAttemptAircraftJump")))
@@ -329,6 +367,10 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 				else if (gVersion == 17.30f)
 				{
 					UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
+					NeoPlayer.ExecuteConsoleCommand(XOR(L"demospeed 200"));
+					NeoPlayer.ExecuteConsoleCommand(XOR(L"bugitgo 0 0 35000"));
+					NeoPlayer.Fly(bIsFlying);
+					bIsFlying = !bIsFlying;
 				}
 				else if (gVersion == 17.50f)
 				{
@@ -554,27 +596,51 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 			}
 		}
 	}
-
-#ifdef LOGGING
+#ifndef LOGGING
 	//Logging
 	if (!wcsstr(nFunc.c_str(), L"EvaluateGraphExposedInputs") &&
 		!wcsstr(nFunc.c_str(), L"Tick") &&
+		!wcsstr(nFunc.c_str(), L"OnLanded") &&
+		!wcsstr(nFunc.c_str(), L"HandleLanded") &&
+		!wcsstr(nFunc.c_str(), L"K2_OnEndAbility") &&
+		!wcsstr(nFunc.c_str(), L"OnEndJumping") &&
+		!wcsstr(nFunc.c_str(), L"OnBeginFalling") &&
+		!wcsstr(nFunc.c_str(), L"CanJumpInternal") &&
+		!wcsstr(nFunc.c_str(), L"SetSequenceTime") &&
+		!wcsstr(nFunc.c_str(), L"SetFieldOfView") &&
+		!wcsstr(nFunc.c_str(), L"SetBloomScale") &&
+		!wcsstr(nFunc.c_str(), L"SetIntensity") &&
+		!wcsstr(nFunc.c_str(), L"SetInitialized") &&
+		!wcsstr(nFunc.c_str(), L"SetDisableMasterCompressor") &&
+		!wcsstr(nFunc.c_str(), L"BlueprintGetInteractionTime") &&
+		!wcsstr(nFunc.c_str(), L"UpdateStateEvent") &&
+		!wcsstr(nFunc.c_str(), L"Update") &&
+		!wcsstr(nFunc.c_str(), L"ServerTouchActiveTime") &&
 		!wcsstr(nFunc.c_str(), L"OnSubmixEnvelope") &&
 		!wcsstr(nFunc.c_str(), L"OnSubmixSpectralAnalysis") &&
 		!wcsstr(nFunc.c_str(), L"OnMouse") &&
 		!wcsstr(nFunc.c_str(), L"Pulse") &&
+		!wcsstr(nFunc.c_str(), L"BlueprintModifyPostProcess") &&
+		!wcsstr(nFunc.c_str(), L"Play Ambient Audio") &&
+		!wcsstr(nFunc.c_str(), L"GameplayCue") &&
+		!wcsstr(nFunc.c_str(), L"NetMulticast_InvokeGameplayCueExecuted_FromSpec") &&
+		!wcsstr(nFunc.c_str(), L"TIMER VISUALS__UpdateFunc") &&
 		!wcsstr(nFunc.c_str(), L"BlueprintUpdateAnimation") &&
 		!wcsstr(nFunc.c_str(), L"BlueprintPostEvaluateAnimation") &&
 		!wcsstr(nFunc.c_str(), L"BlueprintModifyCamera") &&
 		!wcsstr(nFunc.c_str(), L"BlueprintModifyPostProcess") &&
 		!wcsstr(nFunc.c_str(), L"Loop Animation Curve") &&
-		!wcsstr(nFunc.c_str(), L"UpdateTime") &&
+		!wcsstr(nFunc.c_str(), L"UpdateTime")&&
 		!wcsstr(nFunc.c_str(), L"GetMutatorByClass") &&
 		!wcsstr(nFunc.c_str(), L"UpdatePreviousPositionAndVelocity") &&
 		!wcsstr(nFunc.c_str(), L"IsCachedIsProjectileWeapon") &&
 		!wcsstr(nFunc.c_str(), L"LockOn") &&
 		!wcsstr(nFunc.c_str(), L"GetAbilityTargetingLevel") &&
+		!wcsstr(nFunc.c_str(), L"ServerFireAIDirectorEvent") &&
+		!wcsstr(nFunc.c_str(), L"BP_UpdateMessaging") &&
+		!wcsstr(nFunc.c_str(), L"BindVolumeEvents") &&
 		!wcsstr(nFunc.c_str(), L"ReadyToEndMatch"))
+
 	{
 		printf(XOR("[Object]: %ws [Function]: %ws\n"), nObj.c_str(), nFunc.c_str());
 	}
