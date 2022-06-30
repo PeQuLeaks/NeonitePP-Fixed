@@ -101,7 +101,7 @@ namespace Hooks
 			FNameToString = decltype(FNameToString)(FNameToStringAdd);
 			printf("\n\n[CARBON] Found FNameToString! \n\n");
 		}
-		else if (gVersion > 16.60f)
+		else if (gVersion > 16.00f)
 		{
 			auto FNameToStringAdd = Util::FindPattern(Patterns::New::FNameToString, Masks::New::FNameToString);
 			VALIDATE_ADDRESS(FNameToStringAdd, XOR("Failed to find FNameToString Address."));

@@ -15,6 +15,7 @@
 
 #define DEVICE_EVENT_MAP XOR(L"FritterSequenceLevel")
 #define RIFT_TOUR_EVENT_MAP XOR(L"Buffet_P")
+#define RIFT_TOUR_BUBBLES_MAP XOR(L"Buffet_Bubbles")
 #define KIWI_EVENT_MAP XOR(L"Kiwi_P")
 #define GUAVA_EVENT_MAP XOR(L"Guava_P")
 

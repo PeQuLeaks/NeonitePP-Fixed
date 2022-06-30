@@ -41,7 +41,7 @@ namespace KismetFunctions
 			KismetStringLibrary = FindObject<UObject*>(XOR(L"KismetStringLibrary /Script/Engine.Default__KismetStringLibrary"));
 		}
 
-		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.KismetStringLibrary:Conv_StringToName"));
+		auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.KismetStringLibrary.Conv_StringToName"));
 
 		UKismetStringLibrary_Conv_StringToName_Params params;
 		params.inString = String;

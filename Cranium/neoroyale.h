@@ -123,6 +123,26 @@ namespace NeoRoyale
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F6))
 			{
 
+				ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
+				ObjectFinder GameViewPortClientFinder = EngineFinder.Find(XOR(L"GameViewport"));
+				ObjectFinder WorldFinder = GameViewPortClientFinder.Find(XOR(L"World"));
+				
+				auto Default__GameplayStatics = FindObject<UObject*>(L"GameplayStatics /Script/Engine.Default__GameplayStatics");
+				auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.GameplayStatics.LoadStreamLevel"));
+				
+				FName map = KismetFunctions::GetFName(RIFT_TOUR_BUBBLES_MAP);
+
+				FLatentActionInfo LatentInfo{};
+				
+				UGameplayStatics_LoadStreamLevel_Params params;
+				params.WorldContextObject = WorldFinder.GetObj();
+				params.LevelName = map;
+				params.bMakeVisibleAfterLoad = true;
+				params.bShouldBlockOnLoad = true;
+				params.LatentInfo = LatentInfo;
+				//MessageBoxA(nullptr, XOR("Called a special function!"), XOR("Carbon"), MB_OK);
+				
+				ProcessEvent(Default__GameplayStatics, fn, &params);
 			}
 
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F3))
