@@ -11,8 +11,8 @@ using namespace NeoRoyale;
 
 inline bool bIsDebugCamera;
 inline bool bIsFlying;
-inline bool bSpecialEvent1 = false;
-inline bool bSpecialEvent2 = false;
+inline bool bSpecialEvent1 = false; //make it so that you can't use the special event 1 more than once per match
+
 
 inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 {
@@ -67,18 +67,6 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		{
 			Map = APOLLO_TERRAIN_YOGURT;
 		}
-		if (PlaylistNameW.find(XOR(L"kiwi")) != std::string::npos && !gPlaylist)
-		{
-			Map = KIWI_EVENT_MAP;
-		}
-		if (PlaylistNameW.find(XOR(L"buffet")) != std::string::npos && !gPlaylist)
-		{
-			Map = RIFT_TOUR_EVENT_MAP;
-		}
-		if (PlaylistNameW.find(XOR(L"guava")) != std::string::npos && !gPlaylist)
-		{
-			Map = GUAVA_EVENT_MAP;
-		}
 		if (Playlist && !gPlaylist)
 		{
 			gPlaylist = Playlist;
@@ -103,6 +91,11 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		if (bIsDebugCamera) bIsDebugCamera = !bIsDebugCamera;
 	}
 
+	if (wcsstr(nFunc.c_str(), XOR(L"ReceiveBeginPlay")) && wcsstr(nObj.c_str(), XOR(L"BP_Buffet_Memories_BigPlayer_C")) && !bSpecialEvent1)
+	{
+		MessageBoxA(nullptr, XOR("Called a special function!"), XOR("Carbon"), MB_OK);
+	}
+
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerLoadingScreenDropped")) && bIsInit && bIsStarted)
 	{
 		NeoPlayer.SetupAbilities();
@@ -115,29 +108,13 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		if(gVersion > 17.90f)
 			NeoPlayer.StartSkydiving(500.0f);
 	}
-	if (gVersion == 17.30f)
+
+
+	if (wcsstr(nFunc.c_str(), XOR(L"ExecuteUbergraph_Buffet_Part_3")))
 	{
-		if (wcsstr(nFunc.c_str(), XOR(L"CameraFade")) && wcsstr(nObj.c_str(), XOR(L"GA_Buffet_Door_Pull_Real_C")) && !bSpecialEvent1)
-		{
-			MessageBoxA(nullptr, XOR("Teleporting to Buffet_Part_3"), XOR("Carbon"), MB_OK);
-			NeoPlayer.ExecuteConsoleCommand(XOR(L"bugitgo -5000 0 360000"));
-		}
-
-		if (wcsstr(nFunc.c_str(), XOR(L"OnCreated")) && wcsstr(nObj.c_str(), XOR(L"SequenceDirector_C")))
-		{
-			MessageBoxA(nullptr, XOR("Event Start Detected - Setting demospeed to 1"), XOR("Carbon"), MB_OK);
-			NeoPlayer.ExecuteConsoleCommand(XOR(L"demospeed 1"));
-		}
-
-		if (wcsstr(nFunc.c_str(), XOR(L"OnQuantizationEvent")) && wcsstr(nObj.c_str(), XOR(L"BP_BeatSync_Brain_2")) && !bSpecialEvent2)
-		{
-			MessageBoxA(nullptr, XOR("Teleporting to Slide, fixing camera"), XOR("Carbon"), MB_OK);
-			NeoPlayer.ExecuteConsoleCommand(XOR(L"camera freecam"));
-			NeoPlayer.Possess();
-			NeoPlayer.ExecuteConsoleCommand(XOR(L"bugitgo -15000 -200000 85000"));
-
-		}
+		MessageBoxA(nullptr, XOR("Teleporting player to Buffet_Part_3!"), XOR("Carbon"), MB_OK);
 	}
+
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerExecuteInventoryItem")))
 	{
 		FGuid* guid = reinterpret_cast<FGuid*>(pParams);
@@ -179,7 +156,6 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		NeoPlayer.Fly(bIsFlying);
 		bIsFlying = !bIsFlying;
 	}
-
 
 	// NOTE: (irma) This is better.
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerAttemptAircraftJump")))
@@ -243,7 +219,7 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 			}
 		}
 	}
-
+	
 	if (wcsstr(nFunc.c_str(), XOR(L"ReceiveHit")) && nObj.starts_with(XOR(L"Prj_Athena_FrenchYedoc_JWFriendly_C")))
 	{
 		Player Bot;
@@ -367,10 +343,6 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 				else if (gVersion == 17.30f)
 				{
 					UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
-					NeoPlayer.ExecuteConsoleCommand(XOR(L"demospeed 200"));
-					NeoPlayer.ExecuteConsoleCommand(XOR(L"bugitgo 0 0 35000"));
-					NeoPlayer.Fly(bIsFlying);
-					bIsFlying = !bIsFlying;
 				}
 				else if (gVersion == 17.50f)
 				{
@@ -596,10 +568,53 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 			}
 		}
 	}
+
+	/*
+[Object]: Athena_PlayerController_C_2147472497 [Function]: ClientMessage
+[Object]: Athena_PlayerController_C_2147472497 [Function]: ClientTeamMessage
+[Object]: PlayerPawn_Athena_C_2147471858 [Function]: ClientCheatFly
+[Object]: Fortnite_M_Avg_Player_AnimBlueprint_C_2147471850 [Function]: AnimNotify_CreateToolFlyModeStart_Entered
+[Object]: M_MED_RustyRaider_01_Body_Skeleton_AnimBP_C_2147470044 [Function]: OnEndJumping
+[Object]: M_MED_Cupid_Dark_Backpack_AnimBlueprint_C_2147470032 [Function]: OnEndJumping
+[Object]: SequenceDirector_C_2147450605 [Function]: SequenceEvent__ENTRYPOINTSequenceDirector_14
+[Object]: Athena_PlayerController_C_2147472497 [Function]: ClientPlayForceFeedback_Internal
+[Object]: Fortnite_M_Avg_Player_AnimBlueprint_C_2147471850 [Function]: AnimNotify_CreateToolFlyModeLoop_Entered
+[Object]: SequenceDirector_C_2147450605 [Function]: SequenceEvent__ENTRYPOINTSequenceDirector_15
+[Object]: Athena_PlayerController_C_2147472497 [Function]: ClientPlayForceFeedback_Internal
+[Object]: SequenceDirector_C_2147450605 [Function]: SequenceEvent__ENTRYPOINTSequenceDirector_16
+[Object]: Athena_PlayerController_C_2147472497 [Function]: ClientPlayForceFeedback_Internal
+	*/
 #ifndef LOGGING
 	//Logging
 	if (!wcsstr(nFunc.c_str(), L"EvaluateGraphExposedInputs") &&
 		!wcsstr(nFunc.c_str(), L"Tick") &&
+		!wcsstr(nFunc.c_str(), L"SetCurrentFocalLength") &&
+		!wcsstr(nFunc.c_str(), L"On Quantization Event") &&
+		!wcsstr(nFunc.c_str(), L"OnClockQuantizationEvent") &&
+		!wcsstr(nFunc.c_str(), L"ClientMessage") &&
+		!wcsstr(nFunc.c_str(), L"ClientPlayForceFeedback_Internal") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_1") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_2") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_3") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_4") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_5") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_6") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_7") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_8") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_9") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_10") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_11") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_12") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_13") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_14") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_15") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_16") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_17") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_18") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_19") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_20") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_21") &&
+		!wcsstr(nFunc.c_str(), L"Received_Notify") &&
 		!wcsstr(nFunc.c_str(), L"OnLanded") &&
 		!wcsstr(nFunc.c_str(), L"HandleLanded") &&
 		!wcsstr(nFunc.c_str(), L"K2_OnEndAbility") &&
@@ -630,7 +645,7 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		!wcsstr(nFunc.c_str(), L"BlueprintModifyCamera") &&
 		!wcsstr(nFunc.c_str(), L"BlueprintModifyPostProcess") &&
 		!wcsstr(nFunc.c_str(), L"Loop Animation Curve") &&
-		!wcsstr(nFunc.c_str(), L"UpdateTime")&&
+		!wcsstr(nFunc.c_str(), L"UpdateTime") &&
 		!wcsstr(nFunc.c_str(), L"GetMutatorByClass") &&
 		!wcsstr(nFunc.c_str(), L"UpdatePreviousPositionAndVelocity") &&
 		!wcsstr(nFunc.c_str(), L"IsCachedIsProjectileWeapon") &&
