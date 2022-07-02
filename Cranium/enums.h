@@ -15,7 +15,10 @@
 
 #define DEVICE_EVENT_MAP XOR(L"FritterSequenceLevel")
 #define RIFT_TOUR_EVENT_MAP XOR(L"Buffet_P")
-#define RIFT_TOUR_BUBBLES_MAP XOR(L"Buffet_Bubbles")
+///BuffetBubble/LevelOverlay/BuffetBouncer_Apollo_TeddyBase_LevelOverlay.BuffetBouncer_Apollo_TeddyBase_LevelOverlay
+///SpecialEventCountdown/B/B_Frontend_OverlayLevel.B_Frontend_OverlayLevel
+#define RIFT_TOUR_BUBBLES_MAP XOR(L"BuffetBouncer_Apollo_TeddyBase_LevelOverlay") 
+#define TEST_STREAM XOR(L"BuffetLevelOverlay") 
 #define KIWI_EVENT_MAP XOR(L"Kiwi_P")
 #define GUAVA_EVENT_MAP XOR(L"Guava_P")
 

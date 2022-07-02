@@ -834,6 +834,14 @@ struct UGameplayStatics_LoadStreamLevel_Params
 	FLatentActionInfo LatentInfo;
 };
 
+struct UGameplayStatics_OpenLevel_Params
+{
+	UObject* WorldContextObject;
+	struct FName LevelName;
+	bool bAbsolute;
+	struct FString Options;
+};
+
 struct UFortKismetLibrary_SetTimeOfDay_Params
 {
 	UObject* WorldContextObject;

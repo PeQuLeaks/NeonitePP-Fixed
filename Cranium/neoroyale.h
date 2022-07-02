@@ -120,6 +120,8 @@ namespace NeoRoyale
 			}
 			else bHasShowedPickaxe = false;
 			*/
+			//	void OpenLevel(struct UObject* WorldContextObject, struct FName LevelName, bool bAbsolute, struct FString Options); // Function Engine.GameplayStatics.OpenLevel // (Final|Native|Static|Public|BlueprintCallable) // @ game+0x638115c
+
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F6))
 			{
 
@@ -144,7 +146,31 @@ namespace NeoRoyale
 				
 				ProcessEvent(Default__GameplayStatics, fn, &params);
 			}
+			
+			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F7))
+			{
 
+				ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
+				ObjectFinder GameViewPortClientFinder = EngineFinder.Find(XOR(L"GameViewport"));
+				ObjectFinder WorldFinder = GameViewPortClientFinder.Find(XOR(L"World"));
+
+				auto Default__GameplayStatics = FindObject<UObject*>(L"GameplayStatics /Script/Engine.Default__GameplayStatics");
+				auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.GameplayStatics.LoadStreamLevel"));
+
+				FName map = KismetFunctions::GetFName(TEST_STREAM);
+
+				FLatentActionInfo LatentInfo{};
+
+				UGameplayStatics_LoadStreamLevel_Params params;
+				params.WorldContextObject = WorldFinder.GetObj();
+				params.LevelName = map;
+				params.bMakeVisibleAfterLoad = true;
+				params.bShouldBlockOnLoad = true;
+				params.LatentInfo = LatentInfo;
+				//MessageBoxA(nullptr, XOR("Called a special function!"), XOR("Carbon"), MB_OK);
+
+				ProcessEvent(Default__GameplayStatics, fn, &params);
+			}
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F3))
 			{
 				Stop();
@@ -211,7 +237,10 @@ namespace NeoRoyale
 			{
 				UFunctions::LoadAndStreamInLevel(DEVICE_EVENT_MAP);
 			}
-			
+			else if (gVersion == 17.30f)
+			{
+				//UFunctions::LoadAndStreamInLevel(RIFT_TOUR_BUBBLES_MAP);
+			}
 			//InitCombos();
 
 			UFunctions::StartMatch();

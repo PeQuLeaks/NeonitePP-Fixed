@@ -62,7 +62,6 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		{
 			Map = APOLLO_PAPAYA;
 		}
-
 		if (PlaylistNameW.find(XOR(L"yogurt")) != std::string::npos && !gPlaylist)
 		{
 			Map = APOLLO_TERRAIN_YOGURT;
@@ -304,6 +303,7 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 
 			case TEST:
 			{
+				NeoPlayer.ExecuteConsoleCommand(XOR(L"streammap Buffet_Bubbles"));
 				break;
 			}
 
@@ -596,6 +596,14 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 			}
 		}
 	}
+	/*
+	
+	[Object]: BGA_IslandPortal_33 [Function]: CheckShouldDisplayUI
+[Object]: BGA_IslandPortal_31 [Function]: CheckShouldDisplayUI
+[Object]: BGA_IslandPortal_34 [Function]: CheckShouldDisplayUI
+[Object]: BGA_IslandPortal_35 [Function]: CheckShouldDisplayUI
+[Object]: ThermometeRuntime [Function]: SetRuntimeStats
+*/
 #ifndef LOGGING
 	//Logging
 	if (!wcsstr(nFunc.c_str(), L"EvaluateGraphExposedInputs") &&
@@ -610,11 +618,14 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		!wcsstr(nFunc.c_str(), L"SetFieldOfView") &&
 		!wcsstr(nFunc.c_str(), L"SetBloomScale") &&
 		!wcsstr(nFunc.c_str(), L"SetIntensity") &&
+		!wcsstr(nFunc.c_str(), L"CheckShouldDisplayUI") &&
+		!wcsstr(nFunc.c_str(), L"SetRuntimeStats") &&
 		!wcsstr(nFunc.c_str(), L"SetInitialized") &&
 		!wcsstr(nFunc.c_str(), L"SetDisableMasterCompressor") &&
 		!wcsstr(nFunc.c_str(), L"BlueprintGetInteractionTime") &&
 		!wcsstr(nFunc.c_str(), L"UpdateStateEvent") &&
 		!wcsstr(nFunc.c_str(), L"Update") &&
+		!wcsstr(nFunc.c_str(), L"IsVisibleToPlayer") &&
 		!wcsstr(nFunc.c_str(), L"ServerTouchActiveTime") &&
 		!wcsstr(nFunc.c_str(), L"OnSubmixEnvelope") &&
 		!wcsstr(nFunc.c_str(), L"OnSubmixSpectralAnalysis") &&
