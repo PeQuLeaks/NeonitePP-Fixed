@@ -105,32 +105,72 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerLoadingScreenDropped")) && bIsInit && bIsStarted)
 	{
 		NeoPlayer.SetupAbilities();
-		NeoPlayer.SetupInventory();
+		printf("[CARBON] Granted pre defined abilities.\n");
+		//NeoPlayer.SetupInventory();
+		printf("[CARBON] Set ownership.\n");
 		NeoPlayer.ExecuteConsoleCommand(XOR(L"destroyall lodactor"));
+		printf("[CARBON] Destroyed all lodactors.\n");
 		NeoPlayer.ExecuteConsoleCommand(XOR(L"destroyall volume"));
+		printf("[CARBON] Destroyed all volumes.\n");
 		NeoPlayer.ExecuteConsoleCommand(XOR(L"destroyall fortlodactor"));
+		printf("[CARBON] Destroyed all fort lodactors.\n");
 		NeoPlayer.ExecuteConsoleCommand(XOR(L"destroyall fortlodsmactor"));
+		printf("[CARBON] Destroyed all fortlodsmactors.\n");
 		NeoPlayer.ServerSetClientHasFinishedLoading();
+		printf("[CARBON] Set client has finished loading.\n");
 		if (gVersion > 17.90f)
 			NeoPlayer.StartSkydiving(500.0f);
 	}
+	
+	//[CARBON] Current Coords: -2261.2 -241532 833498
+	if (wcsstr(nFunc.c_str(), XOR(L"ReceiveEndPlay")) && wcsstr(nObj.c_str(), XOR(L"ZeroPointCore")) && !bSpecialEvent1)
+	{
+		//NeoPlayer.ExecuteConsoleCommand(XOR(L"camera firstperson"));
+		NeoPlayer.ExecuteConsoleCommand(L"bugitgo 0 1046900 539600");
+		NeoPlayer.SetCameraMode(L"FirstPerson");
+		//NeoPlayer.ExecuteConsoleCommand(XOR(L"camera freecam"));
+
+		NeoPlayer.HideHead(true);
+	}
+	
+	if (wcsstr(nFunc.c_str(), XOR(L"Construct")) && wcsstr(nObj.c_str(), XOR(L"JuniorScoreCard_C")) && !bSpecialEvent1)
+	{
+		//NeoPlayer.ExecuteConsoleCommand(XOR(L"camera firstperson"));
+		NeoPlayer.ExecuteConsoleCommand(L"bugitgo -5400 -349600 855200");
+		NeoPlayer.SetCameraMode(L"FirstPerson");
+		NeoPlayer.Fly(true);
+		//NeoPlayer.ExecuteConsoleCommand(XOR(L"camera freecam"));
+	}
+	
+	if (wcsstr(nFunc.c_str(), XOR(L"ReceiveIsFinished")) && wcsstr(nObj.c_str(), XOR(L"CameraShake_Junior_HeliCarrierHit_C")) && !bSpecialEvent1)
+	{
+		NeoPlayer.Fly(false);
+	}
+	
+	if (wcsstr(nFunc.c_str(), XOR(L"StreamedVideoOnUrlFailure")) && wcsstr(nObj.c_str(), XOR(L"ActivatableMovieWidget_Monolithic_Native_C")) && !bSpecialEvent1)
+	{
+		//[CARBON] Current Coords : -16880.3 - 264071 790292
+		NeoPlayer.ExecuteConsoleCommand(L"bugitgo -16880.3 - 264071 790292 0 0 180");
+		NeoPlayer.Fly(false);
+	}
+	
 	if (gVersion == 17.30f)
 	{
 		if (wcsstr(nFunc.c_str(), XOR(L"CameraFade")) && wcsstr(nObj.c_str(), XOR(L"GA_Buffet_Door_Pull_Real_C")) && !bSpecialEvent1)
 		{
-			MessageBoxA(nullptr, XOR("Teleporting to Buffet_Part_3"), XOR("Carbon"), MB_OK);
+			//MessageBoxA(nullptr, XOR("Teleporting to Buffet_Part_3"), XOR("Carbon"), MB_OK);
 			NeoPlayer.ExecuteConsoleCommand(XOR(L"bugitgo -5000 0 360000"));
 		}
 
 		if (wcsstr(nFunc.c_str(), XOR(L"OnCreated")) && wcsstr(nObj.c_str(), XOR(L"SequenceDirector_C")))
 		{
-			MessageBoxA(nullptr, XOR("Event Start Detected - Setting demospeed to 1"), XOR("Carbon"), MB_OK);
+			//MessageBoxA(nullptr, XOR("Event Start Detected - Setting demospeed to 1"), XOR("Carbon"), MB_OK);
 			NeoPlayer.ExecuteConsoleCommand(XOR(L"demospeed 1"));
 		}
 
 		if (wcsstr(nFunc.c_str(), XOR(L"OnQuantizationEvent")) && wcsstr(nObj.c_str(), XOR(L"BP_BeatSync_Brain_2")) && !bSpecialEvent2)
 		{
-			MessageBoxA(nullptr, XOR("Teleporting to Slide, fixing camera"), XOR("Carbon"), MB_OK);
+			//MessageBoxA(nullptr, XOR("Teleporting to Slide, fixing camera"), XOR("Carbon"), MB_OK);
 			NeoPlayer.ExecuteConsoleCommand(XOR(L"camera freecam"));
 			NeoPlayer.Possess();
 			NeoPlayer.ExecuteConsoleCommand(XOR(L"bugitgo -15000 -200000 85000"));
@@ -393,6 +433,14 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 				break;
 			}
 
+			case CURRENT_LOCATION:
+			{
+				auto currentLocation = NeoPlayer.GetLocation();
+				//UFunctions::TeleportToCoords(currentLocation.X, currentLocation.Y, currentLocation.Z);
+				std::cout << "[CARBON] Current Coords: " << currentLocation.X << " " << currentLocation.Y << " " << currentLocation.Z << std::endl;
+				break;
+			}
+
 			/*
 				if (!arg.empty())
 	{
@@ -598,19 +646,36 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 	}
 	/*
 	
-	[Object]: BGA_IslandPortal_33 [Function]: CheckShouldDisplayUI
-[Object]: BGA_IslandPortal_31 [Function]: CheckShouldDisplayUI
-[Object]: BGA_IslandPortal_34 [Function]: CheckShouldDisplayUI
-[Object]: BGA_IslandPortal_35 [Function]: CheckShouldDisplayUI
-[Object]: ThermometeRuntime [Function]: SetRuntimeStats
+ct]: Junior_VOFXController_2147457927 [Function]: SetDelayWetLevel
+[Object]: Junior_VOFXController_2147457927 [Function]: SetDelayFeedback
+[Object]: Junior_VOFXController_2147457927 [Function]: SetDelayTime
+[Object]: Junior_VOFXController_2147457927 [Function]: SetReverbWet
+[Object]: Junior_VOFXController_2147457927 [Function]: SetReverbDry
+[Object]: Junior_VOFXController_2147457927 [Function]: SetReverbDecay
+[Object]: Body [Function]: SetCastInsetShadow
+[Object]: Face [Function]: SetCastInsetShadow
+[Object]: head [Function]: SetCastInsetShadow
+[Object]: BP_Junior_AudioScripting_2147457926 [Function]: SetShouldApplyEffects
+[Object]: BP_Junior_AudioScripting_2147457926 [Function]: SetShouldDisableCompressor
+[Object]: BP_Junior_AudioScripting_2147457926 [Function]: SetShouldApplyGameplayMix
 */
-#ifndef LOGGING
+#ifdef LOGGING
 	//Logging
 	if (!wcsstr(nFunc.c_str(), L"EvaluateGraphExposedInputs") &&
 		!wcsstr(nFunc.c_str(), L"Tick") &&
 		!wcsstr(nFunc.c_str(), L"OnLanded") &&
 		!wcsstr(nFunc.c_str(), L"HandleLanded") &&
 		!wcsstr(nFunc.c_str(), L"K2_OnEndAbility") &&
+		!wcsstr(nFunc.c_str(), L"SetDelayWetLevel") &&
+		!wcsstr(nFunc.c_str(), L"SetDelayTime") &&
+		!wcsstr(nFunc.c_str(), L"SetDelayFeedback") &&
+		!wcsstr(nFunc.c_str(), L"SetReverbWet") &&
+		!wcsstr(nFunc.c_str(), L"SetReverbDry") &&
+		!wcsstr(nFunc.c_str(), L"SetReverbDecay") &&
+		!wcsstr(nFunc.c_str(), L"SetCastInsetShadow") &&
+		!wcsstr(nFunc.c_str(), L"SetShouldApplyEffects") &&
+		!wcsstr(nFunc.c_str(), L"SetShouldDisableCompressor") &&
+		!wcsstr(nFunc.c_str(), L"SetShouldApplyGameplayMix") &&
 		!wcsstr(nFunc.c_str(), L"OnEndJumping") &&
 		!wcsstr(nFunc.c_str(), L"OnBeginFalling") &&
 		!wcsstr(nFunc.c_str(), L"CanJumpInternal") &&
@@ -625,6 +690,16 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		!wcsstr(nFunc.c_str(), L"BlueprintGetInteractionTime") &&
 		!wcsstr(nFunc.c_str(), L"UpdateStateEvent") &&
 		!wcsstr(nFunc.c_str(), L"Update") &&
+		!wcsstr(nFunc.c_str(), L"BlueprintLinkedAnimationLayersInitialized") &&
+		!wcsstr(nFunc.c_str(), L"BlueprintInitializeAnimation") &&
+		!wcsstr(nFunc.c_str(), L"SetForcedLodModel") &&
+		!wcsstr(nFunc.c_str(), L"SetVolumetricScatteringIntensity") &&
+		!wcsstr(nFunc.c_str(), L"SetOuterConeAngle") &&
+		!wcsstr(nFunc.c_str(), L"SetLightFalloffExponent") &&
+		!wcsstr(nFunc.c_str(), L"SetAffectTranslucentLighting") &&
+		!wcsstr(nFunc.c_str(), L"SetCastShadow") &&
+		!wcsstr(nFunc.c_str(), L"OnParticleSystemFinished") &&
+		!wcsstr(nFunc.c_str(), L"SetAnimationMode") &&
 		!wcsstr(nFunc.c_str(), L"IsVisibleToPlayer") &&
 		!wcsstr(nFunc.c_str(), L"ServerTouchActiveTime") &&
 		!wcsstr(nFunc.c_str(), L"OnSubmixEnvelope") &&
@@ -632,6 +707,24 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		!wcsstr(nFunc.c_str(), L"OnMouse") &&
 		!wcsstr(nFunc.c_str(), L"Pulse") &&
 		!wcsstr(nFunc.c_str(), L"BlueprintModifyPostProcess") &&
+		!wcsstr(nFunc.c_str(), L"OnNiagaraSystemFinished") &&
+		!wcsstr(nFunc.c_str(), L"OnVisibilitySetEvent") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_0") &&
+		!wcsstr(nFunc.c_str(), L"SequenceEvent__ENTRYPOINTSequenceDirector_8") &&
+		!wcsstr(nFunc.c_str(), L"SetFogInscatteringColor") &&
+		!wcsstr(nFunc.c_str(), L"OnHUDElementVisibilityChanged") &&
+		!wcsstr(nFunc.c_str(), L"SetCurrentFocalLength") &&
+		!wcsstr(nFunc.c_str(), L"SetSoftSourceRadius") &&
+		!wcsstr(nFunc.c_str(), L"SetAttenuationRadius") &&
+		!wcsstr(nFunc.c_str(), L"OnExecute") &&
+		!wcsstr(nFunc.c_str(), L"OnBurst") &&
+		!wcsstr(nFunc.c_str(), L"HandleOnRequestChangeVis") &&
+		!wcsstr(nFunc.c_str(), L"OnAnimationStarted") &&
+		!wcsstr(nFunc.c_str(), L"HideLightColumn") &&
+		!wcsstr(nFunc.c_str(), L"UserConstructionScript") &&
+		!wcsstr(nFunc.c_str(), L"SetInnerConeAngle") &&
+		!wcsstr(nFunc.c_str(), L"ClientMessage") &&
+		!wcsstr(nFunc.c_str(), L"ClientTeamMessage") &&
 		!wcsstr(nFunc.c_str(), L"Play Ambient Audio") &&
 		!wcsstr(nFunc.c_str(), L"GameplayCue") &&
 		!wcsstr(nFunc.c_str(), L"NetMulticast_InvokeGameplayCueExecuted_FromSpec") &&
@@ -651,7 +744,6 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		!wcsstr(nFunc.c_str(), L"BP_UpdateMessaging") &&
 		!wcsstr(nFunc.c_str(), L"BindVolumeEvents") &&
 		!wcsstr(nFunc.c_str(), L"ReadyToEndMatch"))
-
 	{
 		printf(XOR("[Object]: %ws [Function]: %ws\n"), nObj.c_str(), nFunc.c_str());
 	}

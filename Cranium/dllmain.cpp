@@ -21,7 +21,7 @@ void dllMain()
 {
 	KismetFunctions::CreateConsole();
 	Hooks::curlhook();
-	Hooks::exithook();
+	//Hooks::exithook();
 
 #ifdef HOOKS
 	while (true)
@@ -30,7 +30,7 @@ void dllMain()
 		{													//Deprecated
 			if (Hooks::Misc(gVersion) && Console::Unlock()) //&& ForceSettings())
 			{
-				ImguiThread();
+				//ImguiThread();
 				break;
 			}
 		}

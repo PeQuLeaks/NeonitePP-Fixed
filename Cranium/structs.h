@@ -704,6 +704,16 @@ struct FGameplayEffectContextHandle
 	char UnknownData_0[0x30]; // 0x00(0x18)
 };
 
+struct APlayerController_ClientSetCameraMode_Params
+{
+	FName NewCamMode;
+};
+
+struct UPrimitiveComponent_SetOwnerNoSee_Params
+{
+	bool bNewOwnerNoSee;
+};
+
 struct FActiveGameplayEffectHandle
 {
 	int Handle; // 0x00(0x04)

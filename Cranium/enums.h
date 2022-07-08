@@ -50,7 +50,7 @@ LR"(
 Custom Cheatscript Commands
 ---------------------------
 cheatscript event - Triggers the event for your version (e.g. Junior, Jerky, NightNight).
-cheatscript debugcamera - Toggles a custom version of the debug camera.
+cheatscript getlocation - Gets current location and puts them in the console.
 cheatscript skydive | skydiving - Puts you in a skydive with deploy at 500m above the ground.
 cheatscript equip <WID | AGID> - Equips a weapon / pickaxe.
 cheatscript setgravity <NewGravityScaleFloat> - Changes the gravity scale.
@@ -74,6 +74,7 @@ enum ECommands
 	ACTIVATE,
 	EVENT,
 	DEBUG_CAMERA,
+	CURRENT_LOCATION,
 	SKYDIVE,
 	EQUIP,
 	SET_GRAVITY,
@@ -101,6 +102,7 @@ auto str2enum(const std::wstring& str)
 	else if (str.starts_with(L"skydive")) return SKYDIVE;
 	else if (str.starts_with(L"skydiving")) return SKYDIVE;
 	else if (str.starts_with(L"equip")) return EQUIP;
+	else if (str.starts_with(L"getlocation")) return CURRENT_LOCATION;
 	else if (str.starts_with(L"setgravity")) return SET_GRAVITY;
 	else if (str.starts_with(L"setspeed") || str.starts_with(L"speed")) return SET_SPEED;
 	else if (str.starts_with(L"setplaylist")) return SET_PLAYLIST;

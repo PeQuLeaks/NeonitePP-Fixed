@@ -668,6 +668,37 @@ public:
 		printf(XOR("\n[NeoRoyale] Executed a console command!\n"));
 	}
 
+	void SetCameraMode(const wchar_t* NewMode)
+	{
+		UpdatePlayerController();
+		UFunction* ClientSetCameraMode;
+		if (gVersion > 16.00f)
+			ClientSetCameraMode = FindObject<UFunction*>(XOR(L"Function /Script/Engine.PlayerController.ClientSetCameraMode"));
+		else
+			ClientSetCameraMode = FindObject<UFunction*>(XOR(L"Function /Script/Engine.PlayerController:ClientSetCameraMode"));
+
+		APlayerController_ClientSetCameraMode_Params ClientSetCameraMode_Params;
+		ClientSetCameraMode_Params.NewCamMode = KismetFunctions::GetFName(NewMode);
+
+		ProcessEvent(this->Controller, ClientSetCameraMode, &ClientSetCameraMode_Params);
+	}
+	
+	void HideHead(bool bIsHidden)
+	{
+		auto Mesh = FindObject<UObject*>(XOR(L"SkeletalMeshComponentBudgeted /Game/Athena/Apollo/Maps/Apollo_Terrain.Apollo_Terrain:PersistentLevel.PlayerPawn_Athena_C_"));
+
+		UFunction* SetOwnerNoSee;
+		if (gVersion > 16.00f)
+			SetOwnerNoSee = FindObject<UFunction*>(XOR(L"Function /Script/Engine.PrimitiveComponent.SetOwnerNoSee"));
+		else
+			SetOwnerNoSee = FindObject<UFunction*>(XOR(L"Function /Script/Engine.PrimitiveComponent:SetOwnerNoSee"));
+
+		UPrimitiveComponent_SetOwnerNoSee_Params SetOwnerNoSee_Params;
+		SetOwnerNoSee_Params.bNewOwnerNoSee = bIsHidden;
+
+		ProcessEvent(Mesh, SetOwnerNoSee, &SetOwnerNoSee_Params);
+	}
+	
 	auto Skydive()
 	{
 		/*

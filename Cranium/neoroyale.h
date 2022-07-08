@@ -150,27 +150,13 @@ namespace NeoRoyale
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F7))
 			{
 
-				ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
-				ObjectFinder GameViewPortClientFinder = EngineFinder.Find(XOR(L"GameViewport"));
-				ObjectFinder WorldFinder = GameViewPortClientFinder.Find(XOR(L"World"));
-
-				auto Default__GameplayStatics = FindObject<UObject*>(L"GameplayStatics /Script/Engine.Default__GameplayStatics");
-				auto fn = FindObject<UFunction*>(XOR(L"Function /Script/Engine.GameplayStatics.LoadStreamLevel"));
-
-				FName map = KismetFunctions::GetFName(TEST_STREAM);
-
-				FLatentActionInfo LatentInfo{};
-
-				UGameplayStatics_LoadStreamLevel_Params params;
-				params.WorldContextObject = WorldFinder.GetObj();
-				params.LevelName = map;
-				params.bMakeVisibleAfterLoad = true;
-				params.bShouldBlockOnLoad = true;
-				params.LatentInfo = LatentInfo;
-				//MessageBoxA(nullptr, XOR("Called a special function!"), XOR("Carbon"), MB_OK);
-
-				ProcessEvent(Default__GameplayStatics, fn, &params);
 			}
+			
+			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F9))
+			{
+				NeoPlayer.ExecuteConsoleCommand(XOR(L"camera firstperson"));
+			}
+			
 			if (NeoPlayer.Pawn && GetAsyncKeyState(VK_F3))
 			{
 				Stop();
@@ -237,8 +223,9 @@ namespace NeoRoyale
 			{
 				UFunctions::LoadAndStreamInLevel(DEVICE_EVENT_MAP);
 			}
-			else if (gVersion == 17.30f)
+			else if (gVersion == 14.60f)
 			{
+				UFunctions::LoadAndStreamInLevel(JERKY_EVENT_MAP);
 				//UFunctions::LoadAndStreamInLevel(RIFT_TOUR_BUBBLES_MAP);
 			}
 			//InitCombos();

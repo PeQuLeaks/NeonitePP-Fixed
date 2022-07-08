@@ -236,6 +236,17 @@ namespace Hooks
 		StaticLoadObject = decltype(StaticLoadObject)(SLOIAdd);
 		printf("\n\n[CARBON] Found StaticLoadObject! \n\n");
 
+		if (gVersion < 16.00f)
+		{
+			auto AbilityPatchAdd = Util::FindPattern(Patterns::bGlobal::AbilityPatch, Masks::bGlobal::AbilityPatch);
+			VALIDATE_ADDRESS(AbilityPatchAdd, XOR("Failed to find AbilityPatch Address."));
+
+			//Patches fortnite ability ownership checks, work on everysingle fortnite version.
+			//Author: @nyamimi
+			reinterpret_cast<uint8_t*>(AbilityPatchAdd)[2] = 0x85;
+			reinterpret_cast<uint8_t*>(AbilityPatchAdd)[11] = 0x8D;
+			printf("\n\n[CARBON] Found Abilities! \n\n");
+		}
 		//Process Event Hooking.
 		if (gVersion < 19.30f)
 		{
