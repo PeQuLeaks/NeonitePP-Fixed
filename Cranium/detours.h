@@ -66,14 +66,16 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		{
 			Map = APOLLO_TERRAIN_YOGURT;
 		}
+		if (PlaylistNameW.find(XOR(L"buffet")) != std::string::npos && !gPlaylist)
+		{
+			//Map = RIFT_TOUR_EVENT_MAP;
+		}
+
 		if (PlaylistNameW.find(XOR(L"kiwi")) != std::string::npos && !gPlaylist)
 		{
 			Map = KIWI_EVENT_MAP;
 		}
-		if (PlaylistNameW.find(XOR(L"buffet")) != std::string::npos && !gPlaylist)
-		{
-			Map = RIFT_TOUR_EVENT_MAP;
-		}
+
 		if (PlaylistNameW.find(XOR(L"guava")) != std::string::npos && !gPlaylist)
 		{
 			Map = GUAVA_EVENT_MAP;
@@ -129,7 +131,7 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		NeoPlayer.ExecuteConsoleCommand(L"bugitgo 0 1046900 539600");
 		NeoPlayer.SetCameraMode(L"FirstPerson");
 		//NeoPlayer.ExecuteConsoleCommand(XOR(L"camera freecam"));
-
+		NeoPlayer.Fly(true);
 		NeoPlayer.HideHead(true);
 	}
 	
@@ -659,7 +661,7 @@ ct]: Junior_VOFXController_2147457927 [Function]: SetDelayWetLevel
 [Object]: BP_Junior_AudioScripting_2147457926 [Function]: SetShouldDisableCompressor
 [Object]: BP_Junior_AudioScripting_2147457926 [Function]: SetShouldApplyGameplayMix
 */
-#ifdef LOGGING
+#ifndef LOGGING
 	//Logging
 	if (!wcsstr(nFunc.c_str(), L"EvaluateGraphExposedInputs") &&
 		!wcsstr(nFunc.c_str(), L"Tick") &&
