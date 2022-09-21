@@ -5,6 +5,7 @@
 namespace Offsets
 {
 	inline static constexpr int32_t OffsetInternal = 0x4C;
+	inline static constexpr int32_t OffsetInternal2 = 0x44;
 	inline static constexpr int32_t Next = 0x20;
 	inline static constexpr int32_t ClassPrivate = 0x10;
 	inline static constexpr int32_t ChildProperties = 0x50;
@@ -42,7 +43,7 @@ public:
 
 	int32_t GetOffsetInternal()
 	{
-		return *reinterpret_cast<int32_t*>(this + Offsets::OffsetInternal);
+		return *reinterpret_cast<int32_t*>(this + ((gVersion >= 19.00f || gVersion < 11.00f) ? Offsets::OffsetInternal2 : Offsets::OffsetInternal));
 	}
 };
 
@@ -55,7 +56,7 @@ class ObjectFinder
 
 	static GameObject* InternalFindChildInObject(GameObject* inObject, std::wstring_view childName)
 	{
-		if (gVersion > 16.00f)
+		if (gVersion >= 16.00f)
 		{
 			GameObject* propertyObject = nullptr;
 			GameObject* next = inObject->GetNext();
@@ -163,8 +164,7 @@ public:
 
 		if (Class)
 		{
-			GameObject* property = InternalFindChildInObject(reinterpret_cast<GameObject*>(Class->ChildProperties),
-				objectToFind);
+			GameObject* property = InternalFindChildInObject(reinterpret_cast<GameObject*>(Class->ChildProperties), objectToFind);
 			if (property)
 			{
 				//printf("[ObjectFinder] Found %ls at 0x%x", objectToFind.c_str(), property->GetOffsetInternal());
@@ -177,7 +177,7 @@ public:
 
 	ObjectFinder FindChildObject(const std::wstring& objectToFind) const
 	{
-		if (gVersion > 16.40f)
+		if (gVersion >= 16.40f)
 		{
 			GameClass* classPrivate = m_object->GetClass();
 			GameObject* childProperties = classPrivate->GetChildProperties();
@@ -271,7 +271,7 @@ public:
 
 	static UObject* FindActor(std::wstring name, int toSkip = 0)
 	{
-		if (gVersion > 16.00f)
+		if (gVersion >= 16.00f)
 		{
 			ObjectFinder EngineFinder = EntryPoint(uintptr_t(GEngine));
 			ObjectFinder GameViewPortClientFinder = EngineFinder.Find(XOR(L"GameViewport"));

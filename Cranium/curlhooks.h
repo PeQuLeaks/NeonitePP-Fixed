@@ -70,7 +70,7 @@ inline CURLcode CurlEasySetOptDetour(struct Curl_easy* data, CURLoption tag, ...
 		{
 			Uri uri = Uri::Parse(url);
 
-			if (uri.Host.ends_with(XOR("ol.epicgames.com")) || uri.Host.ends_with(XOR(".akamaized.net")) || uri.Host.ends_with(XOR("on.epicgames.com")))
+			if (uri.Host.ends_with(XOR(".epicgames.com")) || uri.Host.ends_with(XOR(".akamaized.net")))
 			{
 				//printf("LogURL: %s\n", url.c_str());
 				url = Uri::CreateUri(URL_PROTOCOL, URL_HOST, URL_PORT, uri.Path, uri.QueryString);

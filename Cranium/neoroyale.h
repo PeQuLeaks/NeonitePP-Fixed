@@ -202,32 +202,10 @@ namespace NeoRoyale
 			//LOL
 			NeoPlayer.ExecuteConsoleCommand(XOR(L"god"));
 			NeoPlayer.SetMovementSpeed(1.1);
-
-			if (gVersion > 17.10f)
-			{
-				NeoPlayer.Respawn();
-				NeoPlayer.Respawn();
-				NeoPlayer.Respawn();
-			}
-
 			UFunctions::SetPlaylist();
 
 			UFunctions::SetGamePhase();
 			
-			
-			if (gVersion == 12.41f)
-			{
-				UFunctions::LoadAndStreamInLevel(JERKY_EVENT_MAP);
-			}
-			else if (gVersion == 12.61f)
-			{
-				UFunctions::LoadAndStreamInLevel(DEVICE_EVENT_MAP);
-			}
-			else if (gVersion == 14.60f)
-			{
-				UFunctions::LoadAndStreamInLevel(JERKY_EVENT_MAP);
-				//UFunctions::LoadAndStreamInLevel(RIFT_TOUR_BUBBLES_MAP);
-			}
 			//InitCombos();
 
 			UFunctions::StartMatch();

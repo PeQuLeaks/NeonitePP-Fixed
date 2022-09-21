@@ -320,7 +320,6 @@ namespace UFunctions
 		}
 		else {
 			fn = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortGameStateAthena:OnRep_GamePhase"));
-
 		}
 
 		AFortGameStateAthena_OnRep_GamePhase_Params params;
@@ -633,7 +632,7 @@ namespace Console
 	//constructs and assigns CheatManager to the main console.
 	inline bool CheatManager()
 	{
-		if (gVersion > 19.00f)
+		if (gVersion >= 19.00f)
 		{
 			ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
 			ObjectFinder LocalPlayer = EngineFinder.Find(XOR(L"GameInstance")).Find(XOR(L"LocalPlayers"));
@@ -722,9 +721,7 @@ namespace Console
 	//unlocks ue4 console with cheat manager
 	inline bool Unlock()
 	{
-		if (gVersion > 19.00f)
-			return false;//temporaraly disabled console, use other function to call it once loading in game on chapter 3, will fix this like tmrw or something
-		else if (gVersion > 16.00f)
+		if (gVersion > 16.00f)
 		{
 			ObjectFinder EngineFinder = ObjectFinder::EntryPoint(uintptr_t(GEngine));
 			auto GameplayStatics = FindObject<UObject*>(L"GameplayStatics /Script/Engine.Default__GameplayStatics");
@@ -743,6 +740,8 @@ namespace Console
 			ProcessEvent(GameplayStatics, SpawnObject, &params);
 
 			*ViewportConsole = params.ReturnValue;
+
+			//CheatManager();
 		}
 		else
 		{
@@ -767,7 +766,7 @@ namespace Console
 
 			ViewportConsole = Console;
 
-			CheatManager();
+			//CheatManager();
 		}
 		return true;
 	}

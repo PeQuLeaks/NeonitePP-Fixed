@@ -7,7 +7,7 @@
 #define APOLLO_TERRAIN_BASE XOR(L"Apollo_Terrain?game=/Script/FortniteGame.FortGameModeBase")
 #define APOLLO_PAPAYA_BASE XOR(L"Apollo_Papaya?game=/Script/FortniteGame.FortGameModeBase")
 #define APOLLO_TERRAIN_YOGURT XOR(L"Apollo_Terrain_Yogurt?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
-#define ARTEMIS_TERRAIN XOR(L"Artemis_Terrain?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C");
+#define ARTEMIS_TERRAIN (L"Artemis_Terrain?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
 
 #define GALACTUS_EVENT_MAP XOR(L"Junior_Map")
 #define JERKY_EVENT_MAP XOR(L"JerkySequenceMap")
@@ -23,8 +23,8 @@
 #define GUAVA_EVENT_MAP XOR(L"Guava_P")
 
 #define GALACTUS_EVENT_PLAYER XOR(L"LevelSequencePlayer /Junior/Levels/Junior_Map.Junior_Map:PersistentLevel.Junior_Master_Rep_2.AnimationPlayer")
-#define JERKY_EVENT_PLAYER XOR(L"LevelSequencePlayer /CycloneJerky/Levels/JerkySequenceMap_LevelInstance_1.JerkySequenceMap:PersistentLevel.Jerky.AnimationPlayer")
-#define DEVICE_EVENT_PLAYER XOR(L"LevelSequencePlayer /Fritter/Level/FritterSequenceLevel_LevelInstance_1.FritterSequenceLevel:PersistentLevel.Fritter_2.AnimationPlayer")
+#define JERKY_EVENT_PLAYER XOR(L"LevelSequencePlayer /CycloneJerky/Levels/JerkySequenceMap.JerkySequenceMap:PersistentLevel.Jerky.AnimationPlayer")
+#define DEVICE_EVENT_PLAYER XOR(L"LevelSequencePlayer /Fritter/Level/FritterSequenceLevel.FritterSequenceLevel:PersistentLevel.Fritter_2.AnimationPlayer")
 #define RIFT_TOUR_EVENT_PLAYER XOR(L"LevelSequencePlayer /Buffet/Levels/Buffet_P.Buffet_P.PersistentLevel.Buffet_Master_3.AnimationPlayer")
 #define KIWI_EVENT_PLAYER XOR(L"LevelSequencePlayer /Kiwi/Levels/Kiwi_P.Kiwi_P.PersistentLevel.Kiwi_Master.AnimationPlayer")
 #define GUAVA_EVENT_PLAYER XOR(L"LevelSequencePlayer /Guava/Levels/Guava_Persistent.Guava_Persistent.PersistentLevel.Guava_Rep_Master_2.AnimationPlayer")
@@ -136,8 +136,13 @@ namespace Patterns
 
 		//19.00+
 		inline std::pair<const char*, const char*> UnsafeEnvironmentPopupUE5{
-			"\x4C\x8B\xDC\x55\x49\x8D\xAB\x00\x00\x00\x00\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4\x48\x89\x85\x00\x00\x00\x00",
-			"xxxxxxx????xxx????xxx????xxxxxx????"
+			"\x4C\x8B\xDC\x55\x49\x8D\x6B\x98\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4\x48\x89\x45\x28",
+			"xxxxxxxxxxx????xxx????xxxxxxx"
+		};
+		
+		inline std::pair<const char*, const char*> UnsafeEnvironmentPopupUE5_2{
+			"\x4C\x8B\xDC\x55\x49\x8D\x00\x00\x00\x00\x00\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4\x48\x89\x00\x00\x00\x00\x00\x49\x89\x5B\x20\x48\x8B\xD9",
+			"xxxxxx?????xxx????xxx????xxxxx?????xxxxxxx"
 		};
 		inline std::pair<const char*, const char*> RequestExitWithStatusUE5{
 			"\x48\x8B\xC4\x48\x89\x58\x18\x88\x50\x10\x88\x48\x08\x57\x48\x83\xEC\x30",
@@ -208,7 +213,7 @@ namespace Patterns
 
 		constexpr const char* FreeInternal = "\x48\x85\xC9\x74\x2E\x53\x48\x83\xEC\x20\x48\x8B\xD9\x48\x8B\x0D\x00\x00\x00\x00\x48\x85\xC9\x75\x0C";
 
-		const char* FreeMemory = crypt("48 85 C9 0F 84 ? ? ? ? 53 48 83 EC 20 48 89 7C 24 30 48 8B D9 48 8B 3D ? ? ? ? 48 85 FF 0F 84 ? ? ? ? 48 8B 07 4C 8B 40 30 48 8D 05 ? ? ? ? 4C 3B C0");
+		const char* FreeMemory = ("48 85 C9 0F 84 ? ? ? ? 53 48 83 EC 20 48 89 7C 24 30 48 8B D9 48 8B 3D");
 	}
 
 

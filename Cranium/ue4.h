@@ -122,7 +122,7 @@ inline std::wstring GetFieldClassName(FField* obj)
 template <typename T>
 static T FindObject(wchar_t const* name, bool ends_with = false, bool to_lower = false, int toSkip = 0)
 {
-	if (gVersion > 16.00f)
+	if (gVersion >= 16.00f)
 	{
 		for (auto i = 0x0; i < GObjs->NumElements; ++i)
 		{

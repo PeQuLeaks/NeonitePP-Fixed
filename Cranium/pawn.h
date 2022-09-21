@@ -216,6 +216,13 @@ public:
 		auto bHasServerFinishedLoading = reinterpret_cast<bool*>(reinterpret_cast<uintptr_t>(this->Controller) + __int64(ObjectFinder::FindOffset(L"FortPlayerController", L"bHasServerFinishedLoading")));
 		*bHasServerFinishedLoading = true;
 
+		UFunction* OnRep_bHasServerFinishedLoading;
+		if (gVersion > 16.00f)
+			OnRep_bHasServerFinishedLoading = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController.OnRep_bHasServerFinishedLoading"));
+		else
+			OnRep_bHasServerFinishedLoading = FindObject<UFunction*>(XOR(L"Function /Script/FortniteGame.FortPlayerController:OnRep_bHasServerFinishedLoading"));
+
+		ProcessEvent(this->Controller, OnRep_bHasServerFinishedLoading, nullptr);
 	}
 
 	//DEPRECATED, use abilities 

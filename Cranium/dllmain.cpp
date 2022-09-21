@@ -27,8 +27,13 @@ void dllMain()
 	while (true)
 	{
 		if (isReady)
-		{													//Deprecated
-			if (Hooks::Misc(gVersion) && Console::Unlock()) //&& ForceSettings())
+		{	
+			if (MH_Initialize() != MH_OK)
+			{
+				MessageBoxA(nullptr, XOR("Failed to initialize min-hook, terminating the thread."), XOR("Carbon"), MB_OK);
+				FreeLibraryAndExitThread(GetModuleHandle(nullptr), 0);
+			}
+			if (Hooks::Misc(gVersion) && Console::Unlock())
 			{
 				ImguiThread();
 				break;

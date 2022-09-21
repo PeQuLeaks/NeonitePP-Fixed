@@ -50,15 +50,18 @@ namespace Hooks
 
 	inline bool exithook()
 	{
-		if (Util::FindPatternAV(Patterns::Misc::PushWidget.first, Patterns::Misc::PushWidget.second))
+		if (Util::FindPatternAV(Patterns::Misc::PushWidget.first, Patterns::Misc::PushWidget.second) || gVersion >= 19.0f)
 		{
 			UnsafeEnvironmentPopupAddressUE4 = Util::FindPatternAV(Patterns::Exit::UnsafeEnvironmentPopupUE4.first, Patterns::Exit::UnsafeEnvironmentPopupUE4.second);
-			if (!UnsafeEnvironmentPopupAddressUE4)//We need the if statements to prevent the searching for the UE5 patterns, this causes it to lockup if we let it do that
+			if (!UnsafeEnvironmentPopupAddressUE4 || gVersion >= 19.0f)//We need the if statements to prevent the searching for the UE5 patterns, this causes it to lockup if we let it do that
 			{
 				UnsafeEnvironmentPopupAddressUE5 = Util::FindPatternAV(Patterns::Exit::UnsafeEnvironmentPopupUE5.first, Patterns::Exit::UnsafeEnvironmentPopupUE5.second);
+				if (!UnsafeEnvironmentPopupAddressUE5) {
+					UnsafeEnvironmentPopupAddressUE5 = Util::FindPatternAV(Patterns::Exit::UnsafeEnvironmentPopupUE5_2.first, Patterns::Exit::UnsafeEnvironmentPopupUE5_2.second);
+				}
 			}
 			RequestExitWithStatusAddressUE4 = Util::FindPatternAV(Patterns::Exit::RequestExitWithStatusUE4.first, Patterns::Exit::RequestExitWithStatusUE4.second);
-			if (!RequestExitWithStatusAddressUE4)
+			if (!RequestExitWithStatusAddressUE4 || gVersion >= 19.0f)
 			{
 				RequestExitWithStatusAddressUE5 = Util::FindPatternAV(Patterns::Exit::RequestExitWithStatusUE5.first, Patterns::Exit::RequestExitWithStatusUE5.second);
 			}
@@ -74,15 +77,7 @@ namespace Hooks
 
 	inline bool Misc(float version)
 	{
-
-		if (MH_Initialize() != MH_OK)
-		{
-			MessageBoxA(nullptr, XOR("Failed to initialize min-hook, terminating the thread."), XOR("Carbon"), MB_OK);
-			FreeLibraryAndExitThread(GetModuleHandle(nullptr), 0);
-		}
-
 		printf("\n\n[CARBON] Started Hooks \n\n");
-
 		//GObject Array
 		auto GObjectsAdd = Util::FindPattern(Patterns::bGlobal::GObjects, Masks::bGlobal::GObjects);
 		VALIDATE_ADDRESS(GObjectsAdd, XOR("Failed to find GObjects Address.\n"));
@@ -90,7 +85,7 @@ namespace Hooks
 		printf("\n\n[CARBON] Found GObjs! \n\n");
 
 		//FNameToString
-		if (gVersion > 17.60f)
+		if (gVersion >= 17.60f)
 		{
 			auto FNameToStringAdd = Util::FindByString(FNAMETOSTRING_STRINGREF, { CALL }, true, 1);
 			if (!FNameToStringAdd)
@@ -101,7 +96,7 @@ namespace Hooks
 			FNameToString = decltype(FNameToString)(FNameToStringAdd);
 			printf("\n\n[CARBON] Found FNameToString! \n\n");
 		}
-		else if (gVersion > 16.00f)
+		else if (gVersion >= 16.00f)
 		{
 			auto FNameToStringAdd = Util::FindPattern(Patterns::New::FNameToString, Masks::New::FNameToString);
 			VALIDATE_ADDRESS(FNameToStringAdd, XOR("Failed to find FNameToString Address."));
@@ -109,20 +104,20 @@ namespace Hooks
 		}
 
 		//GEngine Hook
-		if (gVersion > 16.60f)
+		if (gVersion >= 16.60f)
 		{
-			GEngine = FindObject<UEngine*>(XOR(L"FortEngine /Engine/Transient.FortEngine_"));
+			GEngine = FindObject<UEngine*>(XOR(L"FortEngine /Engine/Transient.FortEngine"));
 			VALIDATE_ADDRESS(GEngine, XOR("Failed to find GEngine Address.\n"));
 			printf("\n\n[CARBON] Found GEngine! \n\n");
 		}
-		else if (gVersion > 9.40)
+		else if (gVersion >= 9.40)
 		{
 			auto GEngineAdd = Util::FindPattern(Patterns::bGlobal::GEngine, Masks::bGlobal::GEngine);
 			VALIDATE_ADDRESS(GEngineAdd, XOR("Failed to find GEngine Address."));
 			GEngine = *reinterpret_cast<UEngine**>(GEngineAdd + 7 + *reinterpret_cast<int32_t*>(GEngineAdd + 3));
 			printf("\n\n[CARBON] Found GEngine! \n\n");
 		}
-		else 
+		else
 		{
 			auto GEngineAdd = Util::FindPattern(Patterns::Oldies::bChapone::GEngine, Masks::Oldies::bChapone::GEngine);
 			VALIDATE_ADDRESS(GEngineAdd, XOR("Failed to find GEngine Address."));
@@ -134,11 +129,13 @@ namespace Hooks
 		uintptr_t ProcessEventAdd = 0;
 		if (gVersion >= 19.00f)
 		{
-			const auto vtable = *reinterpret_cast<void***>(GEngine);
-			ProcessEventAdd = (uintptr_t)vtable[0x4B];
+			ProcessEventAdd = Util::FindPatternEasy("40 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 48 8D 6C 24 ? 48 89 9D ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C5 48 89 85 ? ? ? ? 45");
+			if (!ProcessEventAdd) {
+				ProcessEventAdd = Util::FindPatternEasy("40 55 53 56 57 41 54 41 56 41 57 48 81 EC");
+			}
 			printf("\n\n[CARBON] Found ProcessEvent! \n\n");
 		}
-		else if (gVersion > 16.00f)
+		else if (gVersion >= 16.00f)
 		{
 			const auto vtable = *reinterpret_cast<void***>(GEngine);
 			ProcessEventAdd = (uintptr_t)vtable[0x44];
@@ -152,10 +149,10 @@ namespace Hooks
 
 		ProcessEvent = decltype(ProcessEvent)(ProcessEventAdd);
 		gProcessEventAdd = ProcessEventAdd;
-		
+
 		//Used for Camera Hooking.
 		//Tested from 12.41 to 15.40
-		if(gVersion < 16.00f)
+		if (gVersion <= 16.00f)
 		{
 			auto GetViewPointAdd = Util::FindPattern(Patterns::bGlobal::GetViewPoint, Masks::bGlobal::GetViewPoint);
 			VALIDATE_ADDRESS(GetViewPointAdd, XOR("Failed to find GetViewPoint Address."));
@@ -163,11 +160,8 @@ namespace Hooks
 			GetViewPoint = decltype(GetViewPoint)(GetViewPointAdd);
 		}
 
-		//Used for getting UObjects names.
-
-
 		//Used for getting UObjects full names.
-		if (gVersion < 16.00f)
+		if (gVersion <= 16.00f)
 		{
 			if (gVersion < 14.30f)
 			{
@@ -186,7 +180,7 @@ namespace Hooks
 				GetObjectFullNameInternal = decltype(GetObjectFullNameInternal)(GetObjectFullNameAdd);
 			}
 		}
-		
+
 		//Used for getting FFields full names, works from 12.41 - 18.40
 		auto GetFullNameAdd = Util::FindPattern(Patterns::bGlobal::GetFullName, Masks::bGlobal::GetFullName);
 		VALIDATE_ADDRESS(GetFullNameAdd, XOR("Failed to find GetFullName Address."));
@@ -195,7 +189,7 @@ namespace Hooks
 		printf("\n\n[CARBON] Found GetFullName! \n\n");
 
 		//Tested from 12.41 to latest
-		if(gVersion < 16.00f)
+		if (gVersion <= 16.00f)
 		{
 			auto GONIAdd = Util::FindPattern(Patterns::bGlobal::GONI, Masks::bGlobal::GONI);
 			VALIDATE_ADDRESS(GONIAdd, XOR("Failed to find GetObjectName Address."));
@@ -204,7 +198,7 @@ namespace Hooks
 			printf("\n\n[CARBON] Found GetObjectNameInternal! \n\n");
 		}
 		//Used to free the memory for names.
-		if (gVersion > 16.30f)
+		if (gVersion >= 16.30f)
 		{
 			auto FreeInternalAdd = Util::FindPatternEasy(Patterns::bGlobal::FreeMemory);
 			VALIDATE_ADDRESS(FreeInternalAdd, XOR("Failed to find Free Address."));
@@ -248,11 +242,8 @@ namespace Hooks
 			printf("\n\n[CARBON] Found Abilities! \n\n");
 		}
 		//Process Event Hooking.
-		if (gVersion < 19.30f)
-		{
-			MH_CreateHook(reinterpret_cast<void*>(ProcessEventAdd), ProcessEventDetour, reinterpret_cast<void**>(&ProcessEvent));
-			MH_EnableHook(reinterpret_cast<void*>(ProcessEventAdd));
-		}
+		MH_CreateHook(reinterpret_cast<void*>(ProcessEventAdd), ProcessEventDetour, reinterpret_cast<void**>(&ProcessEvent));
+		MH_EnableHook(reinterpret_cast<void*>(ProcessEventAdd));
 		/*
 		//GetViewPoint Hooking.
 		if(gVersion < 16.00f)
@@ -262,6 +253,6 @@ namespace Hooks
 		}
 		*/
 		return true;
-		
+
 	}
 }

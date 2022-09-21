@@ -18,14 +18,9 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 {
 	std::wstring nObj;
 	std::wstring nFunc;
-	if (gVersion > 19.30f)
+	if (gVersion >= 16.00f)
 	{
-		nObj = pObj->GetName();;
-		nFunc = pFunc->GetFullName();
-	}
-	else if (gVersion > 16.00f)
-	{
-		nObj = pObj->GetName();;
+		nObj = pObj->GetName();
 		nFunc = pFunc->GetName();
 	}
 	else
@@ -34,6 +29,18 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		nFunc = GetObjectFirstName(pFunc);
 	}
 
+	if (GetAsyncKeyState(VK_F1) & 0x1) {
+		auto MAP = ARTEMIS_TERRAIN;
+		if (gVersion < 19.0f) {
+			MAP = APOLLO_TERRAIN;
+		}
+		else if (gVersion < 11.0f) {
+			//TODO
+		}
+		Start(MAP);
+		gPlaylist = FindObject<UObject*>(XOR(L"FortPlaylistAthena /Game/Athena/Playlists/BattleLab/Playlist_BattleLab.Playlist_BattleLab"));
+		Sleep(1000);
+	}
 
 	//If the game requested matchmaking we open the game mode
 	if (gUrl.find(XOR("matchmakingservice")) != std::string::npos)
@@ -51,7 +58,7 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		auto Playlist = FindObject<UObject*>(PlaylistNameW.c_str(), true, true);
 		auto Map = ARTEMIS_TERRAIN;
 
-		if (gVersion > 19.00f) {
+		if (gVersion >= 19.00f) {
 			Map = ARTEMIS_TERRAIN;
 		}
 		else
@@ -122,6 +129,27 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		printf("[CARBON] Set client has finished loading.\n");
 		if (gVersion > 17.90f)
 			NeoPlayer.StartSkydiving(500.0f);
+
+		bool bCondition = true;
+		if (gVersion == 12.41f)
+		{
+			auto JerkyLoader = FindObject<UObject*>(XOR(L"BP_Jerky_Loader_C /CycloneJerky/Levels/JerkyLoaderLevel.JerkyLoaderLevel:PersistentLevel.BP_Jerky_Loader_2"));
+			UFunction* fn = FindObject<UFunction*>(XOR(L"Function /CycloneJerky/Gameplay/BP_Jerky_Loader.BP_Jerky_Loader_C:LoadJerkyLevel"));
+			ProcessEvent(JerkyLoader, fn, &bCondition);
+			//UFunctions::LoadAndStreamInLevel(JERKY_EVENT_MAP);
+		}
+		else if (gVersion == 12.61f)
+		{
+			auto FritterLoader = FindObject<UObject*>(XOR(L"BP_Fritter_Loader_C /Fritter/Level/FritterLoaderLevel.FritterLoaderLevel:PersistentLevel.BP_Fritter_Loader_0"));
+			UFunction* fn = FindObject<UFunction*>(XOR(L"Function /Fritter/BP_Fritter_Loader.BP_Fritter_Loader_C:LoadFritterLevel"));
+			ProcessEvent(FritterLoader, fn, &bCondition);
+			//UFunctions::LoadAndStreamInLevel(DEVICE_EVENT_MAP);
+		}
+		else if (gVersion == 14.60f)
+		{
+			//UFunctions::LoadAndStreamInLevel(JERKY_EVENT_MAP);
+			//UFunctions::LoadAndStreamInLevel(RIFT_TOUR_BUBBLES_MAP);
+		}
 	}
 	
 	//[CARBON] Current Coords: -2261.2 -241532 833498
@@ -661,7 +689,7 @@ ct]: Junior_VOFXController_2147457927 [Function]: SetDelayWetLevel
 [Object]: BP_Junior_AudioScripting_2147457926 [Function]: SetShouldDisableCompressor
 [Object]: BP_Junior_AudioScripting_2147457926 [Function]: SetShouldApplyGameplayMix
 */
-#ifndef LOGGING
+#ifdef LOGGING
 	//Logging
 	if (!wcsstr(nFunc.c_str(), L"EvaluateGraphExposedInputs") &&
 		!wcsstr(nFunc.c_str(), L"Tick") &&
