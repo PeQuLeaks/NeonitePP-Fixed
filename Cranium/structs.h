@@ -844,6 +844,14 @@ struct UGameplayStatics_LoadStreamLevel_Params
 	FLatentActionInfo LatentInfo;
 };
 
+struct UGameplayStatics_UnloadStreamLevel_Params
+{
+	UObject* WorldContextObject;
+	struct FName LevelName;
+	bool bShouldBlockOnUnload;
+	FLatentActionInfo LatentInfo;
+};
+
 struct UGameplayStatics_OpenLevel_Params
 {
 	UObject* WorldContextObject;
