@@ -9,18 +9,26 @@
 #define APOLLO_TERRAIN_YOGURT XOR(L"Apollo_Terrain_Yogurt?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
 #define ARTEMIS_TERRAIN (L"Artemis_Terrain?game=/Game/Athena/Athena_GameMode.Athena_GameMode_C")
 
-#define GALACTUS_EVENT_MAP XOR(L"Junior_Map")
-#define JERKY_EVENT_MAP XOR(L"JerkySequenceMap")
-#define JERKY_LOADER_MAP XOR(L"JerkyLoaderLevel")
+#define JUNIOR_PERSISTENT XOR(L"Junior_Map")
+#define JUNIOR_HELICARRIER_OVERLAY XOR(L"/Junior/LevelOverlays/Apollo_POI_Hightower_HC_LobbyEvent_Overlay")
+#define JUNIOR_HELICARRIER XOR (L"/Game/Athena/Apollo/Maps/Test/S14/Apollo_POI_Hightower_HC_LobbyEvent")
+#define S14_APOLLO_HELICARRIER XOR (L"/Game/Athena/Apollo/Maps/Test/S14/Apollo_POI_Hightower_HC_01")
 
-#define DEVICE_EVENT_MAP XOR(L"FritterSequenceLevel")
-#define RIFT_TOUR_EVENT_MAP XOR(L"Buffet_P")
 ///BuffetBubble/LevelOverlay/BuffetBouncer_Apollo_TeddyBase_LevelOverlay.BuffetBouncer_Apollo_TeddyBase_LevelOverlay
 ///SpecialEventCountdown/B/B_Frontend_OverlayLevel.B_Frontend_OverlayLevel
-#define RIFT_TOUR_BUBBLES_MAP XOR(L"BuffetBouncer_Apollo_TeddyBase_LevelOverlay") 
-#define TEST_STREAM XOR(L"BuffetLevelOverlay") 
-#define KIWI_EVENT_MAP XOR(L"Kiwi_P")
-#define GUAVA_EVENT_MAP XOR(L"Guava_P")
+#define RIFT_TOUR_BUBBLES_MAP XOR(L"BuffetBouncer_Apollo_TeddyBase_LevelOverlay")
+#define TEST_STREAM XOR(L"BuffetLevelOverlay")
+
+#define KIWI_COUNTDOWN_OVERLAY XOR (L"/SpecialEventCountdown/B/Apoll_Kiwi_SECounterDown_Overlay")
+#define KIWI_PERSISTENT XOR(L"/Kiwi/Levels/Kiwi_P")
+#define KIWI_PRISONJUNCTION XOR(L"/Kiwi/Levels/Kiwi_PrisonJunction")
+#define KIWI_TUBES XOR (L"/Kiwi/Levels/Kiwi_Tubes")
+#define KIWI_OBSERVATIONHALLWAY XOR(L"/Kiwi/Levels/Kiwi_ObservationHallway")
+#define KIWI_KEVINROOM XOR (L"/Kiwi/Levels/Kiwi_KevinRoom")
+#define KIWI_HANGAR XOR(L"/Kiwi/Levels/Kiwi_Hangar")
+#define KIWI_SPACE XOR(L"/Kiwi/Levels/Kiwi_Space")
+
+#define GUAVA_PERSISTENT XOR(L"Guava_P")
 
 #define GALACTUS_EVENT_PLAYER XOR(L"LevelSequencePlayer /Junior/Levels/Junior_Map.Junior_Map:PersistentLevel.Junior_Master_Rep_2.AnimationPlayer")
 #define JERKY_EVENT_PLAYER XOR(L"LevelSequencePlayer /CycloneJerky/Levels/JerkySequenceMap.JerkySequenceMap:PersistentLevel.Jerky.AnimationPlayer")
