@@ -14,6 +14,8 @@
 #define JUNIOR_HELICARRIER XOR (L"/Game/Athena/Apollo/Maps/Test/S14/Apollo_POI_Hightower_HC_LobbyEvent")
 #define S14_APOLLO_HELICARRIER XOR (L"/Game/Athena/Apollo/Maps/Test/S14/Apollo_POI_Hightower_HC_01")
 
+///BuffetBubble/LevelOverlay/BuffetBouncer_Apollo_TeddyBase_LevelOverlay.BuffetBouncer_Apollo_TeddyBase_LevelOverlay
+///SpecialEventCountdown/B/B_Frontend_OverlayLevel.B_Frontend_OverlayLevel
 #define RIFT_TOUR_BUBBLES_MAP XOR(L"BuffetBouncer_Apollo_TeddyBase_LevelOverlay")
 #define TEST_STREAM XOR(L"BuffetLevelOverlay")
 

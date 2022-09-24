@@ -184,7 +184,6 @@
     <ClInclude Include="curlver.h" />
     <ClInclude Include="detours.h" />
     <ClInclude Include="enums.h" />
-    <ClInclude Include="events.h" />
     <ClInclude Include="finder.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="gui\gui.h" />

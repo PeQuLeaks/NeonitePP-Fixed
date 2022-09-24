@@ -2,13 +2,17 @@
 #include "ue4.h"
 #include "neoroyale.h"
 #include "kismet.h"
-#include "events.h"
+
+#ifndef PROD
+//#define LOGGING
+#endif
 
 using namespace NeoRoyale;
 
 inline bool bIsDebugCamera;
 inline bool bIsFlying;
-inline bool bIsEventPlaylist;
+inline bool bSpecialEvent1 = false;
+inline bool bSpecialEvent2 = false;
 
 inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 {
@@ -25,7 +29,7 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 		nFunc = GetObjectFirstName(pFunc);
 	}
 
-	if (GetAsyncKeyState(VK_F1) & 0x1 && !bIsStarted) {
+	if (GetAsyncKeyState(VK_F1) & 0x1) {
 		auto MAP = ARTEMIS_TERRAIN;
 		if (gVersion < 19.0f) {
 			MAP = APOLLO_TERRAIN;
@@ -127,36 +131,32 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 			NeoPlayer.StartSkydiving(500.0f);
 
 		if (gVersion > 16.50f) // Enables the Next-Gen Graphics that were added early on PS5 / Xbox Series X (later introduced in v17.00) - notkrae
-		{
 			NeoPlayer.ExecuteConsoleCommand(L"Athena.PostProcessLevel 3");
 			NeoPlayer.ExecuteConsoleCommand(L"Athena.UseVolumetricClouds true");
 			NeoPlayer.ExecuteConsoleCommand(L"Athena.UseJanusFX true");
 			NeoPlayer.ExecuteConsoleCommand(L"Athena.UsePhysicalRimlight true");
 			NeoPlayer.ExecuteConsoleCommand(L"Athena.UseFluidFX true");
-		}
 
-		if (gVersion == 14.60f && bIsEventPlaylist)
-		{
-			Junior::JuniorPreShowManager(true); // If True, it will load the Carrier. - notkrae
-			NeoPlayer.ExecuteConsoleCommand(L"bugitgo 1535 61840 42500 0 270");
-		}
+			if (gVersion == 14.60f)
+				UFunctions::JuniorPreShowManager(true); // If True, it will load the Carrier. - notkrae
+				NeoPlayer.ExecuteConsoleCommand(L"bugitgo 1535 61840 42500 0 270");
 
 		bool bCondition = true;
-		if (gVersion == 12.41f && bIsEventPlaylist)
+		if (gVersion == 12.41f)
 		{
 			auto JerkyLoader = FindObject<UObject*>(XOR(L"BP_Jerky_Loader_C /CycloneJerky/Levels/JerkyLoaderLevel.JerkyLoaderLevel:PersistentLevel.BP_Jerky_Loader_2"));
 			UFunction* fn = FindObject<UFunction*>(XOR(L"Function /CycloneJerky/Gameplay/BP_Jerky_Loader.BP_Jerky_Loader_C:LoadJerkyLevel"));
 			ProcessEvent(JerkyLoader, fn, &bCondition);
 			//UFunctions::LoadAndStreamInLevel(JERKY_EVENT_MAP);
 		}
-		else if (gVersion == 12.61f && bIsEventPlaylist)
+		else if (gVersion == 12.61f)
 		{
 			auto FritterLoader = FindObject<UObject*>(XOR(L"BP_Fritter_Loader_C /Fritter/Level/FritterLoaderLevel.FritterLoaderLevel:PersistentLevel.BP_Fritter_Loader_0"));
 			UFunction* fn = FindObject<UFunction*>(XOR(L"Function /Fritter/BP_Fritter_Loader.BP_Fritter_Loader_C:LoadFritterLevel"));
 			ProcessEvent(FritterLoader, fn, &bCondition);
 			//UFunctions::LoadAndStreamInLevel(DEVICE_EVENT_MAP);
 		}
-		else if (gVersion == 14.60f && bIsEventPlaylist)
+		else if (gVersion == 14.60f)
 		{
 			auto JuniorLoader = FindObject<UObject*>(XOR(L"BP_Junior_Loader_C /Junior/Levels/JuniorLoaderLevel.JuniorLoaderLevel:PersistentLevel.BP_Junior_Loader_2"));
 			UFunction* fn = FindObject<UFunction*>(XOR(L"Function /Junior/Blueprints/BP_Junior_Loader.BP_Junior_Loader_C:LoadJuniorLevel"));
@@ -167,56 +167,111 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 	
 	if (gVersion == 14.60f) { // Junior aka Galactus Event - notkrae
 
-		if (wcsstr(nFunc.c_str(), XOR(L"ReceiveBeginPlay")) && wcsstr(nObj.c_str(), XOR(L"BP_Junior_ZP")) && bIsEventPlaylist)
+		if (wcsstr(nFunc.c_str(), XOR(L"ReceiveBeginPlay")) && wcsstr(nObj.c_str(), XOR(L"BP_Junior_ZP")) && !bSpecialEvent1)
 		{
 			NeoPlayer.SetPawnGravityScale(100);
 		}
-		if (wcsstr(nFunc.c_str(), XOR(L"OnAnimationFinished")) && wcsstr(nObj.c_str(), XOR(L"GamePhaseAlert")) && bIsEventPlaylist) // Removes Junor Timer - notkrae
+		if (wcsstr(nFunc.c_str(), XOR(L"OnAnimationFinished")) && wcsstr(nObj.c_str(), XOR(L"GamePhaseAlert")) && !bSpecialEvent1) // Removes Junor Timer - notkrae
 		{
-			Junior::JuniorCountdownManager(false);
+			UFunctions::JuniorCountdownManager(false);
 		}
-		if (wcsstr(nFunc.c_str(), XOR(L"Timeline_0__FinishedFunc")) && bIsEventPlaylist) //Reactivates Next-Gen Graphics which get unloaded for some reason after the Event starts. - notkrae
+		if (wcsstr(nFunc.c_str(), XOR(L"Timeline_0__FinishedFunc")) && !bSpecialEvent1) //Reactivates Next-Gen Graphics which get unloaded for some reason after the Event starts. - notkrae
 		{
-			Junior::JuniorCountdownManager(true); // Removes Event Timer if true. - notkrae
+			UFunctions::JuniorCountdownManager(true); // Removes Event Timer if true. - notkrae
 			NeoPlayer.ExecuteConsoleCommand(L"Athena.PostProcessLevel 3");
 			NeoPlayer.ExecuteConsoleCommand(L"Athena.UseVolumetricClouds true");
 			NeoPlayer.ExecuteConsoleCommand(L"Athena.UseJanusFX true");
 			NeoPlayer.ExecuteConsoleCommand(L"Athena.UsePhysicalRimlight true");
 			NeoPlayer.ExecuteConsoleCommand(L"Athena.UseFluidFX true");
 		}
-
-		if (wcsstr(nFunc.c_str(), XOR(L"ReceiveEndPlay")) && wcsstr(nObj.c_str(), XOR(L"ZeroPointCore")) && bIsEventPlaylist)
+		//[CARBON] Current Coords: -2261.2 -241532 833498
+		if (wcsstr(nFunc.c_str(), XOR(L"ReceiveEndPlay")) && wcsstr(nObj.c_str(), XOR(L"ZeroPointCore")) && !bSpecialEvent1)
 		{
 			NeoPlayer.Respawn();
 			NeoPlayer.SetPawnGravityScale(1);
 			NeoPlayer.ExecuteConsoleCommand(XOR(L"camera firstperson"));
 			NeoPlayer.ExecuteConsoleCommand(L"bugitgo 0 1046930 539600 0 270");
 			NeoPlayer.SetCameraMode(L"FirstPerson");
+			//NeoPlayer.ExecuteConsoleCommand(XOR(L"camera freecam"));
+			//NeoPlayer.Fly(true);
 			NeoPlayer.HideHead(true);
 		}
 
-		if (wcsstr(nFunc.c_str(), XOR(L"Construct")) && wcsstr(nObj.c_str(), XOR(L"JuniorScoreCard_C")) && bIsEventPlaylist)
+		if (wcsstr(nFunc.c_str(), XOR(L"Construct")) && wcsstr(nObj.c_str(), XOR(L"JuniorScoreCard_C")) && !bSpecialEvent1)
 		{
+			//NeoPlayer.ExecuteConsoleCommand(XOR(L"camera firstperson"));
 			NeoPlayer.SetPawnGravityScale(0);
 			NeoPlayer.ExecuteConsoleCommand(L"bugitgo -5400 -349600 855200 0 270");
 			NeoPlayer.SetCameraMode(L"FirstPerson");
+			//NeoPlayer.Fly(true);
+			//NeoPlayer.ExecuteConsoleCommand(XOR(L"camera freecam"));
 		}
 
-		if (wcsstr(nFunc.c_str(), XOR(L"ReceiveIsFinished")) && wcsstr(nObj.c_str(), XOR(L"CameraShake_Junior_HeliCarrierHit_C")) && bIsEventPlaylist) // Unloads Helicarrier and Volumes (notkrae)
+		if (wcsstr(nFunc.c_str(), XOR(L"ReceiveIsFinished")) && wcsstr(nObj.c_str(), XOR(L"CameraShake_Junior_HeliCarrierHit_C")) && !bSpecialEvent1) // Unloads Helicarrier and Volumes (notkrae)
 		{
-			Junior::JuniorCarrierManager(true);
-			Junior::JuniorCarrierManager(true);
+			UFunctions::JuniorCarrierManager(true);
+			UFunctions::JuniorCarrierManager(true);
 			NeoPlayer.ExecuteConsoleCommand(L"destroyall Volume");
 			NeoPlayer.ExecuteConsoleCommand(L"destroyall Levelbounds");
 			NeoPlayer.SetPawnGravityScale(-0.000001); // This should be better than Fly. - notkrae
+			//NeoPlayer.Fly(true);
 		}
 
-		if (wcsstr(nFunc.c_str(), XOR(L"StreamedVideoOnUrlFailure")) && wcsstr(nObj.c_str(), XOR(L"ActivatableMovieWidget_Monolithic_Native_C")) && bIsEventPlaylist)
+		if (wcsstr(nFunc.c_str(), XOR(L"StreamedVideoOnUrlFailure")) && wcsstr(nObj.c_str(), XOR(L"ActivatableMovieWidget_Monolithic_Native_C")) && !bSpecialEvent1)
 		{
+			//[CARBON] Current Coords : -16880.3 - 264071 790292
 			NeoPlayer.ExecuteConsoleCommand(L"bugitgo 657.819 0 855200 0 270");
+			//NeoPlayer.Fly(false);
 		}
 	}
+	
+	if (gVersion == 17.30f)
+	{
+		if (wcsstr(nFunc.c_str(), XOR(L"CameraFade")) && wcsstr(nObj.c_str(), XOR(L"GA_Buffet_Door_Pull_Real_C")) && !bSpecialEvent1)
+		{
+			//MessageBoxA(nullptr, XOR("Teleporting to Buffet_Part_3"), XOR("Carbon"), MB_OK);
+			NeoPlayer.ExecuteConsoleCommand(XOR(L"bugitgo -5000 0 360000"));
+		}
 
+		if (wcsstr(nFunc.c_str(), XOR(L"OnCreated")) && wcsstr(nObj.c_str(), XOR(L"SequenceDirector_C")))
+		{
+			//MessageBoxA(nullptr, XOR("Event Start Detected - Setting demospeed to 1"), XOR("Carbon"), MB_OK);
+			NeoPlayer.ExecuteConsoleCommand(XOR(L"demospeed 1"));
+		}
+
+		if (wcsstr(nFunc.c_str(), XOR(L"OnQuantizationEvent")) && wcsstr(nObj.c_str(), XOR(L"BP_BeatSync_Brain_2")) && !bSpecialEvent2)
+		{
+			//MessageBoxA(nullptr, XOR("Teleporting to Slide, fixing camera"), XOR("Carbon"), MB_OK);
+			NeoPlayer.ExecuteConsoleCommand(XOR(L"camera freecam"));
+			NeoPlayer.Possess();
+			NeoPlayer.ExecuteConsoleCommand(XOR(L"bugitgo -15000 -200000 85000"));
+
+		}
+	}
+	
+	if (gVersion == 17.30f)
+	{
+		if (wcsstr(nFunc.c_str(), XOR(L"CameraFade")) && wcsstr(nObj.c_str(), XOR(L"GA_Buffet_Door_Pull_Real_C")) && !bSpecialEvent1)
+		{
+			//MessageBoxA(nullptr, XOR("Teleporting to Buffet_Part_3"), XOR("Carbon"), MB_OK);
+			NeoPlayer.ExecuteConsoleCommand(XOR(L"bugitgo -5000 0 360000"));
+		}
+
+		if (wcsstr(nFunc.c_str(), XOR(L"OnCreated")) && wcsstr(nObj.c_str(), XOR(L"SequenceDirector_C")))
+		{
+			//MessageBoxA(nullptr, XOR("Event Start Detected - Setting demospeed to 1"), XOR("Carbon"), MB_OK);
+			NeoPlayer.ExecuteConsoleCommand(XOR(L"demospeed 1"));
+		}
+
+		if (wcsstr(nFunc.c_str(), XOR(L"OnQuantizationEvent")) && wcsstr(nObj.c_str(), XOR(L"BP_BeatSync_Brain_2")) && !bSpecialEvent2)
+		{
+			//MessageBoxA(nullptr, XOR("Teleporting to Slide, fixing camera"), XOR("Carbon"), MB_OK);
+			NeoPlayer.ExecuteConsoleCommand(XOR(L"camera freecam"));
+			NeoPlayer.Possess();
+			NeoPlayer.ExecuteConsoleCommand(XOR(L"bugitgo -15000 -200000 85000"));
+
+		}
+	}
 	if (wcsstr(nFunc.c_str(), XOR(L"ServerExecuteInventoryItem")))
 	{
 		FGuid* guid = reinterpret_cast<FGuid*>(pParams);
@@ -415,32 +470,58 @@ inline void* ProcessEventDetour(UObject* pObj, UObject* pFunc, void* pParams)
 				Start(Map);
 				break;
 			}
+#ifndef PROD
+			case ACTIVATE:
+			{
+				if (!arg.empty())
+				{
+					UFunctions::ConsoleLog(XOR(L"Couldn't process your activation code!."));
 
+				}
+				else
+				{
+					UFunctions::ConsoleLog(XOR(L"Please input your activation key!."));
+				}
+				break;
+			}
+#endif
 			case EVENT:
 			{
 				if (gVersion == 14.60f)
 				{
-					Junior::startEvent();
+					UFunctions::JuniorCarrierManager(false);
+					UFunctions::JuniorCarrierManager(false);
+					UFunctions::StartJuniorEvent();
 				}
 				else if (gVersion == 12.41f)
 				{
-					Jerky::startEvent();
+					UFunctions::Play(JERKY_EVENT_PLAYER);
 				}
 				else if (gVersion == 12.61f)
 				{
-					Fritter::startEvent();
+					UFunctions::Play(DEVICE_EVENT_PLAYER);
 				}
 				else if (gVersion == 17.30f)
 				{
-					Buffet::startEvent();
+					UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
+					NeoPlayer.ExecuteConsoleCommand(XOR(L"demospeed 200"));
+					NeoPlayer.ExecuteConsoleCommand(XOR(L"bugitgo 0 0 35000"));
+					NeoPlayer.Fly(bIsFlying);
+					bIsFlying = !bIsFlying;
 				}
 				else if (gVersion == 17.50f)
 				{
-					Guava::startEvent();
+					UFunctions::LoadAndStreamInLevel(KIWI_PRISONJUNCTION, FVector{ 50009.137f, 49958.379f, 100026.398f }, FRotator {});
+					UFunctions::LoadAndStreamInLevel(KIWI_TUBES, FVector{ 50009.137f, 49958.379f, 100026.398f }, FRotator {});
+					UFunctions::LoadAndStreamInLevel(KIWI_OBSERVATIONHALLWAY, FVector{ 50009.137f, 49958.379f, 100026.398f }, FRotator{});
+					UFunctions::LoadAndStreamInLevel(KIWI_HANGAR, FVector{ 50009.137f, 49958.379f, 100026.398f }, FRotator {});
+					UFunctions::LoadAndStreamInLevel(KIWI_KEVINROOM, FVector{ 50009.137f, 49958.379f, 100026.398f }, FRotator {});
+					UFunctions::LoadAndStreamInLevel(KIWI_SPACE, FVector{ 50009.137f, 49958.379f, 100026.398f }, FRotator {});
+					UFunctions::Play(KIWI_EVENT_PLAYER);
 				}
 				else if (gVersion == 18.40f)
 				{
-					Kiwi::startEvent();
+					UFunctions::Play(GUAVA_EVENT_PLAYER);
 				}
 				else
 				{
