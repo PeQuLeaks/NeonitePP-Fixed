@@ -193,6 +193,7 @@
     <ClInclude Include="skCryptor.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="events.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="cURL">
