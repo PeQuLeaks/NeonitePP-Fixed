@@ -522,28 +522,28 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						Text("Start event sequences");
 						if (Button(XOR("Start Rift Tour Event")))
 						{
-							UFunctions::Play(RIFT_TOUR_EVENT_PLAYER);
+							Events::Play(RIFT_TOUR_EVENT_PLAYER);
 						}
 						Text("This Sequence can only be started from the Main Sky Fire Map");
 						if (Button(XOR("Start Rift Tour Cuddle")))
 						{
-							UFunctions::Play(RIFT_TOUR_CUDDLE_PLAYER);
+							Events::Play(RIFT_TOUR_CUDDLE_PLAYER);
 						}
 						if (Button(XOR("Start Rift Tour Storm King")))
 						{
-							UFunctions::Play(RIFT_TOUR_STORMKING_PLAYER);
+							Events::Play(RIFT_TOUR_STORMKING_PLAYER);
 						}
 						if (Button(XOR("Start Rift Tour Clouds")))
 						{
-							UFunctions::Play(RIFT_TOUR_CLOUDS_PLAYER);
+							Events::Play(RIFT_TOUR_CLOUDS_PLAYER);
 						}
 						if (Button(XOR("Start Rift Tour Stairs")))
 						{
-							UFunctions::Play(RIFT_TOUR_STAIRS_PLAYER);
+							Events::Play(RIFT_TOUR_STAIRS_PLAYER);
 						}
 						if (Button(XOR("Start Rift Tour Positions")))
 						{
-							UFunctions::Play(RIFT_TOUR_POSITIONS_PLAYER);
+							Events::Play(RIFT_TOUR_POSITIONS_PLAYER);
 						}
 						/*if (Button(XOR("Map Streaming")))
 						{
@@ -570,7 +570,7 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						Text("Start event sequences");
 						if (Button(XOR("Start Sky Fire Event")))
 						{
-							UFunctions::Play(KIWI_EVENT_PLAYER);
+							Events::Play(KIWI_EVENT_PLAYER);
 						}
 						Text("This Sequence can only be started from the Main Sky Fire Map");
 						EndTabItem();
@@ -592,13 +592,13 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 						Text("Start event sequences:");
 						if (Button(XOR("Start The End Event")))
 						{
-							UFunctions::Play(GUAVA_EVENT_PLAYER);
+							Events::Play(GUAVA_EVENT_PLAYER);
 						}
 						Text("This Sequence can only be started from the Main The End Map");
 
 						if (Button(XOR("Start The End Cutscene")))
 						{
-							UFunctions::Play(GUAVA_PRESHOW_PLAYER);
+							Events::Play(GUAVA_PRESHOW_PLAYER);
 						}
 
 						NewLine();
